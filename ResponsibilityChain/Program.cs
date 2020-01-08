@@ -1,24 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Flurl;
+using Flurl.Http;
+using Flurl.Util;
 
 namespace ResponsibilityChain
 {
     public interface IHandler<TRequest, TResponse>
     {
-        TResponse Handle(TRequest request);
+        Response Handle(TRequest request);
+        Task<Response> HandleAsync(TRequest request);
         IHandler<TRequest, TResponse> Next { get; set; }
         IHandler<TRequest, TResponse> AddHandler(IHandler<TRequest, TResponse> handler);
     }
 
     public class Handler<TRequest, TResponse> : IHandler<TRequest, TResponse>
     {
-        public virtual TResponse Handle(TRequest request)
+        public virtual Response Handle(TRequest request)
         {
-            if (Next == null)
-            {
-                return default;
-            }
-            return Next.Handle(request);
+            return Next?.Handle(request);
+        }
+
+        public virtual Task<Response> HandleAsync(TRequest request)
+        {
+            return Next?.HandleAsync(request);
         }
 
         public IHandler<TRequest, TResponse> AddHandler(IHandler<TRequest, TResponse> handler)
@@ -45,14 +51,28 @@ namespace ResponsibilityChain
             Console.WriteLine("Doing sth with handler 1");
             return base.Handle(request);
         }
+
+        public override Task<Response> HandleAsync(Request request)
+        {
+            Console.WriteLine("Doing sth with handler async 1");
+            return base.HandleAsync(request);
+        }
+        
+        
     }
     
     public class Handler2 : Handler<Request, Response>
     {
         public override Response Handle(Request request)
         {
-            Console.WriteLine("Doing sth with handler 2");
+            Console.WriteLine("Doing sth with handler 1");
             return base.Handle(request);
+        }
+        
+        public override Task<Response> HandleAsync(Request request)
+        {
+            Console.WriteLine("Doing sth with handler async 2");
+            return base.HandleAsync(request);
         }
     }
     
@@ -60,10 +80,16 @@ namespace ResponsibilityChain
     {
         public override Response Handle(Request request)
         {
-            Console.WriteLine("Doing sth with handler 21");
-            base.Handle(request);
-            Console.WriteLine("after 21");
-            return null;
+            Console.WriteLine("Doing sth with handler 1");
+            return base.Handle(request);
+        }
+        public override Task<Response> HandleAsync(Request request)
+        {
+            Console.WriteLine("Doing sth with handler async 21");
+            var result = base.HandleAsync(request);
+            Console.WriteLine("Logging sth");    
+            
+            return result;
         }
     }
     
@@ -71,10 +97,13 @@ namespace ResponsibilityChain
     {
         public override Response Handle(Request request)
         {
-            Console.WriteLine("Doing sth with handler 22");
-            base.Handle(request);
-            Console.WriteLine("after 22");
-            return null;
+            Console.WriteLine("Doing sth with handler 1");
+            return base.Handle(request);
+        }
+        public override Task<Response> HandleAsync(Request request)
+        {
+            Console.WriteLine("Doing sth with handler async 22");
+            return base.HandleAsync(request);
         }
     }
     
@@ -82,15 +111,22 @@ namespace ResponsibilityChain
     {
         public override Response Handle(Request request)
         {
-            Console.WriteLine("Doing sth with handler 3");
+            Console.WriteLine("Doing sth with handler 1");
             return new Response();
+        }
+        public override async Task<Response> HandleAsync(Request request)
+        {
+            var todo = await "https://jsonplaceholder.typicode.com/posts".GetStringAsync();;
+            var response = new Response {ResponseTodo = todo}; 
+                
+            return response;
         }
     }
     
     
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             var handler1 = new Handler1();
             var handler2 = new Handler2();
@@ -104,6 +140,8 @@ namespace ResponsibilityChain
             handler1.AddHandler(handler2);
             handler1.AddHandler(handler3);
 
+            var resultAsync = await handler1.HandleAsync(new Request());
+            
             var result = handler1.Handle(new Request());
             
             Console.WriteLine("Hello World!");
