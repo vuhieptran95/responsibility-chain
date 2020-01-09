@@ -1,4 +1,4 @@
-﻿namespace ResponsibilityChain
+﻿namespace ResponsibilityChain.Console
 {
     public interface IResponse
     {
