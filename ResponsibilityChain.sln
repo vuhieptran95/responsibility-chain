@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResponsibilityChain", "Resp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResponsibilityChain.Test", "ResponsibilityChain.Test\ResponsibilityChain.Test.csproj", "{5C81610D-4A9E-45F4-B234-83CEBEEC4A59}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResponsibilityChain.WebApi", "ResponsibilityChain.WebApi\ResponsibilityChain.WebApi.csproj", "{42B06F6E-9A33-48BD-837D-5740ED39A325}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{5C81610D-4A9E-45F4-B234-83CEBEEC4A59}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C81610D-4A9E-45F4-B234-83CEBEEC4A59}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C81610D-4A9E-45F4-B234-83CEBEEC4A59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42B06F6E-9A33-48BD-837D-5740ED39A325}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42B06F6E-9A33-48BD-837D-5740ED39A325}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42B06F6E-9A33-48BD-837D-5740ED39A325}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42B06F6E-9A33-48BD-837D-5740ED39A325}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

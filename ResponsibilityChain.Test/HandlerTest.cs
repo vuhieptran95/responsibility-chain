@@ -19,6 +19,39 @@ namespace ResponsibilityChain.Test
             }
 
             [Fact]
+            public void AddNewHandlerToHandlerWithNextNull_NextBecomeNewHandler()
+            {
+                var handler = new Handler<Request,Response>();
+                var handler3 = new Handler3();
+                
+                handler.AddHandler(handler3);
+
+                handler.Next.Should().BeEquivalentTo(handler3);
+            }
+            
+            [Fact]
+            public void AddNewHandlerToHandlerWithNextNotNull_NewHandlerAddedToTail()
+            {
+                var handler = new Handler<Request,Response>();
+                var handler21 = new Handler21();
+                var handler3 = new Handler3();
+                
+                handler.AddHandler(handler21).AddHandler(handler3);
+
+                handler.Next.Next.Should().BeEquivalentTo(handler3);
+            }
+
+            [Fact]
+            public void WithHandlerNull_ThrowNullHandlerException()
+            {
+                var handler1 = new Handler<Request, Response>();
+
+                Func<Task> action = async() => await handler1.HandleAsync(new Request());
+
+                action.Should().ThrowExactly<NullHandlerException>();
+            }
+
+            [Fact]
             public async Task WithCorrectHandlers_RunCorrectly()
             {
                 var response = await _handler2.HandleAsync(new Request {Role = "COO"});

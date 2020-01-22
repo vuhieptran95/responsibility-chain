@@ -6,7 +6,11 @@ namespace ResponsibilityChain
     {
         public virtual Task<TResponse> HandleAsync(TRequest request)
         {
-            return Next?.HandleAsync(request);
+            if (Next == null)
+            {
+                throw new NullHandlerException($"The next handler of {nameof(Next)} is null");
+            }
+            return Next.HandleAsync(request);
         }
 
         public IHandler<TRequest, TResponse> AddHandler(IHandler<TRequest, TResponse> handler)
