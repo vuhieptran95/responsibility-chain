@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace ResponsibilityChain
 {
-    public class Handler<TRequest, TResponse> : IHandler<TRequest, TResponse>
+    public class Handler<TRequest, TResponse>
     {
         public virtual Task<TResponse> HandleAsync(TRequest request)
         {
@@ -10,10 +11,11 @@ namespace ResponsibilityChain
             {
                 throw new NullHandlerException($"The next handler of {nameof(Next)} is null");
             }
+            Console.WriteLine($"Type of Next is {Next.GetType().ToString()}");
             return Next.HandleAsync(request);
         }
 
-        public IHandler<TRequest, TResponse> AddHandler(IHandler<TRequest, TResponse> handler)
+        public Handler<TRequest, TResponse> AddHandler(Handler<TRequest, TResponse> handler)
         {
             if (Next == null)
             {
@@ -27,6 +29,6 @@ namespace ResponsibilityChain
             return Next;
         }
 
-        public IHandler<TRequest, TResponse> Next { get; set; }
+        public Handler<TRequest, TResponse> Next { get; set; }
     }
 }

@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ProjectHealthReport.Features\ProjectHealthReport.Features.csproj" />
+      <ProjectReference Include="..\ResponsibilityChain.Business\ResponsibilityChain.Business.csproj" />
+    </ItemGroup>
+
+
+</Project>
