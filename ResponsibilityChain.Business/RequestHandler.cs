@@ -19,6 +19,7 @@ namespace ResponsibilityChain.Business
             {
                 AddHandler(handler);
             }
+
             AddHandler(executionHandlerBase);
         }
     }
