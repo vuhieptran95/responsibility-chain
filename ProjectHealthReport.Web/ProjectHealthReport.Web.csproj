@@ -6,9 +6,13 @@
 
     <ItemGroup>
       <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.2" />
+      <PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />
+      <PackageReference Include="Serilog.Sinks.Seq" Version="4.0.0" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\ProjectHealthReport.Domains\ProjectHealthReport.Domains.csproj" />
       <ProjectReference Include="..\ProjectHealthReport.Features\ProjectHealthReport.Features.csproj" />
       <ProjectReference Include="..\ResponsibilityChain.Business\ResponsibilityChain.Business.csproj" />
     </ItemGroup>

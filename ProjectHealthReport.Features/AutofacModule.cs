@@ -4,6 +4,7 @@ using ResponsibilityChain;
 using ResponsibilityChain.Business;
 using ResponsibilityChain.Business.Authorizations;
 using ResponsibilityChain.Business.Executions;
+using ResponsibilityChain.Business.Logging;
 using ResponsibilityChain.Business.Validations;
 using Module = Autofac.Module;
 
@@ -28,6 +29,7 @@ namespace ProjectHealthReport.Features
             builder.RegisterGeneric(typeof(ValidationHandler<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(ExecutionHandler<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(AuthorizationExceptionHandler<,>)).InstancePerLifetimeScope();
+            builder.RegisterGeneric(typeof(LoggingHandler<,>)).InstancePerLifetimeScope();
 
             builder.RegisterAssemblyTypes(currentAssembly)
                 .AsClosedTypesOf(typeof(Handler<,>))
