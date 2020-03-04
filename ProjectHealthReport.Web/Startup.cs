@@ -56,7 +56,8 @@ namespace ProjectHealthReport.Web
                     };
                     options.Scope.Add("openid");
                     options.Scope.Add("email");
-                    options.Scope.Add("offline_access");
+                    options.Scope.Add("rights");
+                    options.Scope.Add("role");
                 });
             services.AddControllersWithViews();
         }

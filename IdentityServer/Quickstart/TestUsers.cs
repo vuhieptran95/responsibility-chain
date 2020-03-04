@@ -13,30 +13,13 @@ namespace IdentityServer
     {
         public static List<TestUser> Users = new List<TestUser>
         {
-            new TestUser{SubjectId = "AliceUniqueId", Username = "alice", Password = "alice", 
+            new TestUser{SubjectId = "pmo1", Username = "pmo1", Password = "pmo1", 
                 Claims = 
                 {
-                    new Claim(JwtClaimTypes.Name, "Alice Smith"),
-                    new Claim(JwtClaimTypes.GivenName, "Alice"),
-                    new Claim(JwtClaimTypes.FamilyName, "Smith"),
-                    new Claim(JwtClaimTypes.Email, "AliceSmith@email.com"),
-                    new Claim(JwtClaimTypes.EmailVerified, "true", ClaimValueTypes.Boolean),
-                    new Claim(JwtClaimTypes.WebSite, "http://alice.com"),
-                    new Claim(JwtClaimTypes.Address, @"{ 'street_address': 'One Hacker Way', 'locality': 'Heidelberg', 'postal_code': 69118, 'country': 'Germany' }", IdentityServer4.IdentityServerConstants.ClaimValueTypes.Json)
-                }
-            },
-            new TestUser{SubjectId = "BobUniqueId", Username = "bob", Password = "bob", 
-                Claims = 
-                {
-                    new Claim("TestClaim", "Just the test clame"),
-                    new Claim(JwtClaimTypes.Name, "Bob Smith"),
-                    new Claim(JwtClaimTypes.GivenName, "Bob"),
-                    new Claim(JwtClaimTypes.FamilyName, "Smith"),
-                    new Claim(JwtClaimTypes.Email, "BobSmith@email.com"),
-                    new Claim(JwtClaimTypes.EmailVerified, "true", ClaimValueTypes.Boolean),
-                    new Claim(JwtClaimTypes.WebSite, "http://bob.com"),
-                    new Claim(JwtClaimTypes.Address, @"{ 'street_address': 'One Hacker Way', 'locality': 'Heidelberg', 'postal_code': 69118, 'country': 'Germany' }", IdentityServer4.IdentityServerConstants.ClaimValueTypes.Json),
-                    new Claim("location", "somewhere")
+                    new Claim(JwtClaimTypes.Name, "pmo1"),
+                    new Claim(JwtClaimTypes.Role, "PMO"),
+                    new Claim(JwtClaimTypes.Email, "pmo1@phr.com"),
+                    new Claim("rights","['status:read,update', 'item:read']")
                 }
             }
         };

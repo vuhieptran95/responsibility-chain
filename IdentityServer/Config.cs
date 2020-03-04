@@ -17,7 +17,9 @@ namespace IdentityServer
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
-                new IdentityResources.Email()
+                new IdentityResources.Email(),
+                new IdentityResource("rights","rights",new string[]{"rights"}), 
+                new IdentityResource("role","role",new string[]{"role"}), 
             };
 
         public static IEnumerable<ApiResource> Apis =>
@@ -38,7 +40,7 @@ namespace IdentityServer
 
                         RedirectUris = { "http://localhost:5011/signin-oidc" },
 
-                        AlwaysIncludeUserClaimsInIdToken = true,
+                        // AlwaysIncludeUserClaimsInIdToken = true,
                         
                         AllowOfflineAccess = true,
 
@@ -47,7 +49,8 @@ namespace IdentityServer
                             IdentityServerConstants.StandardScopes.OpenId,
                             IdentityServerConstants.StandardScopes.Profile,
                             IdentityServerConstants.StandardScopes.Email,
-                            IdentityServerConstants.StandardScopes.OfflineAccess
+                            "rights",
+                            "role"
                         },
                     }
             };
