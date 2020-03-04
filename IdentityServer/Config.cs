@@ -18,8 +18,8 @@ namespace IdentityServer
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
                 new IdentityResources.Email(),
-                new IdentityResource("rights","rights",new string[]{"rights"}), 
-                new IdentityResource("role","role",new string[]{"role"}), 
+                new IdentityResource("rights", "rights", new string[] {"rights"}),
+                new IdentityResource("role", "role", new string[] {"role"}),
             };
 
         public static IEnumerable<ApiResource> Apis =>
@@ -31,29 +31,40 @@ namespace IdentityServer
             new Client[]
             {
                 new Client
+                {
+                    ClientId = "mvc",
+                    ClientSecrets = {new Secret("secret".Sha256())},
+
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequireConsent = true,
+
+                    RedirectUris = {"http://localhost:5011/signin-oidc"},
+
+                    AlwaysIncludeUserClaimsInIdToken = true,
+
+                    AllowOfflineAccess = true,
+
+                    AllowedScopes = new List<string>
                     {
-                        ClientId = "mvc",
-                        ClientSecrets = { new Secret("secret".Sha256()) },
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Email,
+                        "rights",
+                        "role"
+                    },
+                },
+                new Client()
+                {
+                    ClientId = "app",
+                    ClientSecrets = {new Secret("secret".Sha256())},
 
-                        AllowedGrantTypes = GrantTypes.Code,
-                        RequireConsent = true,
-
-                        RedirectUris = { "http://localhost:5011/signin-oidc" },
-
-                        // AlwaysIncludeUserClaimsInIdToken = true,
-                        
-                        AllowOfflineAccess = true,
-
-                        AllowedScopes = new List<string>
-                        {
-                            IdentityServerConstants.StandardScopes.OpenId,
-                            IdentityServerConstants.StandardScopes.Profile,
-                            IdentityServerConstants.StandardScopes.Email,
-                            "rights",
-                            "role"
-                        },
-                    }
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    
+                    AllowedScopes = new List<string>
+                    {
+                        IdentityServerConstants.StandardScopes.Email,
+                    },
+                }
             };
-
     }
 }
