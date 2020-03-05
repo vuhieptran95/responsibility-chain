@@ -25,6 +25,14 @@ namespace IdentityServer
         public static IEnumerable<ApiResource> Apis =>
             new ApiResource[]
             {
+                new ApiResource("api1", "api1")
+                {
+                    Scopes =
+                    {
+                        new Scope(){Name = "api1.full_access"},
+                        new Scope(){Name = "api1.read_only"}
+                    }
+                }, 
             };
 
         public static IEnumerable<Client> Clients =>
@@ -62,7 +70,8 @@ namespace IdentityServer
                     
                     AllowedScopes = new List<string>
                     {
-                        IdentityServerConstants.StandardScopes.Email,
+                        "api1.full_access",
+                        "api1.read_only"
                     },
                 }
             };
