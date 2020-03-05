@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -12,7 +13,7 @@ using ResponsibilityChain.Business;
 
 namespace ProjectHealthReport.Web.Controllers
 {
-    [Authorize]
+    
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -24,14 +25,23 @@ namespace ProjectHealthReport.Web.Controllers
             _mediator = mediator;
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer,oidc")]
         public async Task<IActionResult> Index()
         {
             var dto = await _mediator.SendAsync(new GetTestFeatureQuery());
             return View();
         }
-
-        public IActionResult Privacy()
+        
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> Index2()
         {
+            var dto = await _mediator.SendAsync(new GetTestFeatureQuery());
+            return View("Index");
+        }
+
+        public async Task<IActionResult> Privacy()
+        {
+            await HttpContext.SignOutAsync();
             return View();
         }
 

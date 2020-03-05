@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
+using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -36,6 +37,18 @@ namespace ProjectHealthReport.Web
                     options.DefaultScheme = "Cookies";
                     options.DefaultChallengeScheme = "oidc";
                 })
+                .AddIdentityServerAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme, options =>
+                {
+                    options.Authority = "http://localhost:5000";
+                    options.RequireHttpsMetadata = false;
+                    options.ApiName = "api1";
+                })
+                // .AddJwtBearer(IdentityServerAuthenticationDefaults.AuthenticationScheme, options =>
+                //     {
+                //         options.Audience = "api1";
+                //         options.Authority = "http://localhost:5000";
+                //         options.RequireHttpsMetadata = false;
+                //     })
                 .AddCookie("Cookies")
                 .AddOpenIdConnect("oidc", options =>
                 {
@@ -46,14 +59,7 @@ namespace ProjectHealthReport.Web
                     options.ResponseType = "code";
                     options.UseTokenLifetime = true;
                     options.SaveTokens = true;
-                    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-                    {
-                        RequireExpirationTime = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new RsaSecurityKey(RSAKeys.ImportPublicKey(File.ReadAllText("public.pem"))),
 
-                    };
                     options.Scope.Add("openid");
                     options.Scope.Add("email");
                     options.Scope.Add("rights");
@@ -61,7 +67,7 @@ namespace ProjectHealthReport.Web
                 });
             services.AddControllersWithViews();
         }
-        
+
         public void ConfigureContainer(ContainerBuilder builder)
         {
             builder.RegisterModule(new AutofacModule());
@@ -87,7 +93,7 @@ namespace ProjectHealthReport.Web
             app.UseRouting();
 
             app.UseAuthentication();
-            
+
             app.UseAuthorization();
 
             app.Use(async (context, next) =>

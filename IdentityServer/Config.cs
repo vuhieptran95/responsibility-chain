@@ -58,7 +58,7 @@ namespace IdentityServer
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Email,
                         "rights",
-                        "role"
+                        "role",
                     },
                 },
                 new Client()
@@ -71,7 +71,7 @@ namespace IdentityServer
                     AllowedScopes = new List<string>
                     {
                         "api1.full_access",
-                        "api1.read_only"
+                        "api1.read_only",
                     },
                 }
             };
