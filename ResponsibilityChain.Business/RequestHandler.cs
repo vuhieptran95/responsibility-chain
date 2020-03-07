@@ -9,12 +9,13 @@ namespace ResponsibilityChain.Business
     {
         public RequestHandler(
             LoggingHandler<TRequest, TResponse> loggingHandler,
-            AuthorizationHandler<TRequest, TResponse> authorizationHandlerBase,
+            AuthorizationHandlerBase<TRequest, TResponse> authorizationHandlerBase,
             ValidationHandler<TRequest, TResponse>[] validationHandlers,
             ExecutionHandler<TRequest, TResponse> executionHandlerBase)
         {
             AddHandler(loggingHandler);
             AddHandler(authorizationHandlerBase);
+            
             foreach (var handler in validationHandlers)
             {
                 AddHandler(handler);

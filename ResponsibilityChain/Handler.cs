@@ -11,7 +11,8 @@ namespace ResponsibilityChain
             {
                 throw new NullHandlerException($"The next handler of {nameof(Next)} is null");
             }
-            Console.WriteLine($"Type of Next is {Next.GetType().ToString()}");
+
+            Console.WriteLine($"Type of Next is {Next.GetType()}");
             return Next.HandleAsync(request);
         }
 
