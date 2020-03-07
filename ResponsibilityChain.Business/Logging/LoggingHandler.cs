@@ -15,7 +15,7 @@ namespace ResponsibilityChain.Business.Logging
         {
             _logger.LogInformation($"Logging request {request.GetType()} " + "{@request}", request);
             var result=  await base.HandleAsync(request);
-            _logger.LogInformation($"Logging response: {result.GetType()} " + "{@response}", result);
+            _logger.LogInformation($"Logging response: {result?.GetType()} " + "{@response}", result);
             return result;
         }
     }

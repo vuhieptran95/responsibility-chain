@@ -16,7 +16,7 @@ namespace ResponsibilityChain
             return Next.HandleAsync(request);
         }
 
-        public Handler<TRequest, TResponse> AddHandler(Handler<TRequest, TResponse> handler)
+        public void AddHandler(Handler<TRequest, TResponse> handler)
         {
             if (Next == null)
             {
@@ -24,10 +24,14 @@ namespace ResponsibilityChain
             }
             else
             {
-                Next.Next = Next.AddHandler(handler);
-            }
+                var temp = Next;
+                while (temp.Next != null)
+                {
+                    temp = temp.Next;
+                }
 
-            return Next;
+                temp.Next = handler;
+            }
         }
 
         public Handler<TRequest, TResponse> Next { get; set; }

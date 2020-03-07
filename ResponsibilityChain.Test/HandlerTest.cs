@@ -36,7 +36,8 @@ namespace ResponsibilityChain.Test
                 var handler21 = new Handler21();
                 var handler3 = new Handler3();
                 
-                handler.AddHandler(handler21).AddHandler(handler3);
+                handler.AddHandler(handler21);
+                handler.AddHandler(handler3);
 
                 handler.Next.Next.Should().BeEquivalentTo(handler3);
             }
@@ -73,7 +74,8 @@ namespace ResponsibilityChain.Test
                 var handlerBranch2 = new HandlerBranch2();
                 var handler3 = new Handler3();
                 
-                handlerBranch.AddHandler(handlerBranch1).AddHandler(handlerBranch2);
+                handlerBranch.AddHandler(handlerBranch1);
+                handlerBranch.AddHandler(handlerBranch2);
                 
                 _handler1 = new Handler1(handlerBranch);
                 _handler1.AddHandler(handler3);
@@ -98,7 +100,9 @@ namespace ResponsibilityChain.Test
                 var handlerBranch2 = new HandlerBranch2();
                 var handlerBranchException = new HandlerBranchException();
                 var handlerBranchThrowException = new Handler<Request,Response>();
-                handlerBranchThrowException.AddHandler(handlerBranch1).AddHandler(handlerBranch2).AddHandler(handlerBranchException);
+                handlerBranchThrowException.AddHandler(handlerBranch1);
+                handlerBranchThrowException.AddHandler(handlerBranch2);
+                handlerBranchThrowException.AddHandler(handlerBranchException);
 
                 var handler3 = new Handler3();
                 var handler1 = new Handler1(handlerBranchThrowException);

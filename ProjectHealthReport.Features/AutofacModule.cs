@@ -28,7 +28,7 @@ namespace ProjectHealthReport.Features
             builder.RegisterGeneric(typeof(AuthorizationHandlerBase<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(AuthorizationHandler<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(AuthorizationExceptionHandler<,>)).InstancePerLifetimeScope();
-            builder.RegisterGeneric(typeof(AuthorizationDefaultHandler<,>)).InstancePerLifetimeScope();
+            builder.RegisterGeneric(typeof(DefaultBranchHandler<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(ValidationHandler<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(ExecutionHandler<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(LoggingHandler<,>)).InstancePerLifetimeScope();

@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace ResponsibilityChain.Business.Authorizations
+namespace ResponsibilityChain
 {
-    public class AuthorizationDefaultHandler<TRequest, TResponse> : BranchHandler<TRequest, TResponse>
+    public class DefaultBranchHandler<TRequest, TResponse> : Handler<TRequest, TResponse>
     {
         public override Task<TResponse> HandleAsync(TRequest request)
         {

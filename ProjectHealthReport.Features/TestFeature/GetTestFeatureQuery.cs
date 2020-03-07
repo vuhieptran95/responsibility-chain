@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using ResponsibilityChain;
 using ResponsibilityChain.Business.Authorizations;
@@ -8,7 +9,7 @@ namespace ProjectHealthReport.Features.TestFeature
 {
     public class GetTestFeatureQuery : IRequest<GetTestFeatureDto>
     {
-        public string Role { get; set; } = "pmo";
+        public string Role { get; set; } = "coo";
         public string Name { get; set; } = "Peter";
     }
 
@@ -16,12 +17,10 @@ namespace ProjectHealthReport.Features.TestFeature
     {
         public CheckIsCoo(
             CheckIsCooPele checkIsCooPele,
-            CheckIsCooPeter checkIsCooPeter,
-            AuthorizationDefaultHandler<GetTestFeatureQuery, GetTestFeatureDto> defaultHandler)
+            CheckIsCooPeter checkIsCooPeter)
         {
             AddBranchHandler(checkIsCooPeter);
             AddBranchHandler(checkIsCooPele);
-            AddBranchHandler(defaultHandler);
         }
 
         public override async Task<GetTestFeatureDto> HandleAsync(GetTestFeatureQuery request)
@@ -29,8 +28,9 @@ namespace ProjectHealthReport.Features.TestFeature
             if (request.Role == "coo")
             {
                 Console.WriteLine("This is COO");
-                return await NextBranch.HandleAsync(request);
+                return await Branch.HandleAsync(request);
             }
+
             return await Next.HandleAsync(request);
         }
     }
@@ -48,7 +48,7 @@ namespace ProjectHealthReport.Features.TestFeature
             return base.HandleAsync(request);
         }
     }
-    
+
     public class CheckIsCooPele : BranchHandler<GetTestFeatureQuery, GetTestFeatureDto>
     {
         public override Task<GetTestFeatureDto> HandleAsync(GetTestFeatureQuery request)

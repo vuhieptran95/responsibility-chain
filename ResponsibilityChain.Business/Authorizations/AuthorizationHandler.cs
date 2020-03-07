@@ -2,6 +2,5 @@
 {
     public class AuthorizationHandler<TRequest, TResponse> : BranchHandler<TRequest, TResponse>
     {
-        
     }
 }

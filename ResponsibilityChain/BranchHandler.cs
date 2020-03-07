@@ -6,28 +6,40 @@ namespace ResponsibilityChain
     {
         public override async Task<TResponse> HandleAsync(TRequest request)
         {
-            if (NextBranch != null)
+            if (Branch != null)
             {
-                await NextBranch.HandleAsync(request);
+                await Branch.HandleAsync(request);
             }
 
             return await base.HandleAsync(request);
         }
 
-        public Handler<TRequest, TResponse> AddBranchHandler(BranchHandler<TRequest, TResponse> handler)
+        public void AddBranchHandler(Handler<TRequest, TResponse> handler)
         {
-            if (NextBranch == null)
+            var defaultBranchHandler = new DefaultBranchHandler<TRequest, TResponse>();
+            if (Branch == null)
             {
-                NextBranch = handler;
+                Branch = handler;
+                Branch.Next = defaultBranchHandler;
             }
             else
             {
-                NextBranch.Next = NextBranch.AddHandler(handler);
-            }
+                var temp = Branch;
+                while (temp.Next != null)
+                {
+                    if (temp.Next is DefaultBranchHandler<TRequest, TResponse>)
+                    {
+                        temp.Next = null;
+                        break;
+                    }
+                    temp = temp.Next;
+                }
 
-            return Next;
+                temp.Next = handler;
+                temp.Next.Next = defaultBranchHandler;
+            }
         }
 
-        public Handler<TRequest, TResponse> NextBranch { get; set; }
+        public Handler<TRequest, TResponse> Branch { get; set; }
     }
 }
