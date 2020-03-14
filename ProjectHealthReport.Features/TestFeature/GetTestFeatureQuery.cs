@@ -2,8 +2,9 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using ResponsibilityChain;
-using ResponsibilityChain.Business.Authorizations;
+using ResponsibilityChain.Business.AuthorizationConfigs;
 using ResponsibilityChain.Business.Executions;
+using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.TestFeature
 {
@@ -11,80 +12,36 @@ namespace ProjectHealthReport.Features.TestFeature
     {
         public string Role { get; set; } = "coo";
         public string Name { get; set; } = "Peter";
-    }
-
-    public class CheckIsCoo : AuthorizationHandler<GetTestFeatureQuery, GetTestFeatureDto>
-    {
-        public CheckIsCoo(
-            CheckIsCooPele checkIsCooPele,
-            CheckIsCooPeter checkIsCooPeter)
+        public int Order { get; set; } = 1;
+        
+        public class AuthorizationConfig: AuthorizationConfig<GetTestFeatureQuery, GetTestFeatureDto>
         {
-            AddBranchHandler(checkIsCooPeter);
-            AddBranchHandler(checkIsCooPele);
-        }
-
-        public override async Task<GetTestFeatureDto> HandleAsync(GetTestFeatureQuery request)
-        {
-            if (request.Role == "coo")
+            public AuthorizationConfig(RequestContext requestContext) : base(requestContext)
             {
-                Console.WriteLine("This is COO");
-                return await Branch.HandleAsync(request);
+                AccessRights.Add(("item1 item2", "read"));
+                AccessRights.Add(("item2", "update"));
             }
-
-            return await Next.HandleAsync(request);
         }
     }
+    
+    
 
-    public class CheckIsCooPeter : BranchHandler<GetTestFeatureQuery, GetTestFeatureDto>
+    public class GetTestFeatureHandlerBase : ExecutionHandlerBase<GetTestFeatureQuery, GetTestFeatureDto>
     {
+        public GetTestFeatureHandlerBase()
+        {
+        }
         public override Task<GetTestFeatureDto> HandleAsync(GetTestFeatureQuery request)
         {
-            if (request.Name == "Peter")
-            {
-                Console.WriteLine("This is COO Peter");
-                return Task.FromResult<GetTestFeatureDto>(default);
-            }
-
-            return base.HandleAsync(request);
-        }
-    }
-
-    public class CheckIsCooPele : BranchHandler<GetTestFeatureQuery, GetTestFeatureDto>
-    {
-        public override Task<GetTestFeatureDto> HandleAsync(GetTestFeatureQuery request)
-        {
-            if (request.Name == "Pele")
-            {
-                Console.WriteLine("This is COO Pele");
-                return Task.FromResult<GetTestFeatureDto>(default);
-            }
-
-            return base.HandleAsync(request);
-        }
-    }
-
-    public class CheckIsPmo : AuthorizationHandler<GetTestFeatureQuery, GetTestFeatureDto>
-    {
-        public override Task<GetTestFeatureDto> HandleAsync(GetTestFeatureQuery request)
-        {
-            if (request.Role == "pmo")
-            {
-                Console.WriteLine("This is PMO");
-                return Task.FromResult<GetTestFeatureDto>(default);
-            }
-
-            return base.HandleAsync(request);
-        }
-    }
-
-    public class GetTestFeatureQueryHandler : ExecutionHandler<GetTestFeatureQuery, GetTestFeatureDto>
-    {
-        public override Task<GetTestFeatureDto> HandleAsync(GetTestFeatureQuery request)
-        {
-            return Task.FromResult(new GetTestFeatureDto()
+            var response=(new GetTestFeatureDto()
             {
                 Name = "hiepdeptrai"
             });
+            
+            Console.WriteLine("Execute request");
+
+            // return base.HandleAsync(request);
+            return Task.FromResult(response) ;
         }
     }
 

@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using ProjectHealthReport.Features;
+using ProjectHealthReport.Web.Middlewares;
 using ResponsibilityChain.Business;
 
 namespace ProjectHealthReport.Web
@@ -41,14 +42,8 @@ namespace ProjectHealthReport.Web
                 {
                     options.Authority = "http://localhost:5000";
                     options.RequireHttpsMetadata = false;
-                    options.ApiName = "api1";
+                    options.ApiName = "phr";
                 })
-                // .AddJwtBearer(IdentityServerAuthenticationDefaults.AuthenticationScheme, options =>
-                //     {
-                //         options.Audience = "api1";
-                //         options.Authority = "http://localhost:5000";
-                //         options.RequireHttpsMetadata = false;
-                //     })
                 .AddCookie("Cookies")
                 .AddOpenIdConnect("oidc", options =>
                 {
@@ -96,6 +91,8 @@ namespace ProjectHealthReport.Web
 
             app.UseAuthorization();
 
+            app.UseMiddleware<RequestContextMiddleware>();
+            
             app.Use(async (context, next) =>
             {
                 var scope = context.RequestServices.GetService<ILifetimeScope>();

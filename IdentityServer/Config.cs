@@ -25,12 +25,13 @@ namespace IdentityServer
         public static IEnumerable<ApiResource> Apis =>
             new ApiResource[]
             {
-                new ApiResource("api1", "api1")
+                new ApiResource("phr", "Project Health Report")
                 {
                     Scopes =
                     {
-                        new Scope(){Name = "api1.full_access"},
-                        new Scope(){Name = "api1.read_only"}
+                        new Scope(){Name = "phr.item1:read"},
+                        new Scope(){Name = "phr.item2:read"},
+                        new Scope(){Name = "phr.item2:update"}
                     }
                 }, 
             };
@@ -70,8 +71,9 @@ namespace IdentityServer
                     
                     AllowedScopes = new List<string>
                     {
-                        "api1.full_access",
-                        "api1.read_only",
+                        "phr.item1:read",
+                        "phr.item2:read",
+                        "phr.item2:update"
                     },
                 }
             };

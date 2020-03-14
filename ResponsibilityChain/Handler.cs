@@ -9,7 +9,7 @@ namespace ResponsibilityChain
         {
             if (Next == null)
             {
-                throw new NullHandlerException($"The next handler of {nameof(Next)} is null");
+                throw new NullHandlerException($"The next handler of {this.GetType()} is null");
             }
 
             Console.WriteLine($"Type of Next is {Next.GetType()}");

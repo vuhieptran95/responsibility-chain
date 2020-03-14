@@ -10,7 +10,7 @@ namespace ResponsibilityChain.Business.Authorizations
             if (authorizationHandlers.Length > 1)
             {
                 var handlers = authorizationHandlers.Skip(1);
-                foreach (var handler in authorizationHandlers)
+                foreach (var handler in handlers)
                 {
                     AddBranchHandler(handler);
                 }

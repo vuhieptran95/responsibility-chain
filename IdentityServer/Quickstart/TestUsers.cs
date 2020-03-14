@@ -19,7 +19,7 @@ namespace IdentityServer
                     new Claim(JwtClaimTypes.Name, "pmo1"),
                     new Claim(JwtClaimTypes.Role, "PMO"),
                     new Claim(JwtClaimTypes.Email, "pmo1@phr.com"),
-                    new Claim("rights","status:read,update item:read")
+                    new Claim("rights","phr.item1:read phr.item2:read phr.item1:update phr.item2:update")
                 }
             }
         };

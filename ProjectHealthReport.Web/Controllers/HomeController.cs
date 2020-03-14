@@ -25,7 +25,7 @@ namespace ProjectHealthReport.Web.Controllers
             _mediator = mediator;
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer,oidc")]
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var dto = await _mediator.SendAsync(new GetTestFeatureQuery());

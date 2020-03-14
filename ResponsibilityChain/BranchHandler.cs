@@ -20,7 +20,11 @@ namespace ResponsibilityChain
             if (Branch == null)
             {
                 Branch = handler;
-                Branch.Next = defaultBranchHandler;
+
+                if (!(handler is DefaultBranchHandler<TRequest, TResponse>))
+                {
+                    Branch.Next = defaultBranchHandler;
+                }
             }
             else
             {
