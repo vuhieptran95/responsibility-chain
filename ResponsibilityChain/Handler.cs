@@ -24,13 +24,7 @@ namespace ResponsibilityChain
             }
             else
             {
-                var temp = Next;
-                while (temp.Next != null)
-                {
-                    temp = temp.Next;
-                }
-
-                temp.Next = handler;
+                Next.AddHandler(handler);
             }
         }
 
