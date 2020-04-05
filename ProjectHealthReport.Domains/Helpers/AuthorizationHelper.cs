@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ProjectHealthReport.Domains.Helpers
 {
@@ -11,37 +12,89 @@ namespace ProjectHealthReport.Domains.Helpers
         public const string RoleDeliveryManager = "Delivery Manager";
         public const string RolePMOAssistant = "PMO Assistant";
         public const string RoleCOO = "COO";
+        public const string RoleKam = "Key Account Manager";
         public const string RolePic = "Person In Charge";
+        
+        public static List<(string, string)> UserRoleList
+        {
+            get
+            {
+                var list = new List<(string, string)>();
+                list.AddRange(ProjectManagers);
+                list.AddRange(ProjectManagementOffice);
+                list.AddRange(KeyAccountManagers);
+                list.AddRange(DeliveryManagerAccounts);
+                return list;
+            }
+        }
+
+        public static List<(string, string)> ProjectManagers = new List<(string, string)>
+        {
+            ("PM1", RolePic),
+            ("PM2", RolePic),
+            ("PM3", RolePic),
+            ("PM4", RolePic),
+            ("PM5", RolePic),
+            ("PM6", RolePic),
+            ("PM7", RolePic),
+            ("PM8", RolePic),
+            ("PM9", RolePic),
+            ("PM10", RolePic),
+            ("PM11", RolePic),
+            ("PM12", RolePic),
+            ("PM13", RolePic),
+            ("PM14", RolePic),
+            ("PM15", RolePic),
+            ("PM16", RolePic),
+            ("PM17", RolePic),
+            ("PM18", RolePic),
+            ("PM19", RolePic),
+            ("PM20", RolePic),
+        };
+        
+        public static List<(string, string)> KeyAccountManagers = new List<(string, string)>
+        {
+            ("KAM1", RoleKam),
+            ("KAM2", RoleKam),
+            ("KAM3", RoleKam),
+            ("KAM4", RoleKam),
+            ("KAM5", RoleKam),
+        };
+        
+        public static List<(string, string)> ProjectManagementOffice = new List<(string, string)>
+        {
+            ("COO", RoleCOO),
+            ("PMO1", RolePMOAssistant),
+            ("PMO2", RolePMOAssistant),
+            ("PMO3", RolePMOAssistant),
+            ("PMO4", RolePMOAssistant),
+        };
+        
+        public static List<(string, string)> DeliveryManagerAccounts = new List<(string, string)>
+        {
+            ("DM1", RoleDeliveryManager),
+            ("DM2", RoleDeliveryManager),
+            ("DM3", RoleDeliveryManager),
+            ("DM4", RoleDeliveryManager),
+            ("DM5", RoleDeliveryManager),
+            ("DM6", RoleDeliveryManager),
+            ("DM7", RoleDeliveryManager),
+            ("DM8", RoleDeliveryManager),
+        };
 
         // TODO refactor & remove
         public static Dictionary<string, string> DeliveryManagers = new Dictionary<string, string>
         {
-            {"NITECO\\hau.tran", "AMS 24/7"},
-            {"NITECO\\tien.le2", "Marketing"},
-            {"NITECO\\nam.trinh", "Frey" },
-            {"NITECO\\tuan.nguyen3", "Baldur" },
-            {"NITECO\\david.dwyer", "HCMC" },
-            {"NITECO\\tung.nt", "Thor" },
-            {"NITECO\\dung.le", "Odin" },
-            {"NITECO\\giap.tran", "Tyr" },
-            {"NITECO\\son.cao2", "Tyr" },
-#if DEBUG
-            {"NITECO\\hiep.tran2", "AMS 24/7" }
-#endif
+            {"DM1", "AMS 24/7"},
+            {"DM2", "Marketing"},
+            {"DM3", "Frey"},
+            {"DM4", "Baldur"},
+            {"DM5", "HCMC"},
+            {"DM6", "Thor"},
+            {"DM7", "Odin"},
+            {"DM8", "Tyr"},
         };
 
-        public static Dictionary<string, string> DeliveryManagerEmails = new Dictionary<string, string>
-        {
-            {"AMS 24/7", "hau.tran@niteco.se"},
-            {"Marketing", "tien.le2@niteco.se"},
-            {"Frey" ,"nam.trinh@niteco.se" },
-            {"Baldur" ,"tuan.nguyen3@niteco.se"},
-            {"Tyr","giap.tran@niteco.se" },
-            {"HCMC","david.dwyer@niteco.se"},
-            {"Thor","tung.nt@niteco.se" },
-            {"Odin" ,"dung.le@niteco.se"},
-        };
-        
         public static List<string> AdministrationAcessRoles = new List<string>()
         {
             RolePMOAssistant, RoleCOO

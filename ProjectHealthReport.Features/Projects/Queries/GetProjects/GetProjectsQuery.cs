@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -26,7 +27,8 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjects
 
             public override async Task<Dto> HandleAsync(GetProjectsQuery request)
             {
-                var projects = await _dbContext.Projects.ProjectTo<Dto.ProjectDto>(_mapper.ConfigurationProvider)
+                var projects = await _dbContext.Projects.OrderByDescending(p => p.Id)
+                    .ProjectTo<Dto.ProjectDto>(_mapper.ConfigurationProvider)
                     .ToListAsync();
 
                 projects.ForEach(p =>

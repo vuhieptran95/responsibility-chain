@@ -17,7 +17,6 @@ namespace ProjectHealthReport.Domains.Domains
         public DbSet<Project> Projects { get; set; }
         public DbSet<ProjectAccess> ProjectAccesses { get; set; }
         public DbSet<ProjectStateType> ProjectStateTypes { get; set; }
-        public DbSet<Milestone> Milestones { get; set; }
         public DbSet<Status> Statuses { get; set; }
         public DbSet<QualityReport> QualityReports { get; set; }
         public DbSet<BacklogItem> BacklogItems { get; set; }
@@ -48,9 +47,6 @@ namespace ProjectHealthReport.Domains.Domains
 
             modelBuilder.Entity<ProjectAccess>()
                 .Property(pa => pa.Role).IsRequired();
-
-            modelBuilder.Entity<Milestone>()
-                .HasIndex(m => new {m.Date, m.ProjectId}).IsUnique();
 
             modelBuilder.Entity<AdditionalInfoIssues>()
                 .HasKey(ai => new {ai.IssueId, ai.AdditionalInfoId});

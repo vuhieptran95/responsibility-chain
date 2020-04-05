@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using ProjectHealthReport.Features.Projects.Commands;
 using ProjectHealthReport.Features.Projects.Queries.GetProject;
 using ProjectHealthReport.Features.Projects.Queries.GetProjects;
 using ResponsibilityChain.Business;
@@ -29,6 +30,30 @@ namespace ProjectHealthReport.Web.Controllers
         public async Task<ActionResult> GetProject([FromRoute]int id)
         {
             var dto = await _mediator.SendAsync(new GetProjectQuery(){ProjectId = id});
+
+            return Ok(dto);
+        }
+        
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> RemoveProject([FromRoute]int id)
+        {
+            var dto = await _mediator.SendAsync(new RemoveProjectCommand(){ProjectId = id});
+
+            return Ok(dto);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> AddProjectDmr([FromBody] AddProjectCommand command)
+        {
+            var dto = await _mediator.SendAsync(command);
+
+            return Created("", dto);
+        }
+
+        [HttpPut("master-data")]
+        public async Task<ActionResult> EditProjectMasterData([FromBody] EditProjectMasterDataCommand command)
+        {
+            var dto = await _mediator.SendAsync(command);
 
             return Ok(dto);
         }

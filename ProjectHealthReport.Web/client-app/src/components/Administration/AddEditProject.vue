@@ -33,13 +33,13 @@
                                 </v-col>
                                 <v-col md="4">
                                     <v-autocomplete v-model="project.keyAccountManager" label="Key Account Manager *"
-                                                    :items="nitecans"
+                                                    :items="userEmails"
                                                     :rules="requiredRule"
                                                     required/>
                                 </v-col>
                                 <v-col md="4">
                                     <v-autocomplete v-model="project.deliveryResponsibleName"
-                                                    :items="nitecans"
+                                                    :items="userEmails"
                                                     clearable
                                                     label="Delivery Responsible Name"/>
                                 </v-col>
@@ -192,7 +192,7 @@
         ];
         project = defaultProjectValue;
         divisions = [];
-        nitecans = [];
+        userEmails = [];
         vueHelper = VueHelper;
         
         get dmrRequiredNote(): string{
@@ -210,15 +210,11 @@
         }
         
         mounted() {
-            axios.get(HELPER_ENDPOINT + "nitecans").then(res => {
-                this.nitecans = res.data.map((i: any) => {
-                    return i.email;
-                })
+            axios.get(HELPER_ENDPOINT + "user-emails").then(res => {
+                this.userEmails = res.data;
             }).catch(handleAxiosError);
-            axios.get(DIVISION_ENDPOINT).then(res => {
-                this.divisions = res.data.divisions.map((i: any) => {
-                    return i.name;
-                })
+            axios.get(HELPER_ENDPOINT + "divisions").then(res => {
+                this.divisions = res.data;
             }).catch(handleAxiosError);
             axios.get(HELPER_ENDPOINT + "project-states").then(res => {
                 this.projectStates = res.data.stateTypes.map((i: any)=> {
@@ -271,7 +267,7 @@
             payload.dmrRequiredTo = payload.dmrRequiredTo ? moment(payload.dmrRequiredTo, "YYYY-MM-DD").format("YYYY-MM-DD") : undefined;
             
             if (this.project.id > 0){
-                axios.put(PROJECTS_ENDPOINT + this.project.id, payload).then(res => {
+                axios.put(PROJECTS_ENDPOINT + "master-data", payload).then(res => {
                     notify(`Project ${this.project.name} is updated`, "success");
                     setTimeout(function () {
                         router.push("/Administration/projects")

@@ -1,10 +1,9 @@
-﻿﻿using AutoMapper;
-using System;
+﻿using System;
 using System.Linq;
 using System.Reflection;
- using ProjectHealthReport.Features.Common.Mappings;
+using AutoMapper;
 
- namespace Src.Application.Common.Mappings
+namespace ProjectHealthReport.Features.Common.Mappings
 {
     public class MappingProfile : Profile
     {
