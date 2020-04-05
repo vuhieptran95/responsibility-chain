@@ -6,8 +6,10 @@
 
     <ItemGroup>
       <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
+      <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
       <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="3.1.2" />
+      <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.3" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.2" />
       <PackageReference Include="Portable.BouncyCastle" Version="1.8.6" />
       <PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />
@@ -18,6 +20,20 @@
       <ProjectReference Include="..\ProjectHealthReport.Domains\ProjectHealthReport.Domains.csproj" />
       <ProjectReference Include="..\ProjectHealthReport.Features\ProjectHealthReport.Features.csproj" />
       <ProjectReference Include="..\ResponsibilityChain.Business\ResponsibilityChain.Business.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <TypeScriptCompile Include="client-app\src\commons\User.ts" />
+      <TypeScriptCompile Include="client-app\src\components\Administration\AddEditProject.ts" />
+      <TypeScriptCompile Include="client-app\src\components\Administration\Projects.ts" />
+      <TypeScriptCompile Include="client-app\src\helpers\EndPoint.ts" />
+      <TypeScriptCompile Include="client-app\src\helpers\HandleResponse.ts" />
+      <TypeScriptCompile Include="client-app\src\helpers\VueHelper.ts" />
+      <TypeScriptCompile Include="client-app\src\main.ts" />
+      <TypeScriptCompile Include="client-app\src\plugins\vuetify.ts" />
+      <TypeScriptCompile Include="client-app\src\router\index.ts" />
+      <TypeScriptCompile Include="client-app\src\shims-tsx.d.ts" />
+      <TypeScriptCompile Include="client-app\src\shims-vue.d.ts" />
     </ItemGroup>
 
 

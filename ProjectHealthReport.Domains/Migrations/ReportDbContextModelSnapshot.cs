@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using ProjectHealthReport.Domains.Entities;
+using ProjectHealthReport.Domains.Domains;
 
 namespace ProjectHealthReport.Domains.Migrations
 {
@@ -19,7 +19,7 @@ namespace ProjectHealthReport.Domains.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("ProjectHealthReport.Domains.Entities.AdditionalInfo", b =>
+            modelBuilder.Entity("ProjectHealthReport.Domains.Domains.AdditionalInfo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -42,7 +42,7 @@ namespace ProjectHealthReport.Domains.Migrations
                     b.ToTable("AdditionalInfos");
                 });
 
-            modelBuilder.Entity("ProjectHealthReport.Domains.Entities.AdditionalInfoIssues", b =>
+            modelBuilder.Entity("ProjectHealthReport.Domains.Domains.AdditionalInfoIssues", b =>
                 {
                     b.Property<int>("IssueId")
                         .HasColumnType("int");
@@ -60,7 +60,7 @@ namespace ProjectHealthReport.Domains.Migrations
                     b.ToTable("AdditionalInfoIssues");
                 });
 
-            modelBuilder.Entity("ProjectHealthReport.Domains.Entities.AuditLog", b =>
+            modelBuilder.Entity("ProjectHealthReport.Domains.Domains.AuditLog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -93,7 +93,7 @@ namespace ProjectHealthReport.Domains.Migrations
                     b.ToTable("AuditLogs");
                 });
 
-            modelBuilder.Entity("ProjectHealthReport.Domains.Entities.BacklogItem", b =>
+            modelBuilder.Entity("ProjectHealthReport.Domains.Domains.BacklogItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -131,107 +131,7 @@ namespace ProjectHealthReport.Domains.Migrations
                     b.ToTable("BacklogItems");
                 });
 
-            modelBuilder.Entity("ProjectHealthReport.Domains.Entities.DivisionAvailableResource", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("Billable")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Division")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Level")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Nonbillable")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ResourceEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Role")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("YearWeek")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DivisionAvailableResources");
-                });
-
-            modelBuilder.Entity("ProjectHealthReport.Domains.Entities.DivisionConcern", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Concerns")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Division")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("YearWeek")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DivisionConcerns");
-                });
-
-            modelBuilder.Entity("ProjectHealthReport.Domains.Entities.DivisionFutureResource", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Division")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Level")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Number")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Project")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("YearWeek")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DivisionFutureResources");
-                });
-
-            modelBuilder.Entity("ProjectHealthReport.Domains.Entities.DivisionProjectStatus", b =>
+            modelBuilder.Entity("ProjectHealthReport.Domains.Domains.DivisionProjectStatus", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -264,74 +164,35 @@ namespace ProjectHealthReport.Domains.Migrations
                     b.ToTable("DivisionProjectStatuses");
                 });
 
-            modelBuilder.Entity("ProjectHealthReport.Domains.Entities.DivisionSoonAvailableResource", b =>
+            modelBuilder.Entity("ProjectHealthReport.Domains.Domains.DoDReport", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("Availability")
+                    b.Property<int>("MetricId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Division")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Level")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ResourceEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Role")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("StartingAvailableDate")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
 
                     b.Property<int>("YearWeek")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<string>("LinkToReport")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("DivisionSoonAvailableResources");
-                });
+                    b.Property<string>("ReportFileName")
+                        .HasColumnType("nvarchar(max)");
 
-            modelBuilder.Entity("ProjectHealthReport.Domains.Entities.DivisionUpdatedResource", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Division")
+                    b.Property<string>("Value")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("OnBoardDate")
-                        .HasColumnType("datetime2");
+                    b.HasKey("MetricId", "ProjectId", "YearWeek");
 
-                    b.Property<string>("ResourceEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.HasIndex("ProjectId");
 
-                    b.Property<string>("Role")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("YearWeek")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DivisionUpdatedResources");
+                    b.ToTable("DoDReports");
                 });
 
-            modelBuilder.Entity("ProjectHealthReport.Domains.Entities.Issue", b =>
+            modelBuilder.Entity("ProjectHealthReport.Domains.Domains.Issue", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -355,7 +216,59 @@ namespace ProjectHealthReport.Domains.Migrations
                     b.ToTable("Issues");
                 });
 
-            modelBuilder.Entity("ProjectHealthReport.Domains.Entities.Milestone", b =>
+            modelBuilder.Entity("ProjectHealthReport.Domains.Domains.Metric", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SelectValues")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Tool")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ToolOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Unit")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ValueType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Metrics");
+                });
+
+            modelBuilder.Entity("ProjectHealthReport.Domains.Domains.MetricStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MetricStatuses");
+                });
+
+            modelBuilder.Entity("ProjectHealthReport.Domains.Domains.Milestone", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -385,7 +298,7 @@ namespace ProjectHealthReport.Domains.Migrations
                     b.ToTable("Milestones");
                 });
 
-            modelBuilder.Entity("ProjectHealthReport.Domains.Entities.Project", b =>
+            modelBuilder.Entity("ProjectHealthReport.Domains.Domains.Project", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -396,16 +309,29 @@ namespace ProjectHealthReport.Domains.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("DeliveryResponsibleName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Division")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("DmrRequired")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("DmrRequiredFrom")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DmrRequiredTo")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("DodRequired")
+                        .HasColumnType("bit");
+
                     b.Property<string>("JIRALink")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("KeyAccountManager")
@@ -414,13 +340,19 @@ namespace ProjectHealthReport.Domains.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("NextMileStoneDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhrRequired")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("PhrRequiredFrom")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("PlatformVersion")
                         .HasColumnType("nvarchar(max)");
@@ -431,8 +363,10 @@ namespace ProjectHealthReport.Domains.Migrations
                     b.Property<DateTime>("ProjectStartDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("ProjectStateTypeId")
+                        .HasColumnType("int");
+
                     b.Property<string>("SourceCodeLink")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("SprintEndDate")
@@ -446,13 +380,57 @@ namespace ProjectHealthReport.Domains.Migrations
                     b.HasIndex("Code")
                         .IsUnique();
 
-                    b.HasIndex("Name")
-                        .IsUnique();
+                    b.HasIndex("ProjectStateTypeId");
+
+                    b.HasIndex("Id", "DeliveryResponsibleName")
+                        .IsUnique()
+                        .HasFilter("[DeliveryResponsibleName] IS NOT NULL");
 
                     b.ToTable("Projects");
                 });
 
-            modelBuilder.Entity("ProjectHealthReport.Domains.Entities.QualityReport", b =>
+            modelBuilder.Entity("ProjectHealthReport.Domains.Domains.ProjectAccess", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId", "Role", "Email")
+                        .IsUnique();
+
+                    b.ToTable("ProjectAccesses");
+                });
+
+            modelBuilder.Entity("ProjectHealthReport.Domains.Domains.ProjectStateType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("State")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProjectStateTypes");
+                });
+
+            modelBuilder.Entity("ProjectHealthReport.Domains.Domains.QualityReport", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -490,12 +468,18 @@ namespace ProjectHealthReport.Domains.Migrations
                     b.ToTable("QualityReports");
                 });
 
-            modelBuilder.Entity("ProjectHealthReport.Domains.Entities.Status", b =>
+            modelBuilder.Entity("ProjectHealthReport.Domains.Domains.Status", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Milestone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("MilestoneDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
@@ -523,7 +507,40 @@ namespace ProjectHealthReport.Domains.Migrations
                     b.ToTable("Statuses");
                 });
 
-            modelBuilder.Entity("ProjectHealthReport.Domains.Entities.WeeklyReportStatus", b =>
+            modelBuilder.Entity("ProjectHealthReport.Domains.Domains.Threshold", b =>
+                {
+                    b.Property<int>("MetricId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MetricStatusId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsRange")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal?>("LowerBound")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("LowerBoundOperator")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("UpperBound")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("UpperBoundOperator")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("MetricId", "MetricStatusId");
+
+                    b.HasIndex("MetricStatusId");
+
+                    b.ToTable("Thresholds");
+                });
+
+            modelBuilder.Entity("ProjectHealthReport.Domains.Domains.WeeklyReportStatus", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -549,78 +566,126 @@ namespace ProjectHealthReport.Domains.Migrations
                     b.ToTable("WeeklyReportStatuses");
                 });
 
-            modelBuilder.Entity("ProjectHealthReport.Domains.Entities.AdditionalInfo", b =>
+            modelBuilder.Entity("ProjectHealthReport.Domains.Domains.AdditionalInfo", b =>
                 {
-                    b.HasOne("ProjectHealthReport.Domains.Entities.Project", "Project")
+                    b.HasOne("ProjectHealthReport.Domains.Domains.Project", "Project")
                         .WithMany("AdditionalInfos")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ProjectHealthReport.Domains.Entities.AdditionalInfoIssues", b =>
+            modelBuilder.Entity("ProjectHealthReport.Domains.Domains.AdditionalInfoIssues", b =>
                 {
-                    b.HasOne("ProjectHealthReport.Domains.Entities.AdditionalInfo", "AdditionalInfo")
+                    b.HasOne("ProjectHealthReport.Domains.Domains.AdditionalInfo", "AdditionalInfo")
                         .WithMany("AdditionalInfoIssues")
                         .HasForeignKey("AdditionalInfoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ProjectHealthReport.Domains.Entities.Issue", "Issue")
+                    b.HasOne("ProjectHealthReport.Domains.Domains.Issue", "Issue")
                         .WithMany("AdditionalInfoIssues")
                         .HasForeignKey("IssueId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ProjectHealthReport.Domains.Entities.BacklogItem", b =>
+            modelBuilder.Entity("ProjectHealthReport.Domains.Domains.BacklogItem", b =>
                 {
-                    b.HasOne("ProjectHealthReport.Domains.Entities.Project", "Project")
+                    b.HasOne("ProjectHealthReport.Domains.Domains.Project", "Project")
                         .WithMany("BacklogItems")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ProjectHealthReport.Domains.Entities.DivisionProjectStatus", b =>
+            modelBuilder.Entity("ProjectHealthReport.Domains.Domains.DivisionProjectStatus", b =>
                 {
-                    b.HasOne("ProjectHealthReport.Domains.Entities.Project", "Project")
+                    b.HasOne("ProjectHealthReport.Domains.Domains.Project", "Project")
                         .WithMany("DivisionProjectStatuses")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ProjectHealthReport.Domains.Entities.Milestone", b =>
+            modelBuilder.Entity("ProjectHealthReport.Domains.Domains.DoDReport", b =>
                 {
-                    b.HasOne("ProjectHealthReport.Domains.Entities.Project", "Project")
+                    b.HasOne("ProjectHealthReport.Domains.Domains.Metric", "Metric")
+                        .WithMany("DoDReports")
+                        .HasForeignKey("MetricId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectHealthReport.Domains.Domains.Project", "Project")
+                        .WithMany("DoDReports")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ProjectHealthReport.Domains.Domains.Milestone", b =>
+                {
+                    b.HasOne("ProjectHealthReport.Domains.Domains.Project", "Project")
                         .WithMany("Milestones")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ProjectHealthReport.Domains.Entities.QualityReport", b =>
+            modelBuilder.Entity("ProjectHealthReport.Domains.Domains.Project", b =>
                 {
-                    b.HasOne("ProjectHealthReport.Domains.Entities.Project", "Project")
+                    b.HasOne("ProjectHealthReport.Domains.Domains.ProjectStateType", "ProjectStateType")
+                        .WithMany("Projects")
+                        .HasForeignKey("ProjectStateTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ProjectHealthReport.Domains.Domains.ProjectAccess", b =>
+                {
+                    b.HasOne("ProjectHealthReport.Domains.Domains.Project", "Project")
+                        .WithMany("ProjectAccesses")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ProjectHealthReport.Domains.Domains.QualityReport", b =>
+                {
+                    b.HasOne("ProjectHealthReport.Domains.Domains.Project", "Project")
                         .WithMany("QualityReports")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ProjectHealthReport.Domains.Entities.Status", b =>
+            modelBuilder.Entity("ProjectHealthReport.Domains.Domains.Status", b =>
                 {
-                    b.HasOne("ProjectHealthReport.Domains.Entities.Project", "Project")
+                    b.HasOne("ProjectHealthReport.Domains.Domains.Project", "Project")
                         .WithMany("Statuses")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ProjectHealthReport.Domains.Entities.WeeklyReportStatus", b =>
+            modelBuilder.Entity("ProjectHealthReport.Domains.Domains.Threshold", b =>
                 {
-                    b.HasOne("ProjectHealthReport.Domains.Entities.Project", "Project")
+                    b.HasOne("ProjectHealthReport.Domains.Domains.Metric", "Metric")
+                        .WithMany("Thresholds")
+                        .HasForeignKey("MetricId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectHealthReport.Domains.Domains.MetricStatus", "MetricStatus")
+                        .WithMany("Thresholds")
+                        .HasForeignKey("MetricStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ProjectHealthReport.Domains.Domains.WeeklyReportStatus", b =>
+                {
+                    b.HasOne("ProjectHealthReport.Domains.Domains.Project", "Project")
                         .WithMany("WeeklyReportStatuses")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)

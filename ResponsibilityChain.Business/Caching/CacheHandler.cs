@@ -34,12 +34,6 @@ namespace ResponsibilityChain.Business.Caching
 
     public class CacheConfig<TRequest>
     {
-        private readonly RequestContext _requestContext;
-
-        public CacheConfig(RequestContext requestContext)
-        {
-            _requestContext = requestContext;
-        }
         public bool IsEnabled { get; protected set; } = false;
         public string CacheKey { get; set; }
 
