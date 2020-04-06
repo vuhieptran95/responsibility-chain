@@ -10,6 +10,10 @@ export const defaultReportViewSettings = {
 };
 
 const VueHelper = {
+    valueTypeText: "Text",
+    valueTypeNumber: "Number",
+    valueTypeSelect: "Select",
+    
     range: function(start: number, end: number){
         let array = [];
         for (let i = start; i<= end; i++){

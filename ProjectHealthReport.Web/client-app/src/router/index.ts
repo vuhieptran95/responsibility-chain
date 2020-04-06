@@ -5,34 +5,47 @@ import AddEditProject from "@/components/Administration/AddEditProject.vue";
 import Administration from "@/components/Administration/Administration.vue";
 import Projects from "@/components/Administration/Projects.vue";
 import ProjectsPhr from "@/components/Administration/ProjectsPhr.vue";
+import AddEditProjects from "@/components/PhrProjects/AddEditProjects.vue";
+import WeeklyReport from "@/components/PhrWeeklyReports/WeeklyReport.vue";
+import DoDAdmin from "@/components/DoDs/DoDAdmin.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: '/',
-    name: 'Administration',
+    name: 'administration',
     component: Projects
   },
   {
-    path: '/administration',
-    name: 'Administration',
+    path: '/dmr/administration/projects',
+    name: 'DMRProjects',
     component: Projects
   },
   {
-    path: '/administration/projects',
-    name: 'Projects',
-    component: Projects
-  },
-  {
-    path: '/administration/projects/phr',
-    name: 'Projects',
+    path: '/phr/administration/projects',
+    name: 'PHRProjects',
     component: ProjectsPhr
   },
   {
-    path: '/administration/projects/add-edit',
-    name: 'AddEditProject',
+    path: '/dmr/administration/projects/add-edit',
+    name: 'DMRAddEditProject',
     component: AddEditProject
+  },
+  {
+    path: '/phr/projects/add-edit',
+    name: 'PHRAddEditProject',
+    component: AddEditProjects
+  },
+  {
+    path: '/phr/weekly-reports/add-edit',
+    name: 'PHRAddEditWeeklyReports',
+    component: WeeklyReport
+  },
+  {
+    path: '/phr/administration/dods',
+    name: 'PHRDod',
+    component: DoDAdmin
   }
 ]
 

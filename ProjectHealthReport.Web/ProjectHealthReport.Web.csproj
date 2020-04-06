@@ -27,8 +27,13 @@
       <TypeScriptCompile Include="client-app\src\commons\User.ts" />
       <TypeScriptCompile Include="client-app\src\components\Administration\AddEditProject.ts" />
       <TypeScriptCompile Include="client-app\src\components\Administration\Projects.ts" />
+      <TypeScriptCompile Include="client-app\src\components\DoDs\DoDAdmin.ts" />
+      <TypeScriptCompile Include="client-app\src\components\PhrProjects\AddEditProjects.ts" />
+      <TypeScriptCompile Include="client-app\src\components\PhrWeeklyReports\WeeklyReport.ts" />
+      <TypeScriptCompile Include="client-app\src\helpers\AuthorizationHelper.ts" />
       <TypeScriptCompile Include="client-app\src\helpers\EndPoint.ts" />
       <TypeScriptCompile Include="client-app\src\helpers\HandleResponse.ts" />
+      <TypeScriptCompile Include="client-app\src\helpers\RouteHelper.ts" />
       <TypeScriptCompile Include="client-app\src\helpers\VueHelper.ts" />
       <TypeScriptCompile Include="client-app\src\main.ts" />
       <TypeScriptCompile Include="client-app\src\plugins\vuetify.ts" />

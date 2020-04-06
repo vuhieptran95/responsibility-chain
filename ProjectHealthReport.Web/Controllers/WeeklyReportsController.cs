@@ -28,7 +28,7 @@ namespace ProjectHealthReport.Web.Controllers
             _mapper = mapper;
         }
         
-        [Route("api/WeeklyReports")]
+        [Route("api/WeeklyReports/phr")]
         [ApiExceptionFilter]
         [HttpGet]
         public async Task<IActionResult> AddEditWeeklyReport([FromQuery] GetWeeklyReportPhrQuery weeklyReportQuery)
@@ -38,7 +38,7 @@ namespace ProjectHealthReport.Web.Controllers
             return Ok(dto);
         }
 
-        [Route("api/WeeklyReports")]
+        [Route("api/WeeklyReports/phr")]
         [ApiExceptionFilter]
         [HttpPost]
         public async Task<IActionResult> AddEditWeeklyReport([FromBody] AddEditWeeklyReportPhrCommand command)
