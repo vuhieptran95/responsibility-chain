@@ -21,5 +21,6 @@ module.exports = {
     '@typescript-eslint/no-use-before-define': 'off',
     '@typescript-eslint/no-empty-function': 'off',
     'prefer-spread': 'off',
+    'vue/no-use-v-if-with-v-for': 'off',
   }
 }

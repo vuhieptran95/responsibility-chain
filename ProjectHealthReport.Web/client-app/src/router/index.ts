@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import AddEditProject from "@/components/Administration/AddEditProject.vue";
 import Administration from "@/components/Administration/Administration.vue";
 import Projects from "@/components/Administration/Projects.vue";
+import ProjectsPhr from "@/components/Administration/ProjectsPhr.vue";
 
 Vue.use(VueRouter);
 
@@ -22,6 +23,11 @@ const routes = [
     path: '/administration/projects',
     name: 'Projects',
     component: Projects
+  },
+  {
+    path: '/administration/projects/phr',
+    name: 'Projects',
+    component: ProjectsPhr
   },
   {
     path: '/administration/projects/add-edit',

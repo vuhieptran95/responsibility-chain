@@ -18,5 +18,15 @@ namespace ProjectHealthReport.Domains.Helpers
             var power = Convert.ToDecimal(Math.Pow(10, decimalPlaces));
             return Math.Floor(i * power) / power;
         }
+        
+        public static bool ValidateLink(string link)
+        {
+            Uri uriResult = null;
+            return Uri.TryCreate(link, UriKind.Absolute, out uriResult)
+                   && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+        }
+
+        public const string IssueStatusOpen = "Open";
+        public const string IssueStatusClosed = "Closed";
     }
 }

@@ -4,77 +4,125 @@ using ProjectHealthReport.Domains.Domains;
 
 namespace ProjectHealthReport.Domains.Exceptions
 {
-    public enum ErrorCode
+    public enum DomainError
     {
-        D001,D002,D003,D004,D005,D006,D007,D008,D009,D010,D011,D012,D013
+        D001,
+        D002,
+        D003,
+        D004,
+        D005,
+        D006,
+        D007,
+        D008,
+        D009,
+        D010,
+        D011,
+        D012,
+        D013,
+        D014,
+        D015,
+        D016,
+        D017,
+        D018,
+        D019,
+        D020,
+        D021
     }
-    
+
     public class DomainExceptionCode
     {
-        public static void Throw(ErrorCode errorCode, object domainInstance)
+        public static void Throw(DomainError domainError, object domainInstance)
         {
-            Throw(errorCode, domainInstance, null, null);
+            Throw(domainError, domainInstance, null, null);
         }
-        
-        public static void Throw(ErrorCode errorCode, object domainInstance, object relatedInstance)
+
+        public static void Throw(DomainError domainError, object domainInstance, object relatedInstance)
         {
-            Throw(errorCode, domainInstance, relatedInstance, null);
+            Throw(domainError, domainInstance, relatedInstance, null);
         }
-        
-        public static void Throw(ErrorCode errorCode, object domainInstance, IEnumerable<object> relatedInstances)
+
+        public static void Throw(DomainError domainError, object domainInstance, IEnumerable<object> relatedInstances)
         {
-            Throw(errorCode, domainInstance, null, relatedInstances);
+            Throw(domainError, domainInstance, null, relatedInstances);
         }
-        
-        public static void Throw(ErrorCode errorCode, object domainInstance, object relatedInstance, IEnumerable<object> relatedInstances)
+
+        public static void Throw(DomainError domainError, object domainInstance, object relatedInstance,
+            IEnumerable<object> relatedInstances)
         {
-            var error = ErrorCode(errorCode);
+            var error = ErrorCode(domainError);
             if (relatedInstance != null)
             {
-                throw new DomainException(errorCode.ToString(), error.Item1, error.Item2, domainInstance, relatedInstance);
+                throw new DomainException(domainError.ToString(), error.Item1, error.Item2, domainInstance,
+                    relatedInstance);
             }
 
             if (relatedInstances != null)
             {
-                throw new DomainException(errorCode.ToString(), error.Item1, error.Item2, domainInstance, relatedInstances);
+                throw new DomainException(domainError.ToString(), error.Item1, error.Item2, domainInstance,
+                    relatedInstances);
             }
-            
-            throw new DomainException(errorCode.ToString(), error.Item1, error.Item2, domainInstance);
+
+            throw new DomainException(domainError.ToString(), error.Item1, error.Item2, domainInstance);
         }
-        
+
         /// <summary>
         /// (message, domainType)
         /// </summary>
-        /// <param name="errorCode"></param>
+        /// <param name="domainError"></param>
         /// <returns>(message, domainType)</returns>
         /// <exception cref="Exception"></exception>
-        public static (string, Type) ErrorCode(ErrorCode errorCode)
+        public static (string, Type) ErrorCode(DomainError domainError)
         {
-            switch (errorCode)
+            switch (domainError)
             {
-                case Exceptions.ErrorCode.D001:
+                case Exceptions.DomainError.D001:
                     return ("Project's Code is invalid: maximum 3 characters (number and letter only)",
                         typeof(Project));
-                case Exceptions.ErrorCode.D002:
+                case Exceptions.DomainError.D002:
                     return ("Project's Division is invalid: incorrect organization information", typeof(Project));
-                case Exceptions.ErrorCode.D003:
+                case Exceptions.DomainError.D003:
                     return ("Project's Key Account Manager is invalid: incorrect organization information",
                         typeof(Project));
-                case Exceptions.ErrorCode.D004:
+                case Exceptions.DomainError.D004:
                     return ("Project's Delivery Responsible Name is invalid: incorrect organization information",
                         typeof(Project));
-                case Exceptions.ErrorCode.D005: return ("Project's Jira link if exists, must be an url", typeof(Project));
-                case Exceptions.ErrorCode.D006: return ("Project's Source code link if exists, must be an url", typeof(Project));
-                case Exceptions.ErrorCode.D007: return ("Project's End Date if exists, must bigger than Start Date", typeof(Project));
-                case Exceptions.ErrorCode.D008: return ("If project's PhrRequired, PhrRequiredFrom must not be null", typeof(Project));
-                case Exceptions.ErrorCode.D009: return ("If project's DmrRequired, DmrRequiredFrom must not be null", typeof(Project));
-                case Exceptions.ErrorCode.D010:
+                case Exceptions.DomainError.D005:
+                    return ("Project's Jira link if exists, must be an url", typeof(Project));
+                case Exceptions.DomainError.D006:
+                    return ("Project's Source code link if exists, must be an url", typeof(Project));
+                case Exceptions.DomainError.D007:
+                    return ("Project's End Date if exists, must bigger than Start Date", typeof(Project));
+                case Exceptions.DomainError.D008:
+                    return ("If project's PhrRequired, PhrRequiredFrom must not be null", typeof(Project));
+                case Exceptions.DomainError.D009:
+                    return ("If project's DmrRequired, DmrRequiredFrom must not be null", typeof(Project));
+                case Exceptions.DomainError.D010:
                     return (
                         "If both project's DmrRequiredFrom and DmrRequiredTo are specified, To value must be bigger than From value",
                         typeof(Project));
-                case Exceptions.ErrorCode.D011: return ("If Project's DodRequired, PhrRequired must be true", typeof(Project));
-                case Exceptions.ErrorCode.D012: return ("If project's not PhrRequired, cannot set PhrRequiredFrom", typeof(Project));
-                case Exceptions.ErrorCode.D013: return ("If project's PhrRequired, Delivery Responsible Name must not be null", typeof(Project));
+                case Exceptions.DomainError.D011:
+                    return ("If Project's DodRequired, PhrRequired must be true", typeof(Project));
+                case Exceptions.DomainError.D012:
+                    return ("If project's not PhrRequired, cannot set PhrRequiredFrom", typeof(Project));
+                case Exceptions.DomainError.D013:
+                    return ("If project's PhrRequired, Delivery Responsible Name must not be null", typeof(Project));
+                case Exceptions.DomainError.D014:
+                    return ("Project Access Email is invalid: incorrect organization information",
+                        typeof(ProjectAccess));
+                case Exceptions.DomainError.D015: return ("Project Access Role is invalid", typeof(ProjectAccess));
+                case Exceptions.DomainError.D016:
+                    return ("DoDReport File must have both link and file name", typeof(DoDReport));
+                case Exceptions.DomainError.D017:
+                    return ("If DoDReport File link exists, must be an url", typeof(DoDReport));
+                case Exceptions.DomainError.D018:
+                    return ("If Metric ValueType is Number, DodReport Value must be Number", typeof(DoDReport));
+                case Exceptions.DomainError.D019:
+                    return ("If Metric Value Type is Select, DodReport Value must be one of Metrics's SelectValues",
+                        typeof(DoDReport));
+                case Exceptions.DomainError.D020:
+                    return ("If Project's not DodRequired, DodReport cannot be inserted", typeof(DoDReport));
+                case Exceptions.DomainError.D021:
+                    return ("Issue Status can only be Open/Closed", typeof(AdditionalInfoIssues));
 
                 default: throw new Exception("Invalid error code!");
             }

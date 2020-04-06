@@ -101,7 +101,6 @@ namespace ProjectHealthReport.Features.Projects.Commands
             {
                 var projectInDb = await _dbContext.Projects.AsNoTracking().SingleAsync(p => p.Id == request.Id);
                 var projectProxy = _mapper.Map<ProjectProxy>(projectInDb);
-                var phrRequiredProxy = projectProxy.PhrRequired;
 
                 if (request.PhrRequired && !projectProxy.PhrRequired)
                 {

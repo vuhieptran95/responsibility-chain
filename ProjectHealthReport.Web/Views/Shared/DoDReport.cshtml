@@ -1,0 +1,190 @@
+﻿﻿@using ProjectHealthReport
+@using ProjectHealthReport.Domains.Helpers
+@using ProjectHealthReport.Features.DoDs
+@using ProjectHealthReport.Features.DoDs.GetDoDReport
+@using ProjectHealthReport.Features.DoDs.Metrics.GetMetrics
+@inject ResponsibilityChain.Business.IMediator Mediator
+@model ProjectHealthReport.Features.WeeklyReports.Queries.GetGeneratedWeeklyReportPhr.GetGeneratedWeeklyReportPhrQuery.Dto
+
+
+@if (Model.WeeklyReport.DodRequired)
+{
+    <div>
+        <h6>Non Functional DoDs</h6>
+
+        @if (Model.WeeklyReport.Metrics.Count > 0)
+        {
+            var yearWeeks = Model.WeeklyReport.Metrics
+                .SelectMany(m => m.YearWeekValues, (m, y) => (m.Id, m.ValueType, y))
+                .GroupBy(v => v.y.YearWeek)
+                .Select(g => new
+                {
+                    YearWeek = g.Key,
+                    Items = g.ToList()
+                }).ToList();
+
+            var metricGroups = await Mediator.SendAsync(new GetMetricsQuery());
+            var thresholds = metricGroups.MetricGroups
+                .SelectMany(g => g.Metrics, (g, m) => m)
+                .SelectMany(m => m.Thresholds, (m, t) => t)
+                .ToList();
+
+            var reportLinkDto = await Mediator.SendAsync(new GetDoDReportLinksQuery()
+            {
+                ProjectId = Model.WeeklyReport.ProjectId,
+                YearWeek = TimeHelper.CalculateYearWeek(Model.WeeklyReport.SelectedYear, Model.WeeklyReport.SelectedWeek),
+                NumberOfWeek = Model.WeeklyReport.NumberOfWeek
+            });
+
+            var yearWeekClass = yearWeeks.OrderByDescending(i => i.YearWeek).Select(ywv =>
+            {
+                if (ywv.Items.All(i => i.y.Value == null)) return (ywv.YearWeek, "");
+                var listColorClass = ywv.Items.Select(i => ClassifyColor(i.Id, i.ValueType, i.y.Value)).ToList();
+                if (listColorClass.Any(cc => cc.Item1 == DoDHelper.StatusRed)) return (ywv.YearWeek, "status-red");
+                if (listColorClass.Any(cc => cc.Item1 == DoDHelper.StatusYellow)) return (ywv.YearWeek, "status-yellow");
+                return (ywv.YearWeek, "status-green");
+            });
+
+
+            (string, string) ClassifyColor(int metricId, string valueType, string value)
+            {
+                var defaultValue = ("", "");
+                GetMetricsQuery.Dto.ThresholdDto threshold = null;
+                if (string.IsNullOrEmpty(value))
+                {
+                    return defaultValue;
+                }
+                if (valueType == "Number")
+                {
+                    threshold = thresholds
+                        .FirstOrDefault(t => t.MetricId == metricId
+                                             && ConvertOperators((t.LowerBound, t.LowerBoundOperator, value, t.UpperBoundOperator, t.UpperBound)));
+                }
+                else if (valueType == "Select")
+                {
+                    threshold = thresholds.FirstOrDefault(t => t.MetricId == metricId && t.Value == value);
+                }
+
+                var color = "";
+                if (threshold != null)
+                {
+                    color = threshold.MetricStatusName;
+                }
+
+                switch (color)
+                {
+                    case DoDHelper.StatusGreen:
+                        return (DoDHelper.StatusGreen,"status-text-green");
+
+                    case DoDHelper.StatusYellow:
+                        return (DoDHelper.StatusYellow, "status-text-yellow");
+
+                    case DoDHelper.StatusRed:
+                        return (DoDHelper.StatusRed,"status-text-red");
+
+                    default:
+                        return defaultValue;
+                }
+            }
+
+            bool ConvertOperators((decimal?, string, string, string, decimal?) valueTuple)
+            {
+                if (valueTuple.Item1 == null || valueTuple.Item2 == null || valueTuple.Item3 == null || valueTuple.Item4 == null || valueTuple.Item5 == null)
+                {
+                    return false;
+                }
+
+                var lowerBound = Convert.ToDecimal(valueTuple.Item1);
+                var upperBound = Convert.ToDecimal(valueTuple.Item5);
+                var value = Convert.ToDecimal(valueTuple.Item3);
+                return valueTuple switch
+                {
+                    (_, "<", _, "<", _) => (lowerBound < value && value < upperBound),
+                    (_, "<=", _, "<", _) => (lowerBound <= value && value < upperBound),
+                    (_, ">", _, ">", _) => (lowerBound > value && value > upperBound),
+                    (_, ">=", _, ">", _) => (lowerBound >= value && value > upperBound),
+                    (_, "<", _, "<=", _) => (lowerBound < value && value <= upperBound),
+                    (_, ">", _, ">=", _) => (lowerBound > value && value >= upperBound),
+                    (_, "<=", _, "<=", _) => (lowerBound <= value && value <= upperBound),
+                    (_, ">=", _, ">=", _) => (lowerBound >= value && value >= upperBound),
+                    _ => false
+                    };
+            }
+
+            ;
+            
+            
+
+
+            <table class="table table-bordered">
+                <style>
+                    .status-text-red{
+                            color: red;
+                            font-weight: bold;
+                        }
+                    
+                        .status-red {
+                            color: white;
+                            background-color: red;
+                            font-weight: bold;
+                        }
+                    
+                        .status-text-green{
+                            color: #5d7745;
+                            font-weight: bold;
+                        }
+                    
+                        .status-green {
+                            color: white;
+                            background-color: #5d7745;
+                            font-weight: bold;
+                        }
+                    
+                        .status-text-yellow{
+                            color: #c89800;
+                            font-weight: bold;
+                        }
+                    
+                        .status-yellow {
+                            color: black;
+                            background-color: yellow;
+                            font-weight: bold;
+                        }
+                </style>
+                <tbody class="text-left">
+                <tr class="text-center">
+                    <td class="text-center" width="25%" colspan="2"></td>
+                    @foreach (var ywc in yearWeekClass)
+                    {
+                        <td class="text-center @ywc.Item2">@TimeHelper.CalculateYear(ywc.YearWeek) - @TimeHelper.CalculateWeek(ywc.YearWeek)</td>
+                    }
+                </tr>
+                @foreach (var metric in Model.WeeklyReport.Metrics)
+                {
+                    <tr class="text-center">
+                        @if (metric.Count > 0)
+                        {
+                            var unit = string.IsNullOrEmpty(metric.Unit) ? "" : $" ({metric.Unit})";
+                            <td style="vertical-align: middle; text-align: center;" rowspan="@metric.Count">@metric.Tool</td>
+                        }
+                        <td class="text-left">@metric.Name (@metric.Unit)</td>
+                        @foreach (var yw in metric.YearWeekValues)
+                        {
+                            var classes = @ClassifyColor(metric.Id, metric.ValueType, yw.Value);
+                            <td class="@classes.Item2">@yw.Value</td>
+                        }
+                    </tr>
+                }
+                <tr>
+                    <td style="vertical-align: middle; text-align: center;" colspan="2">DoD Report Link</td>
+                    @foreach (var link in reportLinkDto.ReportLinks)
+                    {
+                        <td class="text-center"><a href="@link.LinkToReport" target="_blank">@link.ReportFileName</a></td>
+                    }
+                </tr>
+                </tbody>
+            </table>
+        }
+
+    </div>
+}

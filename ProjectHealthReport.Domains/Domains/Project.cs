@@ -35,7 +35,7 @@ namespace ProjectHealthReport.Domains.Domains
             List<QualityReport> qualityReports = null, List<AdditionalInfo> additionalInfos = null,
             List<DivisionProjectStatus> divisionProjectStatuses = null,
             List<WeeklyReportStatus> weeklyReportStatuses = null, List<ProjectAccess> projectAccesses = null,
-            List<DoDReport> doDReports = null)
+            List<DoDReport> doDReports = null) : this()
         {
             Id = id;
             Name = name;
@@ -115,7 +115,7 @@ namespace ProjectHealthReport.Domains.Domains
         {
             if (!PhrRequired)
             {
-                DomainExceptionCode.Throw(ErrorCode.D012, this);
+                DomainExceptionCode.Throw(DomainError.D012, this);
             }
             PhrRequiredFrom = dateTime;
             ValidatePhrRequired();
@@ -134,47 +134,42 @@ namespace ProjectHealthReport.Domains.Domains
         {
             if (!AuthorizationHelper.DeliveryManagers.Select(i => i.Value).Contains(Division))
             {
-                DomainExceptionCode.Throw(ErrorCode.D002, this);
+                DomainExceptionCode.Throw(DomainError.D002, this);
             }
 
             if (!userRoleList.Where(i => i.Item2 == AuthorizationHelper.RoleKam).Select(i => i.Item1)
                 .Contains(KeyAccountManager))
             {
-                DomainExceptionCode.Throw(ErrorCode.D003, this);
+                DomainExceptionCode.Throw(DomainError.D003, this);
             }
 
             if (DeliveryResponsibleName != null && !userRoleList.Where(i => i.Item2 == AuthorizationHelper.RolePic).Select(i => i.Item1)
                 .Contains(DeliveryResponsibleName))
             {
-                DomainExceptionCode.Throw(ErrorCode.D004, this);
+                DomainExceptionCode.Throw(DomainError.D004, this);
             }
         }
 
         public void ValidateLinkProperties()
         {
-            if (JIRALink != null && !ValidateLink(JIRALink))
+            if (JIRALink != null && !MiscHelper.ValidateLink(JIRALink))
             {
-                DomainExceptionCode.Throw(ErrorCode.D005, this);
+                DomainExceptionCode.Throw(DomainError.D005, this);
             }
 
-            if (SourceCodeLink != null && !ValidateLink(SourceCodeLink))
+            if (SourceCodeLink != null && !MiscHelper.ValidateLink(SourceCodeLink))
             {
-                DomainExceptionCode.Throw(ErrorCode.D006, this);
+                DomainExceptionCode.Throw(DomainError.D006, this);
             }
 
-            bool ValidateLink(string link)
-            {
-                Uri uriResult = null;
-                return Uri.TryCreate(link, UriKind.Absolute, out uriResult)
-                       && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
-            }
+            
         }
 
         public void ValidateProjectEndDate()
         {
             if (ProjectEndDate.HasValue && ProjectEndDate.Value > ProjectStartDate)
             {
-                DomainExceptionCode.Throw(ErrorCode.D007, this);
+                DomainExceptionCode.Throw(DomainError.D007, this);
             }
         }
 
@@ -182,17 +177,17 @@ namespace ProjectHealthReport.Domains.Domains
         {
             if (PhrRequired && !PhrRequiredFrom.HasValue)
             {
-                DomainExceptionCode.Throw(ErrorCode.D008, this);
+                DomainExceptionCode.Throw(DomainError.D008, this);
             }
 
             if (PhrRequired && DeliveryResponsibleName == null)
             {
-                DomainExceptionCode.Throw(ErrorCode.D013, this);
+                DomainExceptionCode.Throw(DomainError.D013, this);
             }
 
             if (DodRequired && !PhrRequired)
             {
-                DomainExceptionCode.Throw(ErrorCode.D011, this);
+                DomainExceptionCode.Throw(DomainError.D011, this);
             }
         }
 
@@ -200,13 +195,13 @@ namespace ProjectHealthReport.Domains.Domains
         {
             if (DmrRequired && !DmrRequiredFrom.HasValue)
             {
-                DomainExceptionCode.Throw(ErrorCode.D009, this);
+                DomainExceptionCode.Throw(DomainError.D009, this);
             }
 
             if (DmrRequired && DmrRequiredFrom.HasValue && DmrRequiredTo.HasValue &&
                 DmrRequiredFrom.Value > DmrRequiredTo.Value)
             {
-                DomainExceptionCode.Throw(ErrorCode.D010, this);
+                DomainExceptionCode.Throw(DomainError.D010, this);
             }
         }
     }

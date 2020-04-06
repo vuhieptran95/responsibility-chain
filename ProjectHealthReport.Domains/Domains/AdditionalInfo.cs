@@ -9,10 +9,20 @@ namespace ProjectHealthReport.Domains.Domains
             AdditionalInfoIssues = new HashSet<AdditionalInfoIssues>();
         }
 
-        public int Id { get; set; }
-        public int ProjectId { get; set; }
+        public AdditionalInfo(int id, int projectId, int yearWeek, Project project,
+            ICollection<AdditionalInfoIssues> additionalInfoIssues) : this()
+        {
+            Id = id;
+            ProjectId = projectId;
+            YearWeek = yearWeek;
+            Project = project;
+            AdditionalInfoIssues = additionalInfoIssues ?? AdditionalInfoIssues;
+        }
+
+        public int Id { get; private set; }
+        public int ProjectId { get; private set; }
         public int YearWeek { get; set; }
-        public Project Project { get; set; }
-        public ICollection<AdditionalInfoIssues> AdditionalInfoIssues { get; set; }
+        public Project Project { get; private set; }
+        public ICollection<AdditionalInfoIssues> AdditionalInfoIssues { get; private set; }
     }
 }

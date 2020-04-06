@@ -1,0 +1,378 @@
+﻿@using ProjectHealthReport.Domains.Helpers
+@model ProjectHealthReport.Features.WeeklyReports.Queries.GetGeneratedWeeklyReportPhr.GetGeneratedWeeklyReportPhrQuery.Dto
+@{
+    Layout = "_LayoutPDF";
+    ViewData["Title"] = "PHR_" + $"{Model.Project.Name}_{Model.WeeklyReport.SelectedYear}_{Model.WeeklyReport.SelectedWeek}";
+}
+
+@{
+    var latestRemainingItems = 0;
+    var latestRemainingStoryPoints = 0;
+
+    var numberOfBacklogItemRow = 0;
+    var totalItemsAdded = 0;
+    var totalItemsDone = 0;
+    var totalStoryPointsAdded = 0;
+    var totalStoryPointsDone = 0;
+
+    var k = 0;
+
+    if (Model.WeeklyReport.BacklogItemListReadOnly.Count > 0)
+    {
+        latestRemainingItems = Model.WeeklyReport.BacklogItemListReadOnly.Last().ItemsRemaining;
+        latestRemainingStoryPoints = Model.WeeklyReport.BacklogItemListReadOnly.Last().StoryPointsRemaining.HasValue ? Model.WeeklyReport.BacklogItemListReadOnly.Last().StoryPointsRemaining.Value : 0;
+
+        if (Model.WeeklyReport.BacklogItemListReadOnly.Any(i => i.Week == 0))
+        {
+            numberOfBacklogItemRow = Model.WeeklyReport.BacklogItemListReadOnly.Count - 1;
+            k = 1;
+        }
+        else
+        {
+            numberOfBacklogItemRow = Model.WeeklyReport.BacklogItemListReadOnly.Count;
+        }
+
+        totalItemsAdded = Model.WeeklyReport.BacklogItemListReadOnly.Skip(k).Sum(i => i.ItemsAdded);
+        totalItemsDone = Model.WeeklyReport.BacklogItemListReadOnly.Skip(k).Sum(i => i.ItemsDone);
+        totalStoryPointsAdded = Model.WeeklyReport.BacklogItemListReadOnly.Skip(k).Sum(i => i.StoryPointsAdded.Value);
+        totalStoryPointsDone = Model.WeeklyReport.BacklogItemListReadOnly.Skip(k).Sum(i => i.StoryPointsDone.Value);
+    }
+
+    var latestRemainingBugs = 0;
+
+    if (Model.WeeklyReport.QualityReportListReadOnly.Count > 0)
+    {
+        latestRemainingBugs = Model.WeeklyReport.QualityReportListReadOnly.Last().RemainingBugs;
+    }
+
+    var averageItemsAdded = "";
+    var averageStoryPointsAdded = "";
+    var averageItemsDone = "";
+    var averageStoryPointsDone = "";
+
+    if (Model.WeeklyReport.BacklogItemListReadOnly.Count > 2)
+    {
+        var listToCalculate = Model.WeeklyReport.BacklogItemListReadOnly.ToList();
+
+        if (Model.WeeklyReport.BacklogItemListReadOnly.Any(i => i.Week == 0))
+        {
+            listToCalculate = Model.WeeklyReport.BacklogItemListReadOnly.Skip(1).ToList();
+        }
+
+        averageItemsAdded = MiscHelper.RoundDown((listToCalculate.Sum(i => i.ItemsAdded) / (double) listToCalculate.Count)).ToString();
+        averageStoryPointsAdded = MiscHelper.RoundDown((listToCalculate.Sum(i => i.StoryPointsAdded) / (double) listToCalculate.Count).Value).ToString();
+        averageItemsDone = MiscHelper.RoundDown((listToCalculate.Sum(i => i.ItemsDone) / (double) listToCalculate.Count)).ToString();
+        averageStoryPointsDone = MiscHelper.RoundDown((listToCalculate.Sum(i => i.StoryPointsDone) / (double) listToCalculate.Count).Value).ToString();
+    }
+}
+
+
+<div class="text-center mb-4">
+    <h1 class="display-5">@Model.Project.Name</h1>
+    <p>Week: @Model.WeeklyReport.SelectedYear - @Model.WeeklyReport.SelectedWeek (@Model.WeeklyReport.FirstWorkingDateOfWeek.ToString("dd. MMM") - @Model.WeeklyReport.LastWorkingDateOfWeek.ToString("dd. MMM"))</p>
+</div>
+
+
+<style>
+    .table th, .table td {
+        padding: 0;
+        padding-left: 0.3rem;
+    }
+
+    .form-control-plaintext {
+        padding: 0.2rem;
+    }
+
+    .report__project-status {
+        padding: 6px;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+    }
+
+    body {
+        font-size: 13px;
+    }
+    
+    #tableAdditionalInfo td{
+            padding: 0.2rem 0.4rem
+    }
+</style>
+
+<div>
+    <h6>Project Information</h6>
+
+    <table class="table table-bordered">
+        <tr>
+            <td width="23%">
+                <input class="form-control-plaintext" type="text" value="Project Name" readonly/>
+            </td>
+            <td>
+                <input class="form-control-plaintext" type="text" value="@Model.Project.Name" readonly/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input class="form-control-plaintext" type="text" value="Project Code" readonly/>
+            </td>
+            <td>
+                <input class="form-control-plaintext" type="text" value="@Model.Project.Code" readonly/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input class="form-control-plaintext" type="text" value="Key Account Manager" readonly/>
+            </td>
+            <td>
+                <input class="form-control-plaintext" type="text" value="@Model.Project.KeyAccountManager" readonly/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input class="form-control-plaintext" type="text" value="Division" readonly/>
+            </td>
+            <td>
+                <input class="form-control-plaintext" type="text" value="@Model.Project.Division" readonly/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input class="form-control-plaintext" type="text" value="Delivery Responsible Name" readonly/>
+            </td>
+            <td>
+                <input class="form-control-plaintext" type="text" value="@Model.Project.DeliveryResponsibleName" readonly/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input class="form-control-plaintext" type="text" value="JIRA link" readonly/>
+            </td>
+            <td>
+                <input class="form-control-plaintext" type="text" value="@Model.Project.JIRALink" readonly/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input class="form-control-plaintext" type="text" value="Source code link" readonly/>
+            </td>
+            <td>
+                <input class="form-control-plaintext" type="text" value="@Model.Project.SourceCodeLink" readonly/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input class="form-control-plaintext" type="text" value="Project Start Date" readonly/>
+            </td>
+            <td>
+                <input class="form-control-plaintext" type="text" value="@Model.Project.ProjectStartDate.ToString("dd MMM yyyy")" readonly/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input class="form-control-plaintext" type="text" value="Project End Date" readonly/>
+            </td>
+            <td>
+                <input class="form-control-plaintext" type="text" value="@Model.Project.ProjectEndDate?.ToString("dd MMM yyyy")" readonly/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input class="form-control-plaintext" type="text" value="Status" readonly/>
+            </td>
+            <td>
+                <input class="form-control-plaintext" type="text" value="@Model.WeeklyReport?.Status?.StatusColor" readonly/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input class="form-control-plaintext" type="text" value="Platform/ Version" readonly/>
+            </td>
+            <td>
+                <input class="form-control-plaintext" type="text" value="@Model.Project.PlatformVersion" readonly/>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="mb-3">
+    <h6>Project Status</h6>
+    @if (!string.IsNullOrEmpty(Model.WeeklyReport?.Status?.ProjectStatus))
+    {
+        <div class="report__project-status">@Html.Raw(Model.WeeklyReport?.Status?.ProjectStatus)</div>
+    }
+</div>
+
+<div class="mb-3">
+    @if (Model.WeeklyReport?.Status?.MilestoneDate != null)
+    {
+        <h6>Milestone: @Model.WeeklyReport?.Status?.MilestoneDate?.ToString("dd MMM yyyy")</h6>
+    }
+    else
+    {
+        <h6>Milestone</h6>
+    }
+    @if (!string.IsNullOrEmpty(Model.WeeklyReport?.Status?.Milestone))
+    {
+        <div class="report__project-status">@Html.Raw(Model.WeeklyReport?.Status?.Milestone) </div>
+    }
+</div>
+
+<div class="mb-3">
+    <h6>Retrospective Feedback</h6>
+    @if (!string.IsNullOrEmpty(Model.WeeklyReport?.Status?.RetrospectiveFeedBack))
+    {
+        <div class="report__project-status">@Html.Raw(Model.WeeklyReport?.Status?.RetrospectiveFeedBack) </div>
+    }
+
+</div>
+
+<div>
+    <h6>Backlog items</h6>
+
+    <table id="tableBacklogItems" data-latest-remaining-items="@latestRemainingItems" data-latest-remaining-story-points="@latestRemainingStoryPoints" data-number-of-row="@numberOfBacklogItemRow" data-total-items-added="@totalItemsAdded" data-total-items-done="@totalItemsDone" data-total-story-points-added="@totalStoryPointsAdded" data-total-story-points-done="@totalStoryPointsDone" class="table table-bordered">
+        <tbody class="text-right">
+        <tr class="text-center">
+            <th rowspan="2">Week</th>
+            <th colspan="3">New Items Added this week</th>
+            <th colspan="2">Items Done this week</th>
+            <th colspan="2">Remaining in Backlog</th>
+        </tr>
+        <tr class="text-center">
+            <th class="font-weight-normal">Sprint</th>
+            <th class="font-weight-normal">Items</th>
+            <th class="font-weight-normal">Story Points </th>
+            <th class="font-weight-normal">Items</th>
+            <th class="font-weight-normal">Story Points </th>
+            <th class="font-weight-normal">Items</th>
+            <th class="font-weight-normal">Story Points</th>
+        </tr>
+        @foreach (var item in Model.WeeklyReport.BacklogItemListReadOnly)
+        {
+            <tr>
+                @if (item.Week == 0)
+                {
+                    <td class="text-center" width="9%">Initial</td>
+                }
+                else
+                {
+                    <td class="text-center" width="9%">@item.Year - @item.Week</td>
+                }
+                @if (item.Sprint == 0)
+                {
+                    <td width="13%"></td>
+                }
+                else
+                {
+                    <td width="13%">@item.Sprint</td>
+                }
+                <td width="13%">@item.ItemsAdded</td>
+                <td width="13%">@item.StoryPointsAdded</td>
+                <td width="13%">@item.ItemsDone</td>
+                <td width="13%">@item.StoryPointsDone</td>
+                <td width="13%">@item.ItemsRemaining</td>
+                <td width="13%">@item.StoryPointsRemaining</td>
+            </tr>
+        }
+        <tr>
+            <td class="text-center">Average</td>
+            <td></td>
+            <td class="avgItemsAdded">@averageItemsAdded</td>
+            <td class="avgStoryPointsAdded">@averageStoryPointsAdded</td>
+            <td class="avgItemsDone">@averageItemsDone</td>
+            <td class="avgStoryPointsDone">@averageStoryPointsDone</td>
+            <td></td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+<div>
+    <h6>Quality Report</h6>
+
+    <table id="tableQualityReport" data-latest-remaining-bugs="@latestRemainingBugs" class="table table-bordered">
+        <tbody class="text-right">
+        <tr class="text-center">
+            <th class="text-center" rowspan="2">Week</th>
+            <th class="text-center" colspan="4">New bugs</th>
+            <th class="text-center" rowspan="2">Done bugs</th>
+            <th class="text-center" rowspan="2">Re-open bugs</th>
+            <th class="text-center" rowspan="2">Remaining bugs</th>
+        </tr>
+        <tr class="text-center">
+            <th class="font-weight-normal text-center">Total</th>
+            <th class="font-weight-normal text-center">Critical</th>
+            <th class="font-weight-normal text-center">Major</th>
+            <th class="font-weight-normal text-center">Minor</th>
+        </tr>
+        @foreach (var item in Model.WeeklyReport.QualityReportListReadOnly)
+        {
+            <tr>
+                <td class="text-center" width="9%">@item.Year - @item.Week</td>
+                <td width="13%">@item.NewBugs</td>
+                <td width="13%">@item.CriticalBugs</td>
+                <td width="13%">@item.MajorBugs</td>
+                <td width="13%">@item.MinorBugs</td>
+                <td width="13%">@item.DoneBugs</td>
+                <td width="13%">@item.ReOpenBugs</td>
+                <td width="13%">@item.RemainingBugs</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+<partial name="DoDReport" model="Model"/>
+
+<div>
+    <h6>Risk/Issue/Impediment</h6>
+
+    <table id="tableAdditionalInfo" data-selected-year="@Model.WeeklyReport.SelectedYear" data-selected-week="@Model.WeeklyReport.SelectedWeek" data-property-name="AdditionalInfos" class="table table-bordered">
+        <tbody class="text-left">
+        <tr class="text-center">
+            <th>Week</th>
+            <th>Item</th>
+            <th>Impact</th>
+            <th>Action</th>
+            <th>Open/Closed</th>
+        </tr>
+        @foreach (var item in Model.WeeklyReport.AdditionalInfoListReadOnly)
+        {
+            <tr>
+                <td class="text-center" width="9%">@item.Year - @item.Week</td>
+                <td width="26%">@item.Item</td>
+                <td width="26%">@item.Impact</td>
+                <td width="26%">@item.Action</td>
+                <td class="text-center" width="13%">@item.Status</td>
+            </tr>
+        }
+        @foreach (var item in Model.WeeklyReport.AdditionalInfos)
+        {
+            <tr>
+                <td class="text-center" width="9%">@TimeHelper.CalculateYear(item.OpenedYearWeek) - @TimeHelper.CalculateWeek(item.OpenedYearWeek)</td>
+                <td width="26%">@item.Item</td>
+                <td width="26%">@item.Impact</td>
+                <td width="26%">@item.Action</td>
+                <td class="text-center" width="13%">@item.Status</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <h6>Note</h6>
+    @if (!string.IsNullOrEmpty(Model.Project?.Note))
+    {
+        <div class="mb-3 report__project-status">
+            @Html.Raw(Model.Project?.Note)
+        </div>
+    }
+    <p style="margin-bottom:0.5rem">* This report displays data of week @Model.WeeklyReport.SelectedYear - @Model.WeeklyReport.SelectedWeek and @Model.WeeklyReport.NumberOfWeek previous weeks.</p>
+    <p style="margin-bottom:0.5rem">* Closed items older than @Model.WeeklyReport.NumberOfWeekNotShowClosedItem weeks are not listed.</p>
+    <p style="margin-bottom:0.5rem">* Initial values are not included in Average calculation.</p>
+    @if (Model?.WeeklyReport?.Status?.MilestoneDate == null || string.IsNullOrEmpty(Model?.WeeklyReport?.Status?.Milestone))
+    {
+        <p style="margin-bottom:0.5rem">* This project doesn't have milestone this week</p>
+    }
+</div>

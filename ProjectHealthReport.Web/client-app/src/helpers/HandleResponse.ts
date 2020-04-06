@@ -3,7 +3,7 @@ import "./notify"
 
 export function handleAxiosError(error: any) {
     // @ts-ignore
-    // $.notify(error.message, "error");
+    $.notify(error.message, "error");
     if (error.response.data.error) {
         // @ts-ignore
         $.notify(error.response.data.error, {autoHide: false, className: 'error'});
@@ -21,4 +21,9 @@ export function handleAxiosError(error: any) {
 export function notify(message: string, type: string){
     // @ts-ignore
     $.notify(message, type)
+}
+
+export function notifyWithOption(message: string, option: any) {
+    // @ts-ignore
+    $.notify(message, option)
 }

@@ -1,7 +1,7 @@
 ﻿import moment from "moment"
 import _ from "lodash"
 
-const defaultReportViewSettings = {
+export const defaultReportViewSettings = {
     projectId: 0,
     year: 0,
     week: 0,

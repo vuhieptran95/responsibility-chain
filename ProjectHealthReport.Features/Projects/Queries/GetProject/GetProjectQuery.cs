@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -61,6 +62,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProject
             public string KeyAccountManager { get; set; }
             public string DeliveryResponsibleName { get; set; }
             public BacklogItemDto BacklogItem { get; set; }
+            public IEnumerable<ProjectAccessDto> ProjectAccesses { get; set; }
             public string PlatformVersion { get; set; }
 
             public string JIRALink { get; set; }
@@ -74,6 +76,14 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProject
                 public int Id { get; set; }
                 public int ItemsAdded { get; set; }
                 public int? StoryPointsAdded { get; set; }
+            }
+            
+            public class ProjectAccessDto : IMapFrom<ProjectAccess>
+            {
+                public int Id { get; set; }
+                public int ProjectId { get; set; }
+                public string Email { get; set; }
+                public string Role { get; set; }
             }
         }
     }

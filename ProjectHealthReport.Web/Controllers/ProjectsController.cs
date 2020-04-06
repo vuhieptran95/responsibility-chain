@@ -2,13 +2,17 @@
 using Microsoft.AspNetCore.Mvc;
 using ProjectHealthReport.Features.Projects.Commands;
 using ProjectHealthReport.Features.Projects.Queries.GetProject;
+using ProjectHealthReport.Features.Projects.Queries.GetProjectPhrWithReportYearWeeksAndStatuses;
 using ProjectHealthReport.Features.Projects.Queries.GetProjects;
+using ProjectHealthReport.Features.Projects.Queries.GetProjectsPhrWithWeeklyStatuses;
+using ProjectHealthReport.Web.Helpers;
 using ResponsibilityChain.Business;
 
 namespace ProjectHealthReport.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ApiExceptionFilter]
     public class ProjectsController : Controller
     {
         private readonly IMediator _mediator;
@@ -26,10 +30,26 @@ namespace ProjectHealthReport.Web.Controllers
             return Ok(dto);
         }
 
+        [HttpGet("phr/projects-with-weekly-status/year-week/{yearWeek}")]
+        public async Task<ActionResult> GetProjectsWithWeeklyStatusQuery([FromRoute]int yearWeek)
+        {
+            var dto = await _mediator.SendAsync(new GetProjectsPhrWithWeeklyStatusesQuery{YearWeek = yearWeek});
+
+            return Ok(dto);
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult> GetProject([FromRoute]int id)
         {
             var dto = await _mediator.SendAsync(new GetProjectQuery(){ProjectId = id});
+
+            return Ok(dto);
+        }
+
+        [HttpGet("phr/project-with-yearweeks-statuses/{projectId}")]
+        public async Task<ActionResult> GetProjectPhrWithReportYearWeeksAndStatuses(int projectId)
+        {
+            var dto = await _mediator.SendAsync(new GetProjectPhrWithReportYearWeeksAndStatusesQuery{ProjectId = projectId});
 
             return Ok(dto);
         }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ProjectHealthReport.Domains.Domains
 {
@@ -9,11 +10,22 @@ namespace ProjectHealthReport.Domains.Domains
             AdditionalInfoIssues = new HashSet<AdditionalInfoIssues>();
         }
 
-        public int Id { get; set; }
-        public string Item { get; set; }
-        public string Impact { get; set; }
-        public string Action { get; set; }
-        public int OpenedYearWeek { get; set; }
-        public ICollection<AdditionalInfoIssues> AdditionalInfoIssues { get; set; }
+        public Issue(int id, string item, string impact, string action, int openedYearWeek,
+            ICollection<AdditionalInfoIssues> additionalInfoIssues) : this()
+        {
+            Id = id;
+            Item = item;
+            Impact = impact;
+            Action = action;
+            OpenedYearWeek = openedYearWeek;
+            AdditionalInfoIssues = additionalInfoIssues ?? AdditionalInfoIssues;
+        }
+
+        public int Id { get; private set; }
+        public string Item { get; private set; }
+        public string Impact { get; private set; }
+        public string Action { get; private set; }
+        public int OpenedYearWeek { get; private set; }
+        public ICollection<AdditionalInfoIssues> AdditionalInfoIssues { get; private set; }
     }
 }
