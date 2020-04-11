@@ -7,7 +7,6 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Helpers;
-using ProjectHealthReport.Features.Common.Mappings;
 using ResponsibilityChain;
 using ResponsibilityChain.Business.Executions;
 

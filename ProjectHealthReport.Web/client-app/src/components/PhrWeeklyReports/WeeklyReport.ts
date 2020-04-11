@@ -34,6 +34,7 @@ export interface Status {
     milestone: string;
     week: number;
     year: number;
+    yearWeek: number;
 }
 
 export interface BacklogItem {
@@ -45,6 +46,7 @@ export interface BacklogItem {
     storyPointsDone: number | null;
     itemsRemaining: number;
     storyPointsRemaining: number;
+    yearWeek: number;
     week: number;
     year: number;
 }
@@ -58,6 +60,7 @@ export interface QualityReport {
     doneBugs: number;
     remainingBugs: number;
     reOpenBugs: number;
+    yearWeek: number;
     week: number;
     year: number;
 }
@@ -163,6 +166,7 @@ export const defaultReport: Report = {
         retrospectiveFeedBack: "",
         milestoneDate: null,
         milestone: "",
+        yearWeek: 0,
         week: 0,
         year: 0
     },
@@ -175,6 +179,7 @@ export const defaultReport: Report = {
         storyPointsDone: 0,
         itemsRemaining: 0,
         storyPointsRemaining: 0,
+        yearWeek: 0,
         week: 0,
         year: 0
     },
@@ -187,6 +192,7 @@ export const defaultReport: Report = {
         doneBugs: 0,
         remainingBugs: 0,
         reOpenBugs: 0,
+        yearWeek: 0,
         week: 0,
         year: 0
     },

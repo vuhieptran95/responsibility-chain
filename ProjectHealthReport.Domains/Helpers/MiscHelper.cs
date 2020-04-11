@@ -28,5 +28,7 @@ namespace ProjectHealthReport.Domains.Helpers
 
         public const string IssueStatusOpen = "Open";
         public const string IssueStatusClosed = "Closed";
+        
+        public const string UserRoleListCtor = "userRoleList";
     }
 }

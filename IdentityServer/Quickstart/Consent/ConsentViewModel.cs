@@ -4,7 +4,7 @@
 
 using System.Collections.Generic;
 
-namespace IdentityServer
+namespace IdentityServer.Quickstart.Consent
 {
     public class ConsentViewModel : ConsentInputModel
     {

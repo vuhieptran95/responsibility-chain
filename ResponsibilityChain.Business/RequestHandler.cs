@@ -13,17 +13,15 @@ namespace ResponsibilityChain.Business
     public class RequestHandler<TRequest, TResponse> : Handler<TRequest, TResponse>
     {
         public RequestHandler(
-            PreRequestHandler<TRequest, TResponse> preRequestHandler,
             LoggingHandler<TRequest, TResponse> loggingHandler,
             AuthorizationConfig<TRequest, TResponse> authorizationConfig,
             AuthorizationHandlerBase<TRequest, TResponse> authorizationHandlerBase,
             ValidationHandler<TRequest, TResponse>[] validationHandlers,
             EventsHandler<TRequest, TResponse> eventsHandler,
-            PostRequestHandler<TRequest, TResponse> postRequestHandler,
             CacheHandler<TRequest, TResponse> cacheHandler,
+            PostRequestHandler<TRequest, TResponse> postRequestHandler,
             ExecutionHandlerBase<TRequest, TResponse> executionHandlerBase)
         {
-            AddHandler(preRequestHandler);
             AddHandler(loggingHandler);
             AddHandler(authorizationConfig);
             AddHandler(authorizationHandlerBase);
@@ -34,8 +32,8 @@ namespace ResponsibilityChain.Business
             }
             
             AddHandler(eventsHandler);
-            AddHandler(postRequestHandler);
             AddHandler(cacheHandler);
+            AddHandler(postRequestHandler);
             AddHandler(executionHandlerBase);
             
             // AddHandler(postProcessorHandlerBase);

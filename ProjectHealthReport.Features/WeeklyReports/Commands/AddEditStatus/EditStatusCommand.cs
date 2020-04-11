@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ProjectHealthReport.Domains.Domains;
-using ProjectHealthReport.Features.Common.Mappings;
+using ProjectHealthReport.Domains.Mappings;
 using ResponsibilityChain;
 using ResponsibilityChain.Business.Executions;
 
@@ -20,9 +20,10 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditStatus
         public string Milestone { get; set; }
         public int YearWeek { get; set; }
 
-        public void Mapping(Profile profile)
+        public void MappingFrom(Profile profile)
         {
             profile.CreateMap<Status, EditStatusCommand>();
+            profile.CreateMap<EditStatusCommand, EditStatusCommand>();
             profile.CreateMap<EditStatusCommand, Status>()
                 .ConstructUsing(cmd => new Status(cmd.Id, cmd.ProjectId, cmd.StatusColor, cmd.ProjectStatus,
                     cmd.RetrospectiveFeedBack, cmd.MilestoneDate, cmd.Milestone, cmd.YearWeek, null));
@@ -41,7 +42,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditStatus
 
             public override async Task<int> HandleAsync(EditStatusCommand request)
             {
-                var statusInDb = await _dbContext.Statuses.SingleAsync(s => s.Id == request.Id);
+                var statusInDb = await _dbContext.Statuses.AsNoTracking().SingleAsync(s => s.Id == request.Id);
                 var statusProxy = _mapper.Map<EditStatusCommand>(statusInDb);
                 _mapper.Map(request, statusProxy);
 

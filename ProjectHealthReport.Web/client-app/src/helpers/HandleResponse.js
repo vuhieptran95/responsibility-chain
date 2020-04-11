@@ -2,8 +2,8 @@ import $ from "jquery";
 import "./notify";
 export function handleAxiosError(error) {
     // @ts-ignore
-    $.notify(error.message, "error");
-    if (error.response.data.error) {
+    $.notify(error?.message, "error");
+    if (error.response.data && error.response.data.error) {
         // @ts-ignore
         $.notify(error.response.data.error, { autoHide: false, className: 'error' });
     }

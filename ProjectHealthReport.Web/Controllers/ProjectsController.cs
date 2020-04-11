@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ProjectHealthReport.Features.Projects.Commands;
 using ProjectHealthReport.Features.Projects.Queries.GetProject;
+using ProjectHealthReport.Features.Projects.Queries.GetProjectIndexPhr;
 using ProjectHealthReport.Features.Projects.Queries.GetProjectPhrWithReportYearWeeksAndStatuses;
 using ProjectHealthReport.Features.Projects.Queries.GetProjects;
 using ProjectHealthReport.Features.Projects.Queries.GetProjectsPhrWithWeeklyStatuses;
@@ -27,6 +28,14 @@ namespace ProjectHealthReport.Web.Controllers
         {
             var dto = await _mediator.SendAsync(new GetProjectsQuery());
 
+            return Ok(dto);
+        }
+
+        [HttpGet("phr/project-index")]
+        public async Task<ActionResult> GetProjectsIndexPhr()
+        {
+            var dto = await _mediator.SendAsync(new GetProjectIndexPhrQuery());
+            
             return Ok(dto);
         }
 
@@ -72,6 +81,14 @@ namespace ProjectHealthReport.Web.Controllers
 
         [HttpPut("master-data")]
         public async Task<ActionResult> EditProjectMasterData([FromBody] EditProjectMasterDataCommand command)
+        {
+            var dto = await _mediator.SendAsync(command);
+
+            return Ok(dto);
+        }
+
+        [HttpPut("non-master-data")]
+        public async Task<ActionResult> EditProjectNonMasterData([FromBody] EditProjectNonMasterDataCommand command)
         {
             var dto = await _mediator.SendAsync(command);
 

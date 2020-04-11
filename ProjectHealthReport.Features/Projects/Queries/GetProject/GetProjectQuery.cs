@@ -6,7 +6,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using ProjectHealthReport.Domains.Domains;
-using ProjectHealthReport.Features.Common.Mappings;
+using ProjectHealthReport.Domains.Mappings;
 using ProjectHealthReport.Features.Projects.Queries.GetProjects;
 using ResponsibilityChain;
 using ResponsibilityChain.Business.Executions;
@@ -59,6 +59,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProject
             public DateTime? DmrRequiredFrom { get; set; }
             public DateTime? DmrRequiredTo { get; set; }
             public int ProjectStateTypeId { get; set; }
+            public string ProjectState { get; set; }
             public string KeyAccountManager { get; set; }
             public string DeliveryResponsibleName { get; set; }
             public BacklogItemDto BacklogItem { get; set; }
@@ -84,6 +85,12 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProject
                 public int ProjectId { get; set; }
                 public string Email { get; set; }
                 public string Role { get; set; }
+            }
+
+            public void MappingFrom(Profile profile)
+            {
+                profile.CreateMap<Project, Dto>()
+                    .ForMember(des => des.ProjectState, opt => opt.MapFrom(src => src.ProjectStateType.State));
             }
         }
     }

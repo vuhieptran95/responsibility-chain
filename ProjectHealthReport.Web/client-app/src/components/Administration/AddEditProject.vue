@@ -269,17 +269,11 @@
             if (this.project.id > 0){
                 axios.put(PROJECTS_ENDPOINT + "master-data", payload).then(res => {
                     notify(`Project ${this.project.name} is updated`, "success");
-                    setTimeout(function () {
-                        router.push("/Administration/projects")
-                    }, 1800)
                 }).catch(handleAxiosError)
             }
             else{
                 axios.post(PROJECTS_ENDPOINT, payload).then(res => {
                     notify(`Project ${this.project.name} is created`, "success");
-                    setTimeout(function () {
-                        router.push("/Administration/projects")
-                    }, 1800)
                 }).catch(handleAxiosError)
             }
         }

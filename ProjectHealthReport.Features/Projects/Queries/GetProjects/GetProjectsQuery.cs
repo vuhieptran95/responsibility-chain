@@ -6,7 +6,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using ProjectHealthReport.Domains.Domains;
-using ProjectHealthReport.Features.Common.Mappings;
+using ProjectHealthReport.Domains.Mappings;
 using ResponsibilityChain;
 using ResponsibilityChain.Business.Executions;
 
@@ -69,7 +69,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjects
                 public string ProjectStateType { get; set; }
                 public int ProjectStateTypeId { get; set; }
 
-                public void Mapping(Profile profile)
+                public void MappingFrom(Profile profile)
                 {
                     profile.CreateMap<Domains.Domains.Project, ProjectDto>()
                         .ForMember(des =>

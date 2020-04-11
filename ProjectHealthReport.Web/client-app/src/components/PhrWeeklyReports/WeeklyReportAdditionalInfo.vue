@@ -137,7 +137,7 @@
                 status: "Open",
                 week: this.report.selectedWeek,
                 year: this.report.selectedYear,
-                yearWeek: 0
+                yearWeek: this.vueHelper.calculateYearWeek(this.report.selectedYear, this.report.selectedWeek)
             };
             this.report.additionalInfos = [...this.report.additionalInfos, newIssue];
         }

@@ -23,7 +23,7 @@ namespace ProjectHealthReport.Features.Projects.Commands
                 var project = new Project();
                 
                 // Set project Id with Reflection
-                project.GetType().GetProperty(nameof(project.Id)).SetValue(project, request.ProjectId);
+                project.GetType().GetProperty("_id").SetValue(project, request.ProjectId);
 
                 _dbContext.Projects.Remove(project);
                 await _dbContext.SaveChangesAsync();

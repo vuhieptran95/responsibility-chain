@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Helpers;
-using ProjectHealthReport.Features.Common.Mappings;
+using ProjectHealthReport.Domains.Mappings;
 using ResponsibilityChain;
 using ResponsibilityChain.Business.Executions;
 
@@ -30,7 +30,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditBacklogItem
         public int? StoryPointsDone { get; set; }
 
         public int YearWeek { get; set; }
-        public void Mapping(Profile profile)
+        public void MappingFrom(Profile profile)
         {
             profile.CreateMap<AddBacklogItemCommand, BacklogItem>()
                 .ConstructUsing(cmd => new BacklogItem(0, cmd.ProjectId, cmd.Sprint, cmd.ItemsAdded,

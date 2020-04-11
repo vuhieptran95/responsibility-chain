@@ -4,7 +4,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Helpers;
-using ProjectHealthReport.Features.Common.Mappings;
+using ProjectHealthReport.Domains.Mappings;
 using ResponsibilityChain;
 using ResponsibilityChain.Business.Executions;
 
@@ -21,7 +21,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditAdditionalI
         public string Status { get; set; }
         public int YearWeek { get; set; }
 
-        public void Mapping(Profile profile)
+        public void MappingFrom(Profile profile)
         {
             profile.CreateMap<AddAdditionalInfoCommand, Issue>()
                 .ConstructUsing(cmd => new Issue(0, cmd.Item, cmd.Impact, cmd.Action,

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Helpers;
-using ProjectHealthReport.Features.Common.Mappings;
+using ProjectHealthReport.Domains.Mappings;
 using ResponsibilityChain;
 using ResponsibilityChain.Business.Executions;
 
@@ -32,7 +32,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditQualityRepo
         public int RemainingBugs { get; set; }
         public int YearWeek { get; set; }
 
-        public void Mapping(Profile profile)
+        public void MappingFrom(Profile profile)
         {
             profile.CreateMap<AddQualityReportCommand, QualityReport>()
                 .ConstructUsing(cmd => new QualityReport(0, cmd.ProjectId, cmd.CriticalBugs, cmd.MajorBugs,

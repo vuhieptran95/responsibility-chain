@@ -4,7 +4,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Helpers;
-using ProjectHealthReport.Features.Common.Mappings;
+using ProjectHealthReport.Domains.Mappings;
 using ResponsibilityChain;
 using ResponsibilityChain.Business.Executions;
 
@@ -22,8 +22,9 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditAdditionalI
         public int OpenedYearWeek { get; set; }
         public int YearWeek { get; set; }
         
-        public void Mapping(Profile profile)
+        public void MappingFrom(Profile profile)
         {
+            profile.CreateMap<EditAdditionalInfoCommand, EditAdditionalInfoCommand>();
             profile.CreateMap<Issue, EditAdditionalInfoCommand>()
                 .ForMember(des => des.IssueId, opt => opt.MapFrom(src => src.Id));
             profile.CreateMap<EditAdditionalInfoCommand, Issue>()
@@ -55,7 +56,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditAdditionalI
 
                 if (request.YearWeek == request.OpenedYearWeek)
                 {
-                    var issue = await _dbContext.Issues.SingleAsync(i => i.Id == request.IssueId);
+                    var issue = await _dbContext.Issues.AsNoTracking().SingleAsync(i => i.Id == request.IssueId);
                     var issueProxy = _mapper.Map<EditAdditionalInfoCommand>(issue);
                     
                     _mapper.Map(request, issueProxy);

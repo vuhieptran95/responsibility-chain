@@ -4,7 +4,7 @@
 
 using System;
 
-namespace IdentityServer
+namespace IdentityServer.Quickstart.Account
 {
     public class AccountOptions
     {

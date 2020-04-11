@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using ProjectHealthReport.Domains.Domains;
-using ProjectHealthReport.Features.Common.Mappings;
+using ProjectHealthReport.Domains.Mappings;
 using ResponsibilityChain;
 using ResponsibilityChain.Business.Executions;
 
@@ -25,7 +25,7 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.EditMetrics
             public string SelectValues { get; set; }
             public IEnumerable<ThresholdDto> Thresholds { get; set; }
 
-            public void Mapping(Profile profile)
+            public void MappingFrom(Profile profile)
             {
                 profile.CreateMap<MetricDto, Metric>()
                     .ConstructUsing((dto, context) => new Metric(dto.Id, dto.Name, dto.ValueType, dto.Unit, dto.Tool,
@@ -46,7 +46,7 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.EditMetrics
             public string Value { get; set; }
             public string MetricStatusName { get; set; }
 
-            public void Mapping(Profile profile)
+            public void MappingFrom(Profile profile)
             {
                 profile.CreateMap<ThresholdDto, Threshold>()
                     .ConstructUsing(dto => new Threshold(dto.MetricStatusId, dto.MetricId, dto.UpperBound,

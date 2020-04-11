@@ -1,5 +1,4 @@
-﻿﻿
-<template>
+﻿﻿<template>
     <div id="weeklyReport">
         <v-content>
             <v-container>

@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AutoMapper;
+using ProjectHealthReport.Domains.DomainProxies;
 using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Helpers;
-using ProjectHealthReport.Features.Common.Mappings;
+using ProjectHealthReport.Domains.Mappings;
 using ProjectHealthReport.Features.Helpers;
 using ResponsibilityChain;
 using ResponsibilityChain.Business;
@@ -13,7 +13,7 @@ using ResponsibilityChain.Business.Executions;
 
 namespace ProjectHealthReport.Features.Projects.Commands
 {
-    public class AddProjectCommand : IRequest<int>, IMapFrom<Project>
+    public class AddProjectCommand : IRequest<int>, IMapTo<ProjectProxy>
     {
         [Required] public string Name { get; set; }
 
@@ -48,19 +48,6 @@ namespace ProjectHealthReport.Features.Projects.Commands
         public DateTime ProjectStartDate { get; set; }
         public DateTime? ProjectEndDate { get; set; }
 
-        public List<(string, string)> UserRoleList { get; set; }
-
-        public void Mapping(Profile profile)
-        {
-            profile.CreateMap<AddProjectCommand, Project>()
-                .ConstructUsing(cmd => new Project(0, cmd.Name, cmd.Code, cmd.Division, cmd.KeyAccountManager,
-                    cmd.ProjectStartDate, cmd.PhrRequired, cmd.DmrRequired, cmd.DodRequired, cmd.ProjectStateTypeId,
-                    cmd.UserRoleList, cmd.DeliveryResponsibleName, null, null, null,
-                    null, cmd.ProjectEndDate, cmd.PhrRequiredFrom, cmd.DmrRequiredFrom, cmd.DmrRequiredTo,
-                    null, null, null, null, null,
-                    null, null, null, null));
-        }
-
         public class Handler : ExecutionHandlerBase<AddProjectCommand, int>
         {
             private readonly ReportDbContext _dbContext;
@@ -80,12 +67,16 @@ namespace ProjectHealthReport.Features.Projects.Commands
                 {
                     try
                     {
-                        request.UserRoleList = await _mediator.SendAsync(new GetListUserRoleQuery());
+                        var userRoleList = await _mediator.SendAsync(new GetListUserRoleQuery());
 
-                        var project = _mapper.Map<Project>(request);
+                        var project = _mapper.Map<ProjectProxy>(request);
                         project.CreatedDate = DateTime.Now;
 
-                        await _dbContext.Projects.AddAsync(project);
+                        await _dbContext.Projects
+                            .AddAsync(_mapper.Map<Project>(project, opts =>
+                            {
+                                opts.Items[MiscHelper.UserRoleListCtor] = userRoleList;
+                            }));
                         await _dbContext.SaveChangesAsync();
 
                         await transaction.CommitAsync();

@@ -88,7 +88,7 @@
             let lastWeek = this.vueHelper.calculateWeek(lastYearWeek);
 
             let queryString = `projectId=${this.report.projectId}&year=${lastYear}&week=${lastWeek}&numberOfWeek=4&numberOfWeekNotShowClosedItem=2`;
-            let url = `${WEEKLYREPORT_ENDPOINT}?${queryString}`;
+            let url = `${WEEKLYREPORT_ENDPOINT + "phr"}?${queryString}`;
             try {
                 let reportResponse = await axios.get(url);
                 this.report.status.milestone = reportResponse.data.status?.milestone;

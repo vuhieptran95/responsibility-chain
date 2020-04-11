@@ -6,7 +6,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using ProjectHealthReport.Domains.Domains;
-using ProjectHealthReport.Features.Common.Mappings;
+using ProjectHealthReport.Domains.Mappings;
 using ResponsibilityChain;
 using ResponsibilityChain.Business.Executions;
 
@@ -50,45 +50,44 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.GetMetrics
                 public string Value { get; set; }
                 public string MetricStatusName { get; set; }
 
-                public void Mapping(Profile profile)
+                public void MappingFrom(Profile profile)
                 {
                     profile.CreateMap<Threshold, ThresholdDto>()
                         .ForMember(des => des.MetricStatusName, opt => opt.MapFrom(src => src.MetricStatus.Name));
                 }
             }
+        }
 
-            public class Handler : ExecutionHandlerBase<GetMetricsQuery, Dto>
+        public class Handler : ExecutionHandlerBase<GetMetricsQuery, Dto>
+        {
+            private readonly ReportDbContext _dbContext;
+            private readonly IMapper _mapper;
+
+            public Handler(ReportDbContext dbContext, IMapper mapper)
             {
-                private readonly ReportDbContext _dbContext;
-                private readonly IMapper _mapper;
+                _dbContext = dbContext;
+                _mapper = mapper;
+            }
 
-                public Handler(ReportDbContext dbContext, IMapper mapper)
+            public override async Task<Dto> HandleAsync(GetMetricsQuery request)
+            {
+                var metrics = await _dbContext.Metrics.Include(m => m.Thresholds)
+                    .ThenInclude(t => t.MetricStatus)
+                    .ProjectTo<Dto.MetricDto>(_mapper.ConfigurationProvider)
+                    .ToListAsync();
+
+                var metricsGroup = metrics.GroupBy(m => m.Tool);
+
+                return new Dto()
                 {
-                    _dbContext = dbContext;
-                    _mapper = mapper;
-                }
-
-                public async Task<Dto> HandleAsync(GetMetricsQuery query, Func<GetMetricsQuery, Task<Dto>> next)
-                {
-                    var metrics = await _dbContext.Metrics.Include(m => m.Thresholds)
-                        .ThenInclude(t => t.MetricStatus)
-                        .ProjectTo<IEnumerable<MetricDto>>(_mapper.ConfigurationProvider)
-                        .Select(m => _mapper.Map<MetricDto>(m))
-                        .ToListAsync();
-
-                    var metricsGroup = metrics.GroupBy(m => m.Tool);
-
-                    return new Dto()
-                    {
-                        MetricGroups = metricsGroup.Select(m => new Dto.MetricsGroup()
-                            {
-                                Tool = m.Key,
-                                ToolOrder = m.First().ToolOrder,
-                                Metrics = m.OrderBy(mt => mt.Order)
-                            })
-                            .OrderBy(g => g.ToolOrder)
-                    };
-                }
+                    MetricGroups = metricsGroup.Select(m => new Dto.MetricsGroup()
+                        {
+                            Tool = m.Key,
+                            ToolOrder = m.First().ToolOrder,
+                            Metrics = m.OrderBy(mt => mt.Order)
+                        })
+                        .OrderBy(g => g.ToolOrder)
+                };
             }
         }
     }

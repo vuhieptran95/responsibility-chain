@@ -5,7 +5,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Helpers;
-using ProjectHealthReport.Features.Common.Mappings;
+using ProjectHealthReport.Domains.Mappings;
 using ResponsibilityChain;
 using ResponsibilityChain.Business.Executions;
 
@@ -33,9 +33,10 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditQualityRepo
         public int RemainingBugs { get; set; }
         public int YearWeek { get; set; }
 
-        public void Mapping(Profile profile)
+        public void MappingFrom(Profile profile)
         {
             profile.CreateMap<QualityReport, EditQualityReportCommand>();
+            profile.CreateMap<EditQualityReportCommand, EditQualityReportCommand>();
             profile.CreateMap<EditQualityReportCommand, QualityReport>()
                 .ConstructUsing(cmd => new QualityReport(cmd.Id, cmd.ProjectId, cmd.CriticalBugs, cmd.MajorBugs,
                     cmd.MinorBugs, cmd.DoneBugs, cmd.ReOpenBugs, cmd.YearWeek, null));
@@ -54,7 +55,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditQualityRepo
 
             public override async Task<int> HandleAsync(EditQualityReportCommand request)
             {
-                var reportInDb = await _dbContext.QualityReports.SingleAsync(q => q.Id == request.Id);
+                var reportInDb = await _dbContext.QualityReports.AsNoTracking().SingleAsync(q => q.Id == request.Id);
                 var reportProxy = _mapper.Map<EditQualityReportCommand>(reportInDb);
                 _mapper.Map(request, reportProxy);
 

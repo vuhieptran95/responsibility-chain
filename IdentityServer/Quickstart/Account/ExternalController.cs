@@ -1,3 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Security.Principal;
+using System.Threading.Tasks;
 using IdentityModel;
 using IdentityServer4.Events;
 using IdentityServer4.Services;
@@ -8,14 +14,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Security.Principal;
-using System.Threading.Tasks;
 
-namespace IdentityServer
+namespace IdentityServer.Quickstart.Account
 {
     [SecurityHeaders]
     [AllowAnonymous]

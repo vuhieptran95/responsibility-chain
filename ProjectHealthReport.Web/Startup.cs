@@ -17,6 +17,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using ProjectHealthReport.Domains.Domains;
+using ProjectHealthReport.Domains.Helpers;
 using ProjectHealthReport.Features;
 using ProjectHealthReport.Web.Middlewares;
 using ResponsibilityChain.Business;
@@ -65,12 +66,17 @@ namespace ProjectHealthReport.Web
                     options.Scope.Add("rights");
                     options.Scope.Add("role");
                 });
+            
+            services.Configure<AuthorizationRules>(Configuration.GetSection("AuthorizationRules"));
+            services.Configure<BusinessRules>(Configuration.GetSection("BusinessRules"));
 
             services.AddDbContext<ReportDbContext>(
                 builder => builder.UseSqlServer(Configuration["ConnectionStrings:ProjectHealthReport"])
             );
+            
+            services.AddAutoMapper(Assembly.GetAssembly(typeof(Project)), Assembly.GetAssembly(typeof(AutofacModule)));
 
-            services.AddAutoMapper(Assembly.GetAssembly(typeof(AutofacModule)));
+            // services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddControllersWithViews();
 

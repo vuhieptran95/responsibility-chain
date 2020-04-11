@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using ProjectHealthReport.Domains.Domains;
-using ProjectHealthReport.Features.Common.Mappings;
+using ProjectHealthReport.Domains.Mappings;
 using ResponsibilityChain;
 using ResponsibilityChain.Business.Executions;
 
@@ -18,7 +18,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditStatus
         public string Milestone { get; set; }
         public int YearWeek { get; set; }
 
-        public void Mapping(Profile profile)
+        public void MappingFrom(Profile profile)
         {
             profile.CreateMap<AddStatusCommand, Status>()
                 .ConstructUsing(cmd => new Status(0, cmd.ProjectId, cmd.StatusColor, cmd.ProjectStatus,

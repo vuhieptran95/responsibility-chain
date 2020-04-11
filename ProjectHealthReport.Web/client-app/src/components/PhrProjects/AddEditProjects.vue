@@ -25,9 +25,8 @@
                                                   readonly filled required :rules="requiredRule"/>
                                 </v-col>
                                 <v-col md="4">
-                                    <v-autocomplete v-model="project.deliveryResponsibleName"
-                                                    :items="nitecans"
-                                                    required
+                                    <v-text-field v-model="project.deliveryResponsibleName"
+                                                  readonly filled
                                                     :rules="requiredRule"
                                                     label="Delivery Responsible Name *"/>
                                 </v-col>
@@ -61,12 +60,12 @@
                             </v-row>
                             <v-row>
                                 <v-col md="12">
-                                    <v-text-field v-model="project.jiraLink" label="Jira link"/>
+                                    <v-text-field clearable v-model="project.jiraLink" label="Jira link"/>
                                 </v-col>
                             </v-row>
                             <v-row>
                                 <v-col md="12">
-                                    <v-text-field v-model="project.sourceCodeLink" label="Source code link"/>
+                                    <v-text-field clearable v-model="project.sourceCodeLink" label="Source code link"/>
                                 </v-col>
                             </v-row>
                             <v-row>
@@ -154,7 +153,6 @@
             language: 'en'
         };
         menu2 = false;
-        projectStates = [];
         usersAsPIC: string[] = [];
         requiredRule = [
             (v: any) => {
@@ -166,13 +164,10 @@
         divisions = [];
         nitecans: User[] = [];
         vueHelper = VueHelper;
-        previousRoute: any = null;
 
         mounted() {
-            axios.get(HELPER_ENDPOINT + "nitecans").then(res => {
-                this.nitecans = res.data.map((i: any) => {
-                    return i.email;
-                })
+            axios.get(HELPER_ENDPOINT + "user-emails").then(res => {
+                this.nitecans = res.data;
             }).catch(handleAxiosError);
             
             this.init();
@@ -212,21 +207,9 @@
             
             payload.projectAccesses.push(...projectAccessPics);
             
-            axios.post(PROJECTS_ENDPOINT, payload).then(res => {
+            axios.put(PROJECTS_ENDPOINT + "non-master-data", payload).then(res => {
                 notify(`Project ${this.project.name} is updated`, "success");
                 this.init();
-                
-                
-                
-                setTimeout(function () {
-                    // router.push("/Administration/projects")
-                    if (RouteHelper.fromRoute.name === "PHRAddEditWeeklyReports" || RouteHelper.fromRoute.name === "PHRProjects"){
-                        router.push({path: RouteHelper.fromRoute.path, query: RouteHelper.fromRoute.query});
-                    }
-                    else{
-                        window.location.href = "/"
-                    }
-                }, 1500)
             }).catch(handleAxiosError)
         }
     }

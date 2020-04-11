@@ -8,7 +8,9 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@types/vuedraggable": "^2.23.0",
     "axios": "^0.19.2",
+    "bootstrap": "^4.4.1",
     "ckeditor4-vue": "^0.2.0",
     "core-js": "^3.6.4",
     "jquery": "^3.4.1",
@@ -16,13 +18,13 @@
     "material-design-icons-iconfont": "^5.0.1",
     "moment": "^2.24.0",
     "styled-notifications": "^1.0.3",
+    "ts-expression-evaluator": "latest",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.2",
     "vue-property-decorator": "^8.3.0",
     "vue-router": "^3.1.5",
-    "vuetify": "^2.2.11",
-    "ts-expression-evaluator": "latest",
-    "vuedraggable": "latest"
+    "vuedraggable": "latest",
+    "vuetify": "^2.2.11"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",

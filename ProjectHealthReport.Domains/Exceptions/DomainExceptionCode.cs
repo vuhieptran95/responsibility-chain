@@ -76,7 +76,7 @@ namespace ProjectHealthReport.Domains.Exceptions
             switch (domainError)
             {
                 case Exceptions.DomainError.D001:
-                    return ("Project's Code is invalid: maximum 3 characters (number and letter only)",
+                    return ("Project's Code is invalid: maximum 3 characters (numbers and capital letters only)",
                         typeof(Project));
                 case Exceptions.DomainError.D002:
                     return ("Project's Division is invalid: incorrect organization information", typeof(Project));

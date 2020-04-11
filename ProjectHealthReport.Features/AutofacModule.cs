@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
 using Autofac;
+using DinkToPdf;
+using DinkToPdf.Contracts;
 using ResponsibilityChain;
 using ResponsibilityChain.Business;
 using ResponsibilityChain.Business.AuthorizationConfigs;
@@ -43,7 +45,6 @@ namespace ProjectHealthReport.Features
             builder.RegisterGeneric(typeof(ExecutionHandlerBase<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(LoggingHandler<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(EventsHandler<,>)).InstancePerLifetimeScope();
-            builder.RegisterGeneric(typeof(PreRequestHandler<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(PostRequestHandler<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(CacheHandler<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(CacheConfig<>)).InstancePerLifetimeScope();
@@ -58,6 +59,9 @@ namespace ProjectHealthReport.Features
             builder.RegisterAssemblyTypes(currentAssembly)
                 .AsClosedTypesOf(typeof(IRequest<>));
             base.Load(builder);
+            
+            builder.RegisterType<SynchronizedConverter>().As<IConverter>().SingleInstance();
+            builder.RegisterType<PdfTools>().As<ITools>().SingleInstance();
         }
     }
 }

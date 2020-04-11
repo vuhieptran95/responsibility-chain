@@ -36,7 +36,7 @@ namespace ProjectHealthReport.Domains.Domains
 
         public void ValidateStatus()
         {
-            if (Status != MiscHelper.IssueStatusOpen || Status != MiscHelper.IssueStatusClosed)
+            if (Status != MiscHelper.IssueStatusOpen && Status != MiscHelper.IssueStatusClosed)
             {
                 DomainExceptionCode.Throw(DomainError.D021, this);
             }

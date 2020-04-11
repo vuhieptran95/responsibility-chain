@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.RegularExpressions;
 using ProjectHealthReport.Domains.Exceptions;
 using ProjectHealthReport.Domains.Helpers;
 using ProjectHealthReport.Domains.Migrations;
@@ -10,117 +11,160 @@ namespace ProjectHealthReport.Domains.Domains
 {
     public partial class Project
     {
+        private int _id;
+        private string _name;
+        private string _code;
+        private string _division;
+        private string _keyAccountManager;
+        private bool _phrRequired;
+        private bool _dmrRequired;
+        private bool _dodRequired;
+        private int _projectStateTypeId;
+        private string _deliveryResponsibleName;
+        private string _platformVersion;
+        private string _jiraLink;
+        private string _sourceCodeLink;
+        private string _note;
+        private DateTime _createdDate;
+        private DateTime _projectStartDate;
+        private DateTime? _projectEndDate;
+        private DateTime? _phrRequiredFrom;
+        private DateTime? _dmrRequiredFrom;
+        private DateTime? _dmrRequiredTo;
+        private ProjectStateType _projectStateType;
+        private ICollection<Status> _statuses;
+        private ICollection<BacklogItem> _backlogItems;
+        private ICollection<QualityReport> _qualityReports;
+        private ICollection<AdditionalInfo> _additionalInfos;
+        private ICollection<DivisionProjectStatus> _divisionProjectStatuses;
+        private ICollection<WeeklyReportStatus> _weeklyReportStatuses;
+        private ICollection<ProjectAccess> _projectAccesses;
+        private ICollection<DoDReport> _doDReports;
+
         public Project()
         {
-            Statuses = new HashSet<Status>();
-            BacklogItems = new HashSet<BacklogItem>();
-            QualityReports = new HashSet<QualityReport>();
-            AdditionalInfos = new HashSet<AdditionalInfo>();
-            DivisionProjectStatuses = new HashSet<DivisionProjectStatus>();
-            WeeklyReportStatuses = new HashSet<WeeklyReportStatus>();
-            ProjectAccesses = new HashSet<ProjectAccess>();
-            DoDReports = new HashSet<DoDReport>();
+            _statuses = new HashSet<Status>();
+            _backlogItems = new HashSet<BacklogItem>();
+            _qualityReports = new HashSet<QualityReport>();
+            _additionalInfos = new HashSet<AdditionalInfo>();
+            _divisionProjectStatuses = new HashSet<DivisionProjectStatus>();
+            _weeklyReportStatuses = new HashSet<WeeklyReportStatus>();
+            _projectAccesses = new HashSet<ProjectAccess>();
+            _doDReports = new HashSet<DoDReport>();
         }
 
         public Project(int id, string name, string code, string division, string keyAccountManager,
             DateTime projectStartDate,
             bool phrRequired, bool dmrRequired, bool dodRequired, int projectStateTypeId,
-            List<(string, string)> userRoleList,
-            string deliveryResponsibleName = null, string platformVersion = null, string jiraLink = null,
-            string sourceCodeLink = null, string note = null,
-            DateTime? projectEndDate = null,
-            DateTime? phrRequiredFrom = null, DateTime? dmrRequiredFrom = null,
-            DateTime? dmrRequiredTo = null, ProjectStateType projectStateType = null,
-            List<Status> statuses = null, List<BacklogItem> backlogItems = null,
-            List<QualityReport> qualityReports = null, List<AdditionalInfo> additionalInfos = null,
-            List<DivisionProjectStatus> divisionProjectStatuses = null,
-            List<WeeklyReportStatus> weeklyReportStatuses = null, List<ProjectAccess> projectAccesses = null,
-            List<DoDReport> doDReports = null) : this()
+            List<(string, string)> userRoleList, DateTime createdDate, string deliveryResponsibleName, string platformVersion, string jiraLink,
+            string sourceCodeLink, string note,
+            DateTime? projectEndDate,
+            DateTime? phrRequiredFrom, DateTime? dmrRequiredFrom,
+            DateTime? dmrRequiredTo, ProjectStateType projectStateType,
+            List<Status> statuses, List<BacklogItem> backlogItems,
+            List<QualityReport> qualityReports, List<AdditionalInfo> additionalInfos,
+            List<DivisionProjectStatus> divisionProjectStatuses,
+            List<WeeklyReportStatus> weeklyReportStatuses, List<ProjectAccess> projectAccesses,
+            List<DoDReport> doDReports) : this()
         {
-            Id = id;
-            Name = name;
-            Code = code;
-            Division = division;
-            KeyAccountManager = keyAccountManager;
-            DeliveryResponsibleName = deliveryResponsibleName;
-            PlatformVersion = platformVersion;
-            JIRALink = jiraLink;
-            SourceCodeLink = sourceCodeLink;
-            Note = note;
-            ProjectStartDate = projectStartDate;
-            ProjectEndDate = projectEndDate;
-            PhrRequired = phrRequired;
-            PhrRequiredFrom = phrRequiredFrom;
-            DmrRequired = dmrRequired;
-            DodRequired = dodRequired;
-            DmrRequiredFrom = dmrRequiredFrom;
-            DmrRequiredTo = dmrRequiredTo;
-            ProjectStateTypeId = projectStateTypeId;
-            ProjectStateType = projectStateType;
-            Statuses = statuses ?? Statuses;
-            BacklogItems = backlogItems ?? BacklogItems;
-            QualityReports = qualityReports ?? QualityReports;
-            AdditionalInfos = additionalInfos ?? AdditionalInfos;
-            DivisionProjectStatuses = divisionProjectStatuses ?? DivisionProjectStatuses;
-            WeeklyReportStatuses = weeklyReportStatuses ?? WeeklyReportStatuses;
-            ProjectAccesses = projectAccesses ?? ProjectAccesses;
-            DoDReports = doDReports ?? DoDReports;
+            _id = id;
+            _name = name;
+            _code = code;
+            _division = division;
+            _keyAccountManager = keyAccountManager;
+            _deliveryResponsibleName = deliveryResponsibleName;
+            _platformVersion = platformVersion;
+            _jiraLink = jiraLink;
+            _sourceCodeLink = sourceCodeLink;
+            _note = note;
+            _projectStartDate = projectStartDate;
+            _projectEndDate = projectEndDate;
+            _phrRequired = phrRequired;
+            _phrRequiredFrom = phrRequiredFrom;
+            _dmrRequired = dmrRequired;
+            _dodRequired = dodRequired;
+            _createdDate = createdDate;
+            _dmrRequiredFrom = dmrRequiredFrom;
+            _dmrRequiredTo = dmrRequiredTo;
+            _projectStateTypeId = projectStateTypeId;
+            _projectStateType = projectStateType;
+            _statuses = statuses ?? Statuses;
+            _backlogItems = backlogItems ?? BacklogItems;
+            _qualityReports = qualityReports ?? QualityReports;
+            _additionalInfos = additionalInfos ?? AdditionalInfos;
+            _divisionProjectStatuses = divisionProjectStatuses ?? DivisionProjectStatuses;
+            _weeklyReportStatuses = weeklyReportStatuses ?? WeeklyReportStatuses;
+            _projectAccesses = projectAccesses ?? ProjectAccesses;
+            _doDReports = doDReports ?? DoDReports;
 
             ValidateDomain(userRoleList);
         }
 
-        public int Id { get; private set; }
+        public int Id => _id;
 
-        [Required] public string Name { get; private set; }
+        [Required]
+        public string Name => _name;
 
-        [Required] public string Code { get; private set; }
+        [Required]
+        public string Code => _code;
 
-        [Required] public string Division { get; private set; }
+        [Required]
+        public string Division => _division;
 
-        [Required] public string KeyAccountManager { get; private set; }
-        public bool PhrRequired { get; private set; }
-        public bool DmrRequired { get; private set; }
-        public bool DodRequired { get; private set; }
-        public int ProjectStateTypeId { get; private set; }
+        [Required]
+        public string KeyAccountManager => _keyAccountManager;
 
-        public string DeliveryResponsibleName { get; private set; }
+        public bool PhrRequired => _phrRequired;
 
-        public string PlatformVersion { get; private set; }
+        public bool DmrRequired => _dmrRequired;
 
-        public string JIRALink { get; private set; }
+        public bool DodRequired => _dodRequired;
 
-        public string SourceCodeLink { get; private set; }
+        public int ProjectStateTypeId => _projectStateTypeId;
 
-        public string Note { get; private set; }
-        public DateTime CreatedDate { get; set; }
-        public DateTime ProjectStartDate { get; private set; }
-        public DateTime? ProjectEndDate { get; private set; }
-        public DateTime? PhrRequiredFrom { get; private set; }
-        public DateTime? DmrRequiredFrom { get; private set; }
-        public DateTime? DmrRequiredTo { get; private set; }
-        public ProjectStateType ProjectStateType { get; private set; }
-        public ICollection<Status> Statuses { get; private set; }
-        public ICollection<BacklogItem> BacklogItems { get; private set; }
-        public ICollection<QualityReport> QualityReports { get; private set; }
-        public ICollection<AdditionalInfo> AdditionalInfos { get; private set; }
-        public ICollection<DivisionProjectStatus> DivisionProjectStatuses { get; private set; }
-        public ICollection<WeeklyReportStatus> WeeklyReportStatuses { get; private set; }
-        public ICollection<ProjectAccess> ProjectAccesses { get; private set; }
-        public ICollection<DoDReport> DoDReports { get; private set; }
+        public string DeliveryResponsibleName => _deliveryResponsibleName;
+
+        public string PlatformVersion => _platformVersion;
+
+        public string JiraLink => _jiraLink;
+
+        public string SourceCodeLink => _sourceCodeLink;
+
+        public string Note => _note;
+
+        public DateTime CreatedDate => _createdDate;
+
+        public DateTime ProjectStartDate => _projectStartDate;
+
+        public DateTime? ProjectEndDate => _projectEndDate;
+
+        public DateTime? PhrRequiredFrom => _phrRequiredFrom;
+
+        public DateTime? DmrRequiredFrom => _dmrRequiredFrom;
+
+        public DateTime? DmrRequiredTo => _dmrRequiredTo;
+
+        public ProjectStateType ProjectStateType => _projectStateType;
+
+        public ICollection<Status> Statuses => _statuses;
+
+        public ICollection<BacklogItem> BacklogItems => _backlogItems;
+
+        public ICollection<QualityReport> QualityReports => _qualityReports;
+
+        public ICollection<AdditionalInfo> AdditionalInfos => _additionalInfos;
+
+        public ICollection<DivisionProjectStatus> DivisionProjectStatuses => _divisionProjectStatuses;
+
+        public ICollection<WeeklyReportStatus> WeeklyReportStatuses => _weeklyReportStatuses;
+
+        public ICollection<ProjectAccess> ProjectAccesses => _projectAccesses;
+
+        public ICollection<DoDReport> DoDReports => _doDReports;
     }
 
     public partial class Project
     {
-        public void SetPhrRequiredFrom(DateTime dateTime)
-        {
-            if (!PhrRequired)
-            {
-                DomainExceptionCode.Throw(DomainError.D012, this);
-            }
-            PhrRequiredFrom = dateTime;
-            ValidatePhrRequired();
-        }
-        
         public void ValidateDomain(List<(string, string)> userRoleList)
         {
             OrganizationInfoMustBeValid(userRoleList);
@@ -128,6 +172,16 @@ namespace ProjectHealthReport.Domains.Domains
             ValidateProjectEndDate();
             ValidatePhrRequired();
             ValidateDmrRequired();
+            ValidateProjectCode();
+        }
+
+        public void ValidateProjectCode()
+        {
+            if (Regex.IsMatch(Code, "^[a-zA-Z0-9]+$") && Code.Length < 4 && Code.ToUpper() == Code)
+            {
+                return;
+            }
+            DomainExceptionCode.Throw(DomainError.D001, this);
         }
 
         public void OrganizationInfoMustBeValid(List<(string, string)> userRoleList)
@@ -152,7 +206,7 @@ namespace ProjectHealthReport.Domains.Domains
 
         public void ValidateLinkProperties()
         {
-            if (JIRALink != null && !MiscHelper.ValidateLink(JIRALink))
+            if (JiraLink != null && !MiscHelper.ValidateLink(JiraLink))
             {
                 DomainExceptionCode.Throw(DomainError.D005, this);
             }

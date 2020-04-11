@@ -156,11 +156,11 @@
                             <v-icon dark>remove_red_eye</v-icon>
                         </v-btn>
                         <v-btn outlined class="ml-2 mr-2"
-                               :to="'/WeeklyReports/AddEditWeeklyReport?' + vueHelper.createQueryStringDefault(item.id, selectedYearWeek)"
+                               :to="'/phr/weekly-reports/add-edit?' + vueHelper.createQueryStringDefault(item.id, selectedYearWeek)"
                                @click.stop="" small color="primary">
                             <v-icon dark>edit</v-icon>
                         </v-btn>
-                        <v-btn small :to="'/Projects/AddEditProject?id='+ item.id">
+                        <v-btn small :to="'/phr/projects/add-edit?id='+ item.id">
                             <v-icon>edit</v-icon>
                         </v-btn>
                     </template>

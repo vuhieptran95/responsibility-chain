@@ -5,7 +5,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Helpers;
-using ProjectHealthReport.Features.Common.Mappings;
+using ProjectHealthReport.Domains.Mappings;
 using ResponsibilityChain;
 using ResponsibilityChain.Business.Executions;
 
@@ -33,9 +33,10 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditBacklogItem
 
         public int YearWeek { get; set; }
         
-        public void Mapping(Profile profile)
+        public void MappingFrom(Profile profile)
         {
             profile.CreateMap<BacklogItem, EditBacklogItemCommand>();
+            profile.CreateMap<EditBacklogItemCommand, EditBacklogItemCommand>();
             profile.CreateMap<EditBacklogItemCommand, BacklogItem>()
                 .ConstructUsing(cmd => new BacklogItem(cmd.Id, cmd.ProjectId, cmd.Sprint, cmd.ItemsAdded,
                     cmd.StoryPointsAdded, cmd.ItemsDone, cmd.StoryPointsDone,
@@ -55,7 +56,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditBacklogItem
 
             public override async Task<int> HandleAsync(EditBacklogItemCommand request)
             {
-                var backlogItemInDb = await _dbContext.BacklogItems.SingleAsync(b => b.Id == request.Id);
+                var backlogItemInDb = await _dbContext.BacklogItems.AsNoTracking().SingleAsync(b => b.Id == request.Id);
                 var backlogItemProxy = _mapper.Map<EditBacklogItemCommand>(backlogItemInDb);
                 
                 _mapper.Map(request, backlogItemProxy);

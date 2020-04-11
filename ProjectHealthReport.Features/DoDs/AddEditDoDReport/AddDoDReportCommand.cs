@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ProjectHealthReport.Domains.Domains;
-using ProjectHealthReport.Features.Common.Mappings;
+using ProjectHealthReport.Domains.Mappings;
 using ResponsibilityChain;
 using ResponsibilityChain.Business.Executions;
 
@@ -26,7 +26,7 @@ namespace ProjectHealthReport.Features.DoDs.AddEditDoDReport
             public Metric Metric { get; set; }
             public Project Project { get; set; }
 
-            public void Mapping(Profile profile)
+            public void MappingFrom(Profile profile)
             {
                 profile.CreateMap<DoDReportDto, DoDReport>()
                     .ConstructUsing(dto => new DoDReport(dto.ProjectId, dto.MetricId, dto.YearWeek, dto.Value,

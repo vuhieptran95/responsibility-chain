@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ProjectHealthReport.Domains.Domains;
-using ProjectHealthReport.Features.Common.Mappings;
+using ProjectHealthReport.Domains.Mappings;
 using ResponsibilityChain;
 using ResponsibilityChain.Business.Executions;
 
@@ -29,7 +29,7 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.GetThresholds
                 public string Value { get; set; }
                 public string MetricStatusName { get; set; }
 
-                public void Mapping(Profile profile)
+                public void MappingFrom(Profile profile)
                 {
                     profile.CreateMap<Threshold, ThresholdDto>()
                         .ForMember(des => des.MetricStatusName, opt => opt.MapFrom(src => src.MetricStatus.Name));

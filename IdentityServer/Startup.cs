@@ -12,6 +12,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using IdentityServer.Quickstart;
 
 namespace IdentityServer
 {

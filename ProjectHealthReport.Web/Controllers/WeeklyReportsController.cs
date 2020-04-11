@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using ProjectHealthReport.Domains.Helpers;
+using ProjectHealthReport.Features.Divisions.Commands;
+using ProjectHealthReport.Features.Divisions.Queries;
 using ProjectHealthReport.Features.WeeklyReports.Commands.AddEditWeeklyReportPhr;
 using ProjectHealthReport.Features.WeeklyReports.Queries;
 using ProjectHealthReport.Features.WeeklyReports.Queries.GetGeneratedWeeklyReportPhr;
@@ -46,6 +48,27 @@ namespace ProjectHealthReport.Web.Controllers
             await _mediator.SendAsync(command);
 
             return Ok();
+        }
+        
+        [Route("api/WeeklyReports/dmr/{name}/{yearWeek}")]
+        [ApiExceptionFilter]
+        [HttpGet]
+        public async Task<ActionResult> GetDivisionWeeklyReport(string name, int yearWeek)
+        {
+            var dto = await _mediator.SendAsync(new GetDivisionWeeklyReportQuery()
+                {DivisionName = name, SelectedYearWeek = yearWeek});
+
+            return Ok(dto);
+        }
+
+        [Route("api/WeeklyReports/dmr")]
+        [ApiExceptionFilter]
+        [HttpPost]
+        public async Task<ActionResult> AddEditDivisonWeeklyReport([FromBody] AddEditDivisionWeeklyReportCommand command)
+        {
+            var dto = await _mediator.SendAsync(command);
+
+            return Ok(dto);
         }
 
         [HttpGet]

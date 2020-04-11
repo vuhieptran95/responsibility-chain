@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Helpers;
-using ProjectHealthReport.Features.Common.Mappings;
+using ProjectHealthReport.Domains.Mappings;
 
 namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetWeeklyReportPhr
 {
@@ -60,6 +60,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetWeeklyReportPhr
                 public string ProjectStatus { get; set; }
                 public DateTime? MilestoneDate { get; set; }
                 public string Milestone { get; set; }
+                public int YearWeek { get; set; }
             }
 
             public class BacklogItemDto : IMapFrom<BacklogItem>
@@ -73,7 +74,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetWeeklyReportPhr
                 public int ItemsRemaining { get; set; }
                 public int? StoryPointsRemaining { get; set; }
                 public int YearWeek { get; set; }
-                public int Year => TimeHelper.CalculateYear(YearWeek);
+                public int Year  => TimeHelper.CalculateYear(YearWeek);
                 public int Week => TimeHelper.CalculateWeek(YearWeek);
             }
 

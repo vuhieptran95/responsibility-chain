@@ -17,7 +17,7 @@
                             </v-text-field>
                         </v-col>
                         <v-col sm="10" class="text-sm-right">
-                            <v-btn class="mt-3" to="/Administration/projects/add-edit" color="primary">Add New
+                            <v-btn class="mt-3" to="/dmr/administration/projects/add-edit" color="primary">Add New
                                 Project
                             </v-btn>
                         </v-col>
@@ -67,7 +67,7 @@
                 </template>
 
                 <template v-slot:item.action="{item}">
-                    <v-btn class="v-btn--outlined primary--text" :to="'/Administration/projects/add-edit?id=' + item.id"><v-icon left>edit</v-icon> Edit</v-btn>
+                    <v-btn class="v-btn--outlined primary--text" :to="'/dmr/administration/projects/add-edit?id=' + item.id"><v-icon left>edit</v-icon> Edit</v-btn>
                 </template>
 
             </v-data-table>

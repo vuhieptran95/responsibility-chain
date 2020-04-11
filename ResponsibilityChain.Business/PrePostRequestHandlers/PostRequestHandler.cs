@@ -14,8 +14,8 @@ namespace ResponsibilityChain.Business.PrePostRequestHandlers
         public override async Task<TResponse> HandleAsync(TRequest request)
         {
             var response = await base.HandleAsync(request);
-            _requestContext.Response = response;
-
+            _requestContext.TempData.Add(request.GetType().FullName, response);
+            
             return response;
         }
     }
