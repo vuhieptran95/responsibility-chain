@@ -1,32 +1,55 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace ResponsibilityChain.TestConsole
 {
-    public class A
+    public class Des
     {
+        public int Id { get; set; }
         public string Name { get; set; }
     }
 
-    public class B
+    public class Src
     {
+        private IEnumerable<Des> _dess;
+
+        public Src()
+        {
+            Name = "sfd";
+        }
+
+        public Src(int id, string name, IEnumerable<Des> dess): this()
+        {
+            Id = id;
+            Name = name;
+            _dess = dess;
+        }
+
+        public int Id { get; set; }
         public string Name { get; set; }
+
+        public IEnumerable<Des> Dess
+        {
+            get => _dess;
+        }
     }
+    
     class Program
     {
         
         static async Task Main(string[] args)
         {
-            var test = (new A(), new B());
-            var result = await DoSomeThing(test);
-            Console.WriteLine("Hello World!");
+            var list1 = new List<int>(){1,2,3};
+            var list2 = new List<int> {1,2,3,4};
+
+            var list3 = list1.Except(list2);
             
-            async Task<B> DoSomeThing((A, B) param)
-            {
-                param.Item2 = new B(){Name = "Hiepdeptrai"};
-                return param.Item2;
-            }
+            var src = new Src(1, "1", null);
+
         }
     }
 }

@@ -45,13 +45,13 @@ namespace ProjectHealthReport.Features.DoDs.AddEditDoDReport
                 _mapper = mapper;
             }
 
-            public override async Task<int> HandleAsync(AddDoDReportCommand request)
+            public override async Task HandleAsync(AddDoDReportCommand request)
             {
                 var listDtos = request.DodReports.ToList();
                 
                 var listProjectId = listDtos.Select(d => d.ProjectId).Distinct();
                 var listProject = await _dbContext.Projects.Where(p => listProjectId.Contains(p.Id)).ToListAsync();
-
+            
                 var listMetricId = listDtos.Select(d => d.MetricId).Distinct();
                 var listMetric = await _dbContext.Metrics.Where(m => listMetricId.Contains(m.Id)).ToListAsync();
                 
@@ -62,13 +62,15 @@ namespace ProjectHealthReport.Features.DoDs.AddEditDoDReport
                 });
                 
                 var dodReports = _mapper.Map<IEnumerable<DoDReport>>(listDtos);
-
+            
                 await _dbContext.DoDReports.AddRangeAsync(dodReports);
                 await _dbContext.SaveChangesAsync();
-
-                return 1;
+            
+                request.Response = 1;
             }
         }
+
+        public int Response { get; set; }
     }
     
     

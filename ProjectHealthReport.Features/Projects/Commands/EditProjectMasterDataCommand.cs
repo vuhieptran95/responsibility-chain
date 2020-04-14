@@ -50,7 +50,7 @@ namespace ProjectHealthReport.Features.Projects.Commands
                 _mediator = mediator;
             }
 
-            public override async Task<int> HandleAsync(EditProjectMasterDataCommand request)
+            public override async Task HandleAsync(EditProjectMasterDataCommand request)
             {
                 var projectInDb = await _dbContext.Projects.AsNoTracking().SingleAsync(p => p.Id == request.Id);
                 var projectProxy = _mapper.Map<ProjectProxy>(projectInDb);
@@ -69,8 +69,10 @@ namespace ProjectHealthReport.Features.Projects.Commands
                 _dbContext.Projects.Update(project);
                 await _dbContext.SaveChangesAsync();
 
-                return request.Id;
+                request.Response = request.Id;
             }
         }
+
+        public int Response { get; set; }
     }
 }

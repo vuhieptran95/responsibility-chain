@@ -40,7 +40,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditStatus
                 _mapper = mapper;
             }
 
-            public override async Task<int> HandleAsync(EditStatusCommand request)
+            public override async Task HandleAsync(EditStatusCommand request)
             {
                 var statusInDb = await _dbContext.Statuses.AsNoTracking().SingleAsync(s => s.Id == request.Id);
                 var statusProxy = _mapper.Map<EditStatusCommand>(statusInDb);
@@ -49,8 +49,10 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditStatus
                 _dbContext.Statuses.Update(_mapper.Map<Status>(statusProxy));
                 await _dbContext.SaveChangesAsync();
 
-                return 1;
+                request.Response = 1;
             }
         }
+
+        public int Response { get; set; }
     }
 }

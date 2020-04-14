@@ -19,7 +19,7 @@ namespace ProjectHealthReport.Features.Helpers
                 _dbContext = dbContext;
             }
 
-            public override async Task<Dto> HandleAsync(GetProjectStateTypesQuery request)
+            public override async Task HandleAsync(GetProjectStateTypesQuery request)
             {
                 var stateTypes = await _dbContext.ProjectStateTypes.Select(s =>
                     new Dto.ProjectStateType()
@@ -28,7 +28,7 @@ namespace ProjectHealthReport.Features.Helpers
                         State = s.State
                     }).ToListAsync();
 
-                return new Dto() {StateTypes = stateTypes};
+                request.Response = new Dto() {StateTypes = stateTypes};
             }
         }
 
@@ -42,5 +42,7 @@ namespace ProjectHealthReport.Features.Helpers
                 public string State { get; set; }
             }
         }
+
+        public Dto Response { get; set; }
     }
 }

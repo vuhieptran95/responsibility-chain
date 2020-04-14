@@ -53,7 +53,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditQualityRepo
                 _mapper = mapper;
             }
 
-            public override async Task<int> HandleAsync(EditQualityReportCommand request)
+            public override async Task HandleAsync(EditQualityReportCommand request)
             {
                 var reportInDb = await _dbContext.QualityReports.AsNoTracking().SingleAsync(q => q.Id == request.Id);
                 var reportProxy = _mapper.Map<EditQualityReportCommand>(reportInDb);
@@ -62,8 +62,10 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditQualityRepo
                 _dbContext.Update(_mapper.Map<QualityReport>(reportProxy));
                 await _dbContext.SaveChangesAsync();
 
-                return 1;
+                request.Response = 1;
             }
         }
+
+        public int Response { get; set; }
     }
 }

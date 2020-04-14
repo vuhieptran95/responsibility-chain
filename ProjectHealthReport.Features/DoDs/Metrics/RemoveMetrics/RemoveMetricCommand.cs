@@ -20,14 +20,16 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.RemoveMetrics
             }
 
 
-            public override async Task<int> HandleAsync(RemoveMetricCommand request)
+            public override async Task HandleAsync(RemoveMetricCommand request)
             {
                 var metric = await _dbContext.Metrics.FirstAsync(m => m.Id == request.MetricId);
                 _dbContext.Metrics.Remove(metric);
                 await _dbContext.SaveChangesAsync();
 
-                return 1;
+                request.Response = 1;
             }
         }
+
+        public int Response { get; set; }
     }
 }

@@ -19,7 +19,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries
                 _converter = converter;
             }
 
-            public override Task<byte[]> HandleAsync(ExportPdfWeeklyReportPhrQuery request)
+            public override Task HandleAsync(ExportPdfWeeklyReportPhrQuery request)
             {
                 var doc = new HtmlToPdfDocument()
                 {
@@ -41,8 +41,12 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries
 
                 var pdf = _converter.Convert(doc);
 
-                return Task.FromResult(pdf);
+                request.Response = (pdf);
+                
+                return Task.CompletedTask;
             }
         }
+
+        public byte[] Response { get; set; }
     }
 }

@@ -17,7 +17,7 @@ namespace ResponsibilityChain.Business
             _customScope = customScope;
         }
 
-        public Task<TResponse> SendAsync<TResponse>(IRequest<TResponse> request)
+        public async Task<TResponse> SendAsync<TResponse>(IRequest<TResponse> request)
         {
             var requestType = request.GetType();
             
@@ -25,8 +25,9 @@ namespace ResponsibilityChain.Business
             
             var requestHandler = _customScope.Scope.Resolve(handlerType);
 
-            return (Task<TResponse>)requestHandler.GetType().GetMethod("HandleAsync").Invoke(requestHandler, new[] {request});          
-            
+            await (Task)requestHandler.GetType().GetMethod("HandleAsync").Invoke(requestHandler, new[] {request});
+
+            return request.Response;
         }
     }
 }

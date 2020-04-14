@@ -5,6 +5,16 @@ namespace ProjectHealthReport.Domains.Domains
 {
     public class Status : IWeeklyReport
     {
+        private int _id;
+        private Project _project;
+        private int _yearWeek;
+        private string _milestone;
+        private DateTime? _milestoneDate;
+        private string _retrospectiveFeedBack;
+        private string _projectStatus;
+        private string _statusColor;
+        private int _projectId;
+
         public Status()
         {
         }
@@ -12,25 +22,50 @@ namespace ProjectHealthReport.Domains.Domains
         public Status(int id, int projectId, string statusColor, string projectStatus, string retrospectiveFeedBack,
             DateTime? milestoneDate, string milestone, int yearWeek, Project project)
         {
-            Id = id;
-            ProjectId = projectId;
-            StatusColor = statusColor;
-            ProjectStatus = projectStatus;
-            RetrospectiveFeedBack = retrospectiveFeedBack;
-            MilestoneDate = milestoneDate;
-            Milestone = milestone;
+            _id = id;
+            _projectId = projectId;
+            _statusColor = statusColor;
+            _projectStatus = projectStatus;
+            _retrospectiveFeedBack = retrospectiveFeedBack;
+            _milestoneDate = milestoneDate;
+            _milestone = milestone;
             YearWeek = yearWeek;
-            Project = project;
+            _project = project;
         }
 
-        public int Id { get; private set; }
-        public int ProjectId { get; private set; }
-        [Required] public string StatusColor { get; private set; }
-        public string ProjectStatus { get; private set; }
-        public string RetrospectiveFeedBack { get; private set; }
-        public DateTime? MilestoneDate { get; private set; }
-        public string Milestone { get; private set; }
-        public int YearWeek { get; set; }
-        public Project Project { get; private set; }
+        public Status(int id, int yearWeek, string milestone, DateTime? milestoneDate, string retrospectiveFeedBack,
+            string projectStatus, string statusColor, int projectId)
+        {
+            _id = id;
+            _yearWeek = yearWeek;
+            _milestone = milestone;
+            _milestoneDate = milestoneDate;
+            _retrospectiveFeedBack = retrospectiveFeedBack;
+            _projectStatus = projectStatus;
+            _statusColor = statusColor;
+            _projectId = projectId;
+        }
+
+        public int Id => _id;
+
+        public int ProjectId => _projectId;
+
+        public string StatusColor => _statusColor;
+
+        public string ProjectStatus => _projectStatus;
+
+        public string RetrospectiveFeedBack => _retrospectiveFeedBack;
+
+        public DateTime? MilestoneDate => _milestoneDate;
+
+        public string Milestone => _milestone;
+
+        public int YearWeek
+        {
+            get => _yearWeek;
+            set => _yearWeek = value;
+        }
+
+        public Project Project => _project;
     }
 }

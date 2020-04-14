@@ -10,7 +10,7 @@ namespace ProjectHealthReport.Features.Divisions.Queries
     {
         public class Handler : ExecutionHandlerBase<GetDivisionIndexQuery, Dto>
         {
-            public override Task<Dto> HandleAsync(GetDivisionIndexQuery request)
+            public override Task HandleAsync(GetDivisionIndexQuery request)
             {
                 var listDivisions = new List<Dto.Division>
                 {
@@ -29,7 +29,9 @@ namespace ProjectHealthReport.Features.Divisions.Queries
                     Divisions = listDivisions
                 };
 
-                return Task.FromResult(dto);
+                request.Response = dto;
+
+                return Task.CompletedTask;
             }
         }
 
@@ -43,5 +45,7 @@ namespace ProjectHealthReport.Features.Divisions.Queries
                 public string ManagerName { get; set; }
             }
         }
+
+        public Dto Response { get; set; }
     }
 }

@@ -6,6 +6,12 @@ namespace ProjectHealthReport.Domains.Domains
 {
     public class AdditionalInfoIssues
     {
+        private Issue _issue;
+        private AdditionalInfo _additionalInfo;
+        private string _status;
+        private int _issueId;
+        private int _additionalInfoId;
+
         public AdditionalInfoIssues()
         {
             
@@ -13,24 +19,35 @@ namespace ProjectHealthReport.Domains.Domains
         public AdditionalInfoIssues(int additionalInfoId, int issueId, string status, AdditionalInfo additionalInfo,
             Issue issue)
         {
-            AdditionalInfoId = additionalInfoId;
-            IssueId = issueId;
-            Status = status;
-            AdditionalInfo = additionalInfo;
-            Issue = issue;
+            _additionalInfoId = additionalInfoId;
+            _issueId = issueId;
+            _status = status;
+            _additionalInfo = additionalInfo;
+            _issue = issue;
             
             ValidateStatus();
         }
 
-        public int AdditionalInfoId { get; private set; }
-        public int IssueId { get; private set; }
-        public string Status { get; private set; }
-        public AdditionalInfo AdditionalInfo { get; private set; }
-        public Issue Issue { get; private set; }
+        public AdditionalInfoIssues(string status, int issueId, int additionalInfoId)
+        {
+            _status = status;
+            _issueId = issueId;
+            _additionalInfoId = additionalInfoId;
+        }
+
+        public int AdditionalInfoId => _additionalInfoId;
+
+        public int IssueId => _issueId;
+
+        public string Status => _status;
+
+        public AdditionalInfo AdditionalInfo => _additionalInfo;
+
+        public Issue Issue => _issue;
 
         public void SetStatus(string status)
         {
-            Status = status;
+            _status = status;
             ValidateStatus();
         }
 

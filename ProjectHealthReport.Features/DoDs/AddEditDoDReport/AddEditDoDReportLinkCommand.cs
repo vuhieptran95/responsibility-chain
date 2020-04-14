@@ -24,7 +24,7 @@ namespace ProjectHealthReport.Features.DoDs.AddEditDoDReport
                 _dbContext = dbContext;
             }
 
-            public override async Task<int> HandleAsync(AddEditDoDReportLinkCommand request)
+            public override async Task HandleAsync(AddEditDoDReportLinkCommand request)
             {
                 var dodRecords = await _dbContext.DoDReports.Where(d =>
                     d.ProjectId == request.ProjectId & d.YearWeek == request.YearWeek).ToListAsync();
@@ -33,8 +33,10 @@ namespace ProjectHealthReport.Features.DoDs.AddEditDoDReport
 
                 await _dbContext.SaveChangesAsync();
 
-                return 1;
+                request.Response = 1;
             }
         }
+
+        public int Response { get; set; }
     }
 }

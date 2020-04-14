@@ -2,7 +2,7 @@
 
 namespace ResponsibilityChain.Business.Authorizations
 {
-    public class AuthorizationHandlerBase<TRequest, TResponse> : BranchHandler<TRequest, TResponse>
+    public class AuthorizationHandlerBase<TRequest, TResponse> : BranchHandler<TRequest, TResponse> where TRequest: IRequest<TResponse>
     {
         public AuthorizationHandlerBase(AuthorizationHandler<TRequest, TResponse> [] authorizationHandlers,
             AuthorizationExceptionHandler<TRequest, TResponse> authorizationExceptionHandler)

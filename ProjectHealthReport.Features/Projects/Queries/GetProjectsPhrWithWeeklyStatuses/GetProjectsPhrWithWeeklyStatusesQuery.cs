@@ -43,7 +43,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjectsPhrWithWeekly
                 _dbContext = dbContext;
             }
 
-            public override async Task<Dto> HandleAsync(GetProjectsPhrWithWeeklyStatusesQuery request)
+            public override async Task HandleAsync(GetProjectsPhrWithWeeklyStatusesQuery request)
             {
                 var projects = await _dbContext.Projects
                     .Where(p => p.PhrRequired)
@@ -103,8 +103,10 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjectsPhrWithWeekly
 
                 var dto = new Dto() {Projects = projectDtos, YearWeek = request.YearWeek};
 
-                return dto;
+                request.Response = dto;
             }
         }
+
+        public Dto Response { get; set; }
     }
 }

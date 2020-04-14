@@ -6,7 +6,7 @@ using ResponsibilityChain.Business.RequestContexts;
 
 namespace ResponsibilityChain.Business.Caching
 {
-    public class CacheHandler<TRequest, TResponse> : Handler<TRequest, TResponse>
+    public class CacheHandler<TRequest, TResponse> : Handler<TRequest, TResponse> where TRequest: IRequest<TResponse>
     {
         protected readonly IMemoryCache Cache;
         protected readonly CacheConfig<TRequest> CacheConfig;
@@ -17,18 +17,21 @@ namespace ResponsibilityChain.Business.Caching
             CacheConfig = cacheConfig;
         }
 
-        public override async Task<TResponse> HandleAsync(TRequest request)
+        public override async Task HandleAsync(TRequest request)
         {
-            if (!CacheConfig.IsEnabled) return await base.HandleAsync(request);
+            if (!CacheConfig.IsEnabled)
+            {
+                await base.HandleAsync(request);
+                return;
+            }
             
-            var response = await Cache.GetOrCreateAsync(CacheConfig.GetDefaultCacheKey(request) + CacheConfig.CacheKey,
+            await Cache.GetOrCreateAsync(CacheConfig.GetDefaultCacheKey(request) + CacheConfig.CacheKey,
                 async entry =>
                 {
                     entry.AbsoluteExpiration = CacheConfig.DateTimeOffset;
-                    return await base.HandleAsync(request);
+                    await base.HandleAsync(request);
+                    return request.Response;
                 });
-
-            return response;
         }
     }
 

@@ -25,7 +25,7 @@ namespace ProjectHealthReport.Features.DoDs.GetDoDReport
                 _dbContext = dbContext;
             }
 
-            public override async Task<Dto> HandleAsync(GetDoDReportLinksQuery request)
+            public override async Task HandleAsync(GetDoDReportLinksQuery request)
             {
                 var yearWeeksToGetDod =
                     TimeHelper.GetYearWeeksOfXRecentWeeksStartFrom(TimeHelper.CalculateYear(request.YearWeek),
@@ -61,7 +61,7 @@ namespace ProjectHealthReport.Features.DoDs.GetDoDReport
                 
                 reportLinks.AddRange(listReportLinkToAdds.Where(r => r != null));
 
-                return new Dto(){ReportLinks = reportLinks.OrderByDescending(r => r.YearWeek)};
+                request.Response = new Dto(){ReportLinks = reportLinks.OrderByDescending(r => r.YearWeek)};
             }
         }
         
@@ -75,6 +75,8 @@ namespace ProjectHealthReport.Features.DoDs.GetDoDReport
                 public string ReportFileName { get; set; }
             }
         }
+
+        public Dto Response { get; set; }
     }
 
     

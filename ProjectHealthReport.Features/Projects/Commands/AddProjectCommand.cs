@@ -61,7 +61,7 @@ namespace ProjectHealthReport.Features.Projects.Commands
                 _mediator = mediator;
             }
 
-            public override async Task<int> HandleAsync(AddProjectCommand request)
+            public override async Task HandleAsync(AddProjectCommand request)
             {
                 using (var transaction = await _dbContext.Database.BeginTransactionAsync())
                 {
@@ -81,7 +81,7 @@ namespace ProjectHealthReport.Features.Projects.Commands
 
                         await transaction.CommitAsync();
 
-                        return project.Id;
+                        request.Response = project.Id;
                     }
                     catch (Exception)
                     {
@@ -91,5 +91,7 @@ namespace ProjectHealthReport.Features.Projects.Commands
                 }
             }
         }
+
+        public int Response { get; set; }
     }
 }

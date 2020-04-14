@@ -4,13 +4,11 @@ using ResponsibilityChain.Business.Caching;
 using ResponsibilityChain.Business.EventsHandlers;
 using ResponsibilityChain.Business.Executions;
 using ResponsibilityChain.Business.Logging;
-using ResponsibilityChain.Business.PostProcessors;
-using ResponsibilityChain.Business.PrePostRequestHandlers;
 using ResponsibilityChain.Business.Validations;
 
 namespace ResponsibilityChain.Business
 {
-    public class RequestHandler<TRequest, TResponse> : Handler<TRequest, TResponse>
+    public class RequestHandler<TRequest, TResponse> : Handler<TRequest, TResponse> where TRequest: IRequest<TResponse>
     {
         public RequestHandler(
             LoggingHandler<TRequest, TResponse> loggingHandler,
@@ -19,7 +17,6 @@ namespace ResponsibilityChain.Business
             ValidationHandler<TRequest, TResponse>[] validationHandlers,
             EventsHandler<TRequest, TResponse> eventsHandler,
             CacheHandler<TRequest, TResponse> cacheHandler,
-            PostRequestHandler<TRequest, TResponse> postRequestHandler,
             ExecutionHandlerBase<TRequest, TResponse> executionHandlerBase)
         {
             AddHandler(loggingHandler);
@@ -33,7 +30,6 @@ namespace ResponsibilityChain.Business
             
             AddHandler(eventsHandler);
             AddHandler(cacheHandler);
-            AddHandler(postRequestHandler);
             AddHandler(executionHandlerBase);
             
             // AddHandler(postProcessorHandlerBase);

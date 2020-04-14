@@ -7,6 +7,17 @@ namespace ProjectHealthReport.Domains.Domains
 {
     public class Threshold
     {
+        private int _metricStatusId;
+        private MetricStatus _metricStatus;
+        private Metric _metric;
+        private string _value;
+        private bool _isRange;
+        private string _lowerBoundOperator;
+        private string _upperBoundOperator;
+        private decimal? _lowerBound;
+        private decimal? _upperBound;
+        private int _metricId;
+
         public Threshold()
         {
         }
@@ -15,33 +26,66 @@ namespace ProjectHealthReport.Domains.Domains
             string upperBoundOperator, string lowerBoundOperator, bool isRange, string value, Metric metric,
             MetricStatus metricStatus)
         {
-            MetricStatusId = metricStatusId;
-            MetricId = metricId;
-            UpperBound = upperBound;
-            LowerBound = lowerBound;
-            UpperBoundOperator = upperBoundOperator;
-            LowerBoundOperator = lowerBoundOperator;
-            IsRange = isRange;
-            Value = value;
-            Metric = metric;
-            MetricStatus = metricStatus;
+            _metricStatusId = metricStatusId;
+            _metricId = metricId;
+            _upperBound = upperBound;
+            _lowerBound = lowerBound;
+            _upperBoundOperator = upperBoundOperator;
+            _lowerBoundOperator = lowerBoundOperator;
+            _isRange = isRange;
+            _value = value;
+            _metric = metric;
+            _metricStatus = metricStatus;
 
             ValidateIsRange();
             ValidateOperators();
         }
 
-        public int MetricStatusId { get; private set; }
-        public int MetricId { get; private set; }
-        public decimal? UpperBound { get; private set; }
-        public decimal? LowerBound { get; private set; }
-        public string UpperBoundOperator { get; private set; }
-        public string LowerBoundOperator { get; private set; }
-        public bool IsRange { get; private set; }
-        public string Value { get; private set; }
-        public Metric Metric { get; private set; }
-        public MetricStatus MetricStatus { get; private set; }
+        public Threshold(int metricStatusId, int metricId, decimal? upperBound, decimal? lowerBound,
+            string upperBoundOperator, string lowerBoundOperator, bool isRange, string value)
+        {
+            _metricStatusId = metricStatusId;
+            _metricId = metricId;
+            _upperBound = upperBound;
+            _lowerBound = lowerBound;
+            _upperBoundOperator = upperBoundOperator;
+            _lowerBoundOperator = lowerBoundOperator;
+            _isRange = isRange;
+            _value = value;
+        }
 
-        public void SetMetricId(int metricId) => MetricId = metricId;
+        public int MetricStatusId => _metricStatusId;
+
+        public int MetricId => _metricId;
+
+        public decimal? UpperBound => _upperBound;
+
+        public decimal? LowerBound => _lowerBound;
+
+        public string UpperBoundOperator => _upperBoundOperator;
+
+        public string LowerBoundOperator => _lowerBoundOperator;
+
+        public bool IsRange => _isRange;
+
+        public string Value => _value;
+
+        public Metric Metric => _metric;
+
+        public MetricStatus MetricStatus => _metricStatus;
+
+        public void UpdateValue(int metricStatusId, int metricId, decimal? upperBound, decimal? lowerBound,
+            string upperBoundOperator, string lowerBoundOperator, bool isRange, string value)
+        {
+            _metricStatusId = metricStatusId;
+            _metricId = metricId;
+            _upperBound = upperBound;
+            _lowerBound = lowerBound;
+            _upperBoundOperator = upperBoundOperator;
+            _lowerBoundOperator = lowerBoundOperator;
+            _isRange = isRange;
+            _value = value;
+        }
 
         public void ValidateIsRange()
         {
@@ -92,7 +136,7 @@ namespace ProjectHealthReport.Domains.Domains
                         $"Invalid operators - metric Id: {MetricId} - metric status Id: {MetricStatusId}");
             }
         }
-        
+
         private sealed class ThresholdEqualityComparer : IEqualityComparer<Threshold>
         {
             public bool Equals(Threshold x, Threshold y)

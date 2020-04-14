@@ -2,46 +2,41 @@
 
 namespace ResponsibilityChain.Business.EventsHandlers
 {
-    public class EventsHandler<TRequest, TResponse> : BranchHandler<TRequest, TResponse>
+    public class EventsHandler<TRequest, TResponse> : BranchHandler<TRequest, TResponse> where TRequest: IRequest<TResponse>
     {
         private readonly PreEvent<TRequest, TResponse>[] _preEvents;
-        private readonly PostEvent<TResponse, TRequest>[] _postEvents;
-        private readonly DefaultBranchHandler<TRequest, TResponse> _defaultPreEvent;
-        private readonly DefaultBranchHandler<TResponse, TRequest> _defaultPostEvent;
+        private readonly PostEvent<TRequest, TResponse>[] _postEvents;
+        private readonly DefaultBranchHandler<TRequest, TResponse> _defaultEvent;
         private readonly PreEvent<TRequest, TResponse> _preEvent;
-        private readonly PostEvent<TResponse, TRequest> _postEvent;
+        private readonly PostEvent<TRequest, TResponse> _postEvent;
 
-        public EventsHandler(PreEvent<TRequest, TResponse>[] preEvents, PostEvent<TResponse, TRequest>[] postEvents,
-            DefaultBranchHandler<TRequest, TResponse> defaultPreEvent,
-            DefaultBranchHandler<TResponse, TRequest> defaultPostEvent)
+        public EventsHandler(PreEvent<TRequest, TResponse>[] preEvents, PostEvent<TRequest, TResponse>[] postEvents,
+            DefaultBranchHandler<TRequest, TResponse> defaultEvent)
         {
             _preEvents = preEvents;
             _preEvent = preEvents[0];
             _postEvents = postEvents;
             _postEvent = postEvents[0];
-            _defaultPreEvent = defaultPreEvent;
-            _defaultPostEvent = defaultPostEvent;
+            _defaultEvent = defaultEvent;
 
             CreateEventBranch();
         }
         
 
-        public override async Task<TResponse> HandleAsync(TRequest request)
+        public override async Task HandleAsync(TRequest request)
         {
             await _preEvent.Branch.HandleAsync(request);
 
-            var response = await base.HandleAsync(request);
+            await base.HandleAsync(request);
 
-            await _postEvent.Branch.HandleAsync(response);
-
-            return response;
+            await _postEvent.Branch.HandleAsync(request);
         }
 
         private void CreateEventBranch()
         {
             if (_preEvents.Length < 2)
             {
-                _preEvent.AddBranchHandler(_defaultPreEvent);
+                _preEvent.AddBranchHandler(_defaultEvent);
             }
             else
             {
@@ -53,7 +48,7 @@ namespace ResponsibilityChain.Business.EventsHandlers
 
             if (_postEvents.Length < 2)
             {
-                _postEvent.AddBranchHandler(_defaultPostEvent);
+                _postEvent.AddBranchHandler(_defaultEvent);
             }
             else
             {
@@ -65,11 +60,11 @@ namespace ResponsibilityChain.Business.EventsHandlers
         }
     }
 
-    public class PreEvent<TRequest, TResponse> : BranchHandler<TRequest, TResponse>
+    public class PreEvent<TRequest, TResponse> : BranchHandler<TRequest, TResponse> where TRequest: IRequest<TResponse>
     {
     }
 
-    public class PostEvent<TResponse, TRequest> : BranchHandler<TResponse, TRequest>
+    public class PostEvent<TRequest, TResponse> : BranchHandler<TRequest, TResponse> where TRequest: IRequest<TResponse>
     {
     }
 }

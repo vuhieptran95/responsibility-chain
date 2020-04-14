@@ -21,7 +21,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditAdditionalI
             _dbContext = dbContext;
         }
 
-        public override async Task<int> HandleAsync(RemoveAdditionalInfoCommand request)
+        public override async Task HandleAsync(RemoveAdditionalInfoCommand request)
         {
             var aii = new AdditionalInfoIssues(request.Id, request.IssueId, MiscHelper.IssueStatusOpen, null, null);
 
@@ -33,8 +33,10 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditAdditionalI
 
             // await transaction.CommitAsync();
 
-            return 1;
+            request.Response = 1;
         }
     }
-}
+
+    public int Response { get; set; }
+    }
     }

@@ -11,14 +11,17 @@ namespace ProjectHealthReport.Features.Helpers
     {
         public class Handler: ExecutionHandlerBase<GetUserEmailsQuery, List<string>>
         {
-            public override Task<List<string>> HandleAsync(GetUserEmailsQuery request)
+            public override Task HandleAsync(GetUserEmailsQuery request)
             {
                 AuthorizationHelper.ProjectManagementOffice.AddRange(AuthorizationHelper.KeyAccountManagers);
                 AuthorizationHelper.ProjectManagementOffice.AddRange(AuthorizationHelper.DeliveryManagerAccounts);
                 AuthorizationHelper.ProjectManagementOffice.AddRange(AuthorizationHelper.ProjectManagers);
                 
-                return Task.FromResult(AuthorizationHelper.ProjectManagementOffice.Select(i => i.Item1).ToList());
+                request.Response = (AuthorizationHelper.ProjectManagementOffice.Select(i => i.Item1).ToList());
+                return Task.CompletedTask;
             }
         }
+
+        public List<string> Response { get; set; }
     }
 }

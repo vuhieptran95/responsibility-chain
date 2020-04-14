@@ -26,7 +26,9 @@ namespace ProjectHealthReport.Domains.Exceptions
         D018,
         D019,
         D020,
-        D021
+        D021,
+        D022,
+        D023,
     }
 
     public class DomainExceptionCode
@@ -123,6 +125,10 @@ namespace ProjectHealthReport.Domains.Exceptions
                     return ("If Project's not DodRequired, DodReport cannot be inserted", typeof(DoDReport));
                 case Exceptions.DomainError.D021:
                     return ("Issue Status can only be Open/Closed", typeof(AdditionalInfoIssues));
+                case Exceptions.DomainError.D022:
+                    return ("Metrics can only add new thresholds or edit its own thresholds", typeof(Metric));
+                case Exceptions.DomainError.D023:
+                    return ("Individual thresholds of a metric must belong to different metric statuses", typeof(Metric));
 
                 default: throw new Exception("Invalid error code!");
             }

@@ -10,10 +10,13 @@ namespace ProjectHealthReport.Features.Helpers
     {
         public class Handler: ExecutionHandlerBase<GetListUserRoleQuery, List<(string,string)>>
         {
-            public override Task<List<(string, string)>> HandleAsync(GetListUserRoleQuery request)
+            public override Task HandleAsync(GetListUserRoleQuery request)
             {
-                return Task.FromResult(AuthorizationHelper.UserRoleList);
+                request.Response = (AuthorizationHelper.UserRoleList);
+                return Task.CompletedTask;
             }
         }
+
+        public List<(string, string)> Response { get; set; }
     }
 }

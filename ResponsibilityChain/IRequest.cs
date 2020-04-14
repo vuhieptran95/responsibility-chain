@@ -4,6 +4,7 @@ namespace ResponsibilityChain
 {
     public interface IRequest<TResponse>
     {
+        TResponse Response { get; set; }
     }
     
     

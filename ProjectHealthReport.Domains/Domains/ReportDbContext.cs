@@ -33,6 +33,144 @@ namespace ProjectHealthReport.Domains.Domains
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            ConfigProjectModel(modelBuilder);
+
+            modelBuilder.Entity<Metric>(e =>
+            {
+                e.HasKey(m => m.Id);
+                e.Property(m => m.Name).HasColumnName("Name").IsRequired();
+                e.Property(m => m.ValueType).HasColumnName("ValueType").IsRequired();
+                e.Property(m => m.Unit).HasColumnName("Unit");
+                e.Property(m => m.Order).HasColumnName("Order");
+                e.Property(m => m.Tool).HasColumnName("Tool").IsRequired();
+                e.Property(m => m.ToolOrder).HasColumnName("ToolOrder");
+                e.Property(m => m.SelectValues).HasColumnName("SelectValues");
+                e.HasMany(m => m.Thresholds).WithOne(t => t.Metric)
+                    .HasForeignKey(t => t.MetricId);
+                e.HasMany(m => m.DoDReports).WithOne(d => d.Metric)
+                    .HasForeignKey(d => d.MetricId);
+            });
+
+            modelBuilder.Entity<MetricStatus>(e =>
+            {
+                e.HasKey(m => m.Id);
+                e.Property(m => m.Name).HasColumnName("Name").IsRequired();
+                e.HasMany(m => m.Thresholds).WithOne(t => t.MetricStatus)
+                    .HasForeignKey(t => t.MetricStatusId);
+            });
+
+            modelBuilder.Entity<Threshold>(e =>
+            {
+                e.HasKey(t => new {t.MetricId, t.MetricStatusId});
+                e.Property(t => t.Value).HasColumnName("Value");
+                e.Property(t => t.IsRange).HasColumnName("IsRange");
+                e.Property(t => t.LowerBound).HasColumnName("LowerBound");
+                e.Property(t => t.UpperBound).HasColumnName("UpperBound");
+                e.Property(t => t.LowerBoundOperator).HasColumnName("LowerBoundOperator");
+                e.Property(t => t.UpperBoundOperator).HasColumnName("UpperBoundOperator");
+            });
+
+            modelBuilder.Entity<ProjectAccess>(e =>
+            {
+                e.HasKey(p => p.Id);
+                e.HasIndex(pa => new {pa.ProjectId, pa.Role, pa.Email}).IsUnique();
+                e.Property(pa => pa.Email).IsRequired();
+                e.Property(pa => pa.Role).IsRequired();
+            });
+
+
+            modelBuilder.Entity<BacklogItem>(e =>
+            {
+                e.HasKey(p => p.Id);
+                e.HasIndex(b => new {b.YearWeek, b.ProjectId}).IsUnique();
+                e.Property(b => b.Sprint).HasColumnName("Sprint");
+                e.Property(b => b.ItemsAdded).HasColumnName("ItemsAdded").IsRequired();
+                e.Property(b => b.ItemsDone).HasColumnName("ItemsDone").IsRequired();
+                e.Property(b => b.YearWeek).HasColumnName("YearWeek");
+                e.Property(b => b.StoryPointsAdded).HasColumnName("StoryPointsAdded");
+                e.Property(b => b.StoryPointsDone).HasColumnName("StoryPointsDone");
+            });
+
+            modelBuilder.Entity<QualityReport>(e =>
+            {
+                e.HasKey(q => q.Id);
+                e.HasIndex(b => new {b.YearWeek, b.ProjectId}).IsUnique();
+                e.Property(q => q.CriticalBugs).HasColumnName("CriticalBugs");
+                e.Property(q => q.DoneBugs).HasColumnName("DoneBugs");
+                e.Property(q => q.MajorBugs).HasColumnName("MajorBugs");
+                e.Property(q => q.MinorBugs).HasColumnName("MinorBugs");
+                e.Property(q => q.ReOpenBugs).HasColumnName("ReOpenBugs");
+            });
+
+            modelBuilder.Entity<Status>(e =>
+            {
+                e.HasKey(s => s.Id);
+                e.HasIndex(b => new {b.YearWeek, b.ProjectId}).IsUnique();
+                e.Property(s => s.Milestone).HasColumnName("Milestone");
+                e.Property(s => s.MilestoneDate).HasColumnName("MilestoneDate");
+                e.Property(s => s.ProjectStatus).HasColumnName("ProjectStatus");
+                e.Property(s => s.StatusColor).HasColumnName("StatusColor");
+                e.Property(s => s.RetrospectiveFeedBack).HasColumnName("RetrospectiveFeedBack");
+            });
+
+
+            modelBuilder.Entity<AdditionalInfo>(e =>
+            {
+                e.HasKey(ai => new {ai.Id});
+                e.HasIndex(b => new {b.YearWeek, b.ProjectId}).IsUnique();
+            });
+
+            modelBuilder.Entity<AdditionalInfoIssues>(e =>
+            {
+                e.HasKey(ai => new {ai.IssueId, ai.AdditionalInfoId});
+                e.Property(ai => ai.Status).HasColumnName("Status").IsRequired();
+            });
+            
+            modelBuilder.Entity<Issue>(e =>
+            {
+                e.HasKey(i => i.Id);
+                e.Property(i => i.Action).HasColumnName("Action");
+                e.Property(i => i.Impact).HasColumnName("Impact");
+                e.Property(i => i.Item).HasColumnName("Item");
+                e.Property(i => i.OpenedYearWeek).HasColumnName("OpenedYearWeek");
+                e.HasMany(i => i.AdditionalInfoIssues)
+                    .WithOne(aii => aii.Issue)
+                    .HasForeignKey(aii => aii.IssueId);
+            });
+
+            modelBuilder.Entity<WeeklyReportStatus>(e =>
+            {
+                e.HasKey(w => w.Id);
+                e.HasIndex(b => new {b.YearWeek, b.ProjectId}).IsUnique();
+                e.Property(w => w.IsDeadlineMissed).HasColumnName("IsDeadlineMissed");
+            });
+
+            modelBuilder.Entity<DivisionProjectStatus>(e =>
+            {
+                e.HasKey(d => d.Id);
+                e.HasIndex(b => new {b.YearWeek, b.ProjectId}).IsUnique();
+                e.Property(d => d.Actions).HasColumnName("Actions");
+                e.Property(d => d.ProjectStatus).HasColumnName("ProjectStatus");
+                e.Property(d => d.StatusColor).HasColumnName("StatusColor").IsRequired();
+            });
+
+            modelBuilder.Entity<DoDReport>(e =>
+            {
+                e.HasKey(d => new {d.MetricId, d.ProjectId, d.YearWeek});
+                e.Property(d => d.Value).HasColumnName("Value");
+                e.Property(d => d.LinkToReport).HasColumnName("LinkToReport");
+                e.Property(d => d.ReportFileName).HasColumnName("ReportFileName");
+            });
+
+            modelBuilder.Entity<ProjectStateType>(e =>
+            {
+                e.HasKey(p => p.Id);
+                e.Property(p => p.State).HasColumnName("State").IsRequired();
+            });
+        }
+
+        private static void ConfigProjectModel(ModelBuilder modelBuilder)
+        {
             modelBuilder.Entity<Project>(e =>
             {
                 e.HasKey(p => p.Id);
@@ -75,44 +213,6 @@ namespace ProjectHealthReport.Domains.Domains
                     .WithMany(n => n.Projects)
                     .HasForeignKey(p => p.ProjectStateTypeId);
             });
-
-            modelBuilder.Entity<ProjectAccess>(e =>
-            {
-                e.HasKey(p => p.Id);
-                e.HasIndex(pa => new {pa.ProjectId, pa.Role, pa.Email}).IsUnique();
-                e.Property(pa => pa.Email).IsRequired();
-                e.Property(pa => pa.Role).IsRequired();
-            });
-
-            modelBuilder.Entity<AdditionalInfoIssues>()
-                .HasKey(ai => new {ai.IssueId, ai.AdditionalInfoId});
-
-            modelBuilder.Entity<BacklogItem>(e =>
-            {
-                e.HasKey(p => p.Id);
-                e.HasIndex(b => new {b.YearWeek, b.ProjectId}).IsUnique();
-            });
-
-            modelBuilder.Entity<QualityReport>()
-                .HasIndex(b => new {b.YearWeek, b.ProjectId}).IsUnique();
-
-            modelBuilder.Entity<Status>()
-                .HasIndex(b => new {b.YearWeek, b.ProjectId}).IsUnique();
-
-            modelBuilder.Entity<AdditionalInfo>()
-                .HasIndex(b => new {b.YearWeek, b.ProjectId}).IsUnique();
-
-            modelBuilder.Entity<WeeklyReportStatus>()
-                .HasIndex(b => new {b.YearWeek, b.ProjectId}).IsUnique();
-
-            modelBuilder.Entity<DivisionProjectStatus>()
-                .HasIndex(b => new {b.YearWeek, b.ProjectId}).IsUnique();
-
-            modelBuilder.Entity<DoDReport>()
-                .HasKey(d => new {d.MetricId, d.ProjectId, d.YearWeek});
-
-            modelBuilder.Entity<Threshold>()
-                .HasKey(t => new {t.MetricId, t.MetricStatusId});
         }
     }
 }

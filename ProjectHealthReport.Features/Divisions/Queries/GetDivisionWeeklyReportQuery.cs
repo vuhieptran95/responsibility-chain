@@ -29,7 +29,7 @@ namespace ProjectHealthReport.Features.Divisions.Queries
                 _mapper = mapper;
             }
 
-            public override async Task<Dto> HandleAsync(GetDivisionWeeklyReportQuery request)
+            public override async Task HandleAsync(GetDivisionWeeklyReportQuery request)
             {
                 var divisionProjectStatusDto = (await _dbContext.Projects
                         .Where(p => p.Division == request.DivisionName
@@ -62,7 +62,7 @@ namespace ProjectHealthReport.Features.Divisions.Queries
                     DivisionProjectStatuses = divisionProjectStatusDto
                 };
 
-                return result;
+                request.Response = result;
             }
 
             private bool IsProjectDisplayed(Project project, int selectedWeek)
@@ -109,5 +109,7 @@ namespace ProjectHealthReport.Features.Divisions.Queries
                 public int YearWeek { get; set; }
             }
         }
+
+        public Dto Response { get; set; }
     }
 }

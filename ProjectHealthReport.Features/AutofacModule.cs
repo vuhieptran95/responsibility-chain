@@ -10,7 +10,6 @@ using ResponsibilityChain.Business.Caching;
 using ResponsibilityChain.Business.EventsHandlers;
 using ResponsibilityChain.Business.Executions;
 using ResponsibilityChain.Business.Logging;
-using ResponsibilityChain.Business.PrePostRequestHandlers;
 using ResponsibilityChain.Business.RequestContexts;
 using ResponsibilityChain.Business.Validations;
 using Module = Autofac.Module;
@@ -45,7 +44,7 @@ namespace ProjectHealthReport.Features
             builder.RegisterGeneric(typeof(ExecutionHandlerBase<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(LoggingHandler<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(EventsHandler<,>)).InstancePerLifetimeScope();
-            builder.RegisterGeneric(typeof(PostRequestHandler<,>)).InstancePerLifetimeScope();
+            
             builder.RegisterGeneric(typeof(CacheHandler<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(CacheConfig<>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(PreEvent<,>)).InstancePerLifetimeScope();

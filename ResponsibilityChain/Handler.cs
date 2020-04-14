@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 
 namespace ResponsibilityChain
 {
-    public class Handler<TRequest, TResponse>
+    public class Handler<TRequest, TResponse> where TRequest: IRequest<TResponse>
     {
-        public virtual Task<TResponse> HandleAsync(TRequest request)
+        public virtual Task HandleAsync(TRequest request)
         {
             if (Next == null)
             {

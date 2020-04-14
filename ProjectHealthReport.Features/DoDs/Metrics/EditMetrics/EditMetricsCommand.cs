@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using ProjectHealthReport.Domains.DomainProxies;
 using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Mappings;
 using ResponsibilityChain;
@@ -22,7 +23,7 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.EditMetrics
             public IEnumerable<MetricDto> Metrics { get; set; }
         }
 
-        public class MetricDto : IMapFrom<Metric>
+        public class MetricDto : IMapTo<MetricProxy>, IMapFrom<MetricProxy>
         {
             public int Id { get; set; }
             public string Name { get; set; }
@@ -34,16 +35,9 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.EditMetrics
             public string SelectValues { get; set; }
             public IEnumerable<ThresholdDto> Thresholds { get; set; }
 
-            public void MappingFrom(Profile profile)
-            {
-                profile.CreateMap<MetricDto, Metric>()
-                    .ConstructUsing((dto, context) => new Metric(dto.Id, dto.Name, dto.ValueType, dto.Unit, dto.Tool,
-                        dto.SelectValues, dto.Order, dto.ToolOrder,
-                        context.Mapper.Map<ICollection<Threshold>>(dto.Thresholds), null));
-            }
         }
 
-        public class ThresholdDto : IMapFrom<Threshold>
+        public class ThresholdDto: IMapFrom<Threshold>, IMapTo<ThresholdProxy>
         {
             public int MetricStatusId { get; set; }
             public int MetricId { get; set; }
@@ -55,13 +49,6 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.EditMetrics
             public string Value { get; set; }
             public string MetricStatusName { get; set; }
 
-            public void MappingFrom(Profile profile)
-            {
-                profile.CreateMap<ThresholdDto, Threshold>()
-                    .ConstructUsing(dto => new Threshold(dto.MetricStatusId, dto.MetricId, dto.UpperBound,
-                        dto.LowerBound, dto.UpperBoundOperator, dto.LowerBoundOperator, dto.IsRange, dto.Value, null,
-                        null));
-            }
         }
 
         public class Handler : ExecutionHandlerBase<EditMetricsCommand, int>
@@ -75,33 +62,35 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.EditMetrics
                 _mapper = mapper;
             }
 
-            public override async Task<int> HandleAsync(EditMetricsCommand request)
+            public override async Task HandleAsync(EditMetricsCommand request)
             {
                 var metricDtos = request.MetricGroups.SelectMany(g => g.Metrics, (g, m) =>
                 {
                     m.Tool = g.Tool;
                     m.ToolOrder = g.ToolOrder;
                     return m;
+                }).ToList();
+
+                var listMetricId = metricDtos.Select(m => m.Id).ToList();
+
+                var metricsInDb = _dbContext.Metrics.Include(m => m.Thresholds).Where(m => listMetricId.Contains(m.Id)).ToList();
+                
+                metricDtos.ForEach(dto =>
+                {
+                    var metric = metricsInDb.First(m => m.Id == dto.Id);
+                    metric.UpdateValue(dto.Id, dto.Name, dto.ValueType, dto.Unit, dto.Tool, dto.SelectValues, dto.Order, dto.ToolOrder);
+                    
+                    var thresholdsToUpdate = _mapper.Map<List<Threshold>>(_mapper.Map<IEnumerable<ThresholdProxy>>(dto.Thresholds));
+                    
+                    metric.ReplaceThresholds(thresholdsToUpdate);
                 });
-                var metrics = _mapper.Map<IEnumerable<Metric>>(metricDtos).ToList();
-
-                var thresholds = metrics.SelectMany(m => m.Thresholds, (m, t) => t).ToList();
-
-                var thresholdsInDb = await _dbContext.Thresholds.AsNoTracking().ToListAsync();
-
-                var listAddNew = thresholds.Except(thresholdsInDb, Threshold.ThresholdComparer);
-                var listRemove = thresholdsInDb.Except(thresholds, Threshold.ThresholdComparer);
-                var listUpdate = thresholds.Intersect(thresholdsInDb, Threshold.ThresholdComparer);
-
-                _dbContext.Metrics.UpdateRange(metrics);
-                _dbContext.Thresholds.UpdateRange(listUpdate);
-                _dbContext.Thresholds.RemoveRange(listRemove);
-                await _dbContext.Thresholds.AddRangeAsync(listAddNew);
-
+                
                 await _dbContext.SaveChangesAsync();
 
-                return 1;
+                request.Response = 1;
             }
         }
+
+        public int Response { get; set; }
     }
 }

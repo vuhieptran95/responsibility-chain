@@ -25,7 +25,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjects
                 _mapper = mapper;
             }
 
-            public override async Task<Dto> HandleAsync(GetProjectsQuery request)
+            public override async Task HandleAsync(GetProjectsQuery request)
             {
                 var projects = await _dbContext.Projects.OrderByDescending(p => p.Id)
                     .ProjectTo<Dto.ProjectDto>(_mapper.ConfigurationProvider)
@@ -40,7 +40,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjects
                         .TrimEnd("niteco.com".ToCharArray()).TrimEnd('@');
                 });
 
-                return new Dto(projects);
+                request.Response = new Dto(projects);
             }
         }
 
@@ -78,5 +78,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjects
                 }
             }
         }
+
+        public Dto Response { get; set; }
     }
 }

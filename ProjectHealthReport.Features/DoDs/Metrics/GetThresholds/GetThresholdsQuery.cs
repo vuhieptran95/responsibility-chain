@@ -48,14 +48,16 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.GetThresholds
                 _mapper = mapper;
             }
 
-            public override async Task<Dto> HandleAsync(GetThresholdsQuery request)
+            public override async Task HandleAsync(GetThresholdsQuery request)
             {
                 var projectMetrics = await _dbContext.Thresholds
                     .Select(m => _mapper.Map<Dto.ThresholdDto>(m))
                     .ToListAsync();
 
-                return new Dto() {Thresholds = projectMetrics};
+                request.Response = new Dto() {Thresholds = projectMetrics};
             }
         }
+
+        public Dto Response { get; set; }
     }
 }

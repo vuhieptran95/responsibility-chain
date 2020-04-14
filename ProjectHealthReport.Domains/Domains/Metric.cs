@@ -1,29 +1,41 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using ProjectHealthReport.Domains.Exceptions;
 using ProjectHealthReport.Domains.Helpers;
 
 namespace ProjectHealthReport.Domains.Domains
 {
     public class Metric
     {
+        private int _id;
+        private string _name;
+        private string _valueType;
+        private string _unit;
+        private string _tool;
+        private string _selectValues;
+        private int _order;
+        private int _toolOrder;
+        private ICollection<Threshold> _thresholds;
+        private ICollection<DoDReport> _doDReports;
+
         public Metric()
         {
-            Thresholds = new HashSet<Threshold>();
-            DoDReports = new HashSet<DoDReport>();
+            _thresholds = new HashSet<Threshold>();
+            _doDReports = new HashSet<DoDReport>();
         }
 
         public Metric(int id, string name, string valueType, string unit, string tool, string selectValues, int order,
             int toolOrder) : this()
         {
-            Id = id;
-            Name = name;
-            ValueType = valueType;
-            Unit = unit;
-            Tool = tool;
-            SelectValues = selectValues;
-            Order = order;
-            ToolOrder = toolOrder;
+            _id = id;
+            _name = name;
+            _valueType = valueType;
+            _unit = unit;
+            _tool = tool;
+            _selectValues = selectValues;
+            _order = order;
+            _toolOrder = toolOrder;
 
             ValueTypeMustBeValid();
             ValueTypeIsSelect_SelectValueMustHaveValue();
@@ -33,30 +45,77 @@ namespace ProjectHealthReport.Domains.Domains
             int toolOrder, ICollection<Threshold> thresholds, ICollection<DoDReport> doDReports) : this(id, name,
             valueType, unit, tool, selectValues, order, toolOrder)
         {
-            Thresholds = thresholds ?? Thresholds;
-            DoDReports = doDReports ?? DoDReports;
+            _thresholds = thresholds;
+            _doDReports = doDReports;
 
             ValidateThresholds();
         }
 
-        public int Id { get; private set; }
-        [Required] public string Name { get; private set; }
-        [Required] public string ValueType { get; private set; }
-        public string Unit { get; private set; }
-        [Required] public string Tool { get; private set; }
-        public string SelectValues { get; private set; }
-        public int Order { get; private set; }
-        public int ToolOrder { get; private set; }
-        public ICollection<Threshold> Thresholds { get; private set; }
-        public ICollection<DoDReport> DoDReports { get; private set; }
+        public int Id => _id;
 
-        public void AddThresholds(List<Threshold> thresholds)
+        public string Name => _name;
+
+        public string ValueType => _valueType;
+
+        public string Unit => _unit;
+
+        public string Tool => _tool;
+
+        public string SelectValues => _selectValues;
+
+        public int Order => _order;
+
+        public int ToolOrder => _toolOrder;
+
+        public IEnumerable<Threshold> Thresholds => _thresholds;
+
+        public IEnumerable<DoDReport> DoDReports => _doDReports;
+
+        public void UpdateValue(int id, string name, string valueType, string unit, string tool, string selectValues,
+            int order,
+            int toolOrder)
         {
-            foreach (var threshold in thresholds)
+            _id = id;
+            _name = name;
+            _valueType = valueType;
+            _unit = unit;
+            _tool = tool;
+            _selectValues = selectValues;
+            _order = order;
+            _toolOrder = toolOrder;
+
+            ValueTypeMustBeValid();
+            ValueTypeIsSelect_SelectValueMustHaveValue();
+        }
+
+        public void ReplaceThresholds(List<Threshold> thresholds)
+        {
+            var listMetricStatusIds = thresholds.Select(t => t.MetricStatusId).ToList();
+            var listDistinctIds = listMetricStatusIds.Distinct().ToList();
+            if (!listDistinctIds.SequenceEqual(listMetricStatusIds))
             {
-                threshold.SetMetricId(Id);
-                Thresholds.Add(threshold);
+                DomainExceptionCode.Throw(DomainError.D023, this, Thresholds);
             }
+            
+            if (thresholds.Any(t => t.MetricId > 0 && t.MetricId != Id))
+            {
+                DomainExceptionCode.Throw(DomainError.D022, this, thresholds);
+            }
+
+            var listRemove = Thresholds.Except(thresholds, Threshold.ThresholdComparer).ToList();
+            var listAddNew = thresholds.Except(Thresholds, Threshold.ThresholdComparer).ToList();
+            var listUpdate = thresholds.Intersect(Thresholds, Threshold.ThresholdComparer).ToList();
+
+            listRemove.ForEach(i => _thresholds.Remove(i));
+
+            listAddNew.ForEach(i => _thresholds.Add(i));
+
+            listUpdate.ForEach(i =>
+            {
+                var item = Thresholds.First(t => t.MetricId == i.MetricId && t.MetricStatusId == i.MetricStatusId);
+                item.UpdateValue(item.MetricStatusId, item.MetricId, i.UpperBound, i.LowerBound, i.UpperBoundOperator,
+                    i.LowerBoundOperator, i.IsRange, i.Value);
+            });
 
             ValidateThresholds();
         }
@@ -83,7 +142,7 @@ namespace ProjectHealthReport.Domains.Domains
 
         public void ValidateThresholds()
         {
-            if (Thresholds.Count > 3)
+            if (Thresholds.Count() > 3)
             {
                 throw new ValidationException("Can be maximum 3 thresholds");
             }
@@ -94,10 +153,10 @@ namespace ProjectHealthReport.Domains.Domains
                 {
                     case (DoDHelper.ValueTypeNumber, false):
                         throw new ValidationException("If metric value type is Number, threshold must be in range");
-                    
+
                     case (DoDHelper.ValueTypeText, true):
                         throw new ValidationException("If metric value type is Text, threshold cannot be in range");
-                    
+
                     case (DoDHelper.ValueTypeSelect, true):
                         throw new ValidationException("If metric value type is Select, threshold cannot be in range");
                 }
@@ -107,13 +166,33 @@ namespace ProjectHealthReport.Domains.Domains
 
     public class MetricStatus
     {
+        private readonly int _id;
+        private readonly string _name;
+        private readonly ICollection<Threshold> _thresholds;
+
         public MetricStatus()
         {
-            Thresholds = new HashSet<Threshold>();
+            _thresholds = new HashSet<Threshold>();
         }
 
-        public int Id { get; set; }
-        [Required] public string Name { get; set; }
-        public ICollection<Threshold> Thresholds { get; set; }
+        public MetricStatus(int id, string name) : this()
+        {
+            _id = id;
+            _name = name;
+        }
+
+        public MetricStatus(int id, string name, ICollection<Threshold> thresholds): this()
+        {
+            _id = id;
+            _name = name;
+            _thresholds = thresholds;
+        }
+
+        public int Id => _id;
+
+        [Required]
+        public string Name => _name;
+
+        public IEnumerable<Threshold> Thresholds => _thresholds;
     }
 }

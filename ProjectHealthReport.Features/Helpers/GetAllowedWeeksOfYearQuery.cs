@@ -13,7 +13,7 @@ namespace ProjectHealthReport.Features.Helpers
 
         public class Handler : ExecutionHandlerBase<GetAllowedWeeksOfYearQuery, List<int>>
         {
-            public override Task<List<int>> HandleAsync(GetAllowedWeeksOfYearQuery request)
+            public override Task HandleAsync(GetAllowedWeeksOfYearQuery request)
             {
                 var listWeeks = new List<int>();
                 var currentYear = TimeHelper.GetCurrentYearIso();
@@ -27,8 +27,12 @@ namespace ProjectHealthReport.Features.Helpers
                     listWeeks = Enumerable.Range(1, currentWeek).ToList();
                 }
 
-                return Task.FromResult(listWeeks);
+                request.Response = listWeeks;
+
+                return Task.CompletedTask;
             }
         }
+
+        public List<int> Response { get; set; }
     }
 }

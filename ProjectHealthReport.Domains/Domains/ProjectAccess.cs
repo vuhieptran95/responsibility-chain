@@ -28,6 +28,14 @@ namespace ProjectHealthReport.Domains.Domains
             Validate(userRoleList);
         }
 
+        public ProjectAccess(int id, int projectId, string email, string role)
+        {
+            _id = id;
+            _projectId = projectId;
+            _email = email;
+            _role = role;
+        }
+
         public int Id => _id;
 
         public int ProjectId => _projectId;

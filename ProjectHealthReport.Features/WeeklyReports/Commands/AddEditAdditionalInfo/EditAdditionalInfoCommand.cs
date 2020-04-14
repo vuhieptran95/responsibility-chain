@@ -44,7 +44,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditAdditionalI
                 _mapper = mapper;
             }
 
-            public override async Task<int> HandleAsync(EditAdditionalInfoCommand request)
+            public override async Task HandleAsync(EditAdditionalInfoCommand request)
             {
                 var aiiInDb = await _dbContext.AdditionalInfoIssues.SingleAsync(aii =>
                     aii.IssueId == request.IssueId && aii.AdditionalInfo.YearWeek == request.YearWeek &&
@@ -65,9 +65,10 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditAdditionalI
                     await _dbContext.SaveChangesAsync();
                 }
 
-                return 1;
+                request.Response = 1;
             }
         }
 
+        public int Response { get; set; }
     }
 }

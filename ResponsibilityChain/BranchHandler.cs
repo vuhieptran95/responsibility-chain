@@ -2,16 +2,16 @@
 
 namespace ResponsibilityChain
 {
-    public class BranchHandler<TRequest, TResponse> : Handler<TRequest, TResponse>
+    public class BranchHandler<TRequest, TResponse> : Handler<TRequest, TResponse> where TRequest: IRequest<TResponse>
     {
-        public override async Task<TResponse> HandleAsync(TRequest request)
+        public override async Task HandleAsync(TRequest request)
         {
             if (Branch != null)
             {
                 await Branch.HandleAsync(request);
             }
 
-            return await base.HandleAsync(request);
+            await base.HandleAsync(request);
         }
 
         public void AddBranchHandler(Handler<TRequest, TResponse> handler)

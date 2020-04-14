@@ -18,7 +18,7 @@ namespace ProjectHealthReport.Features.Projects.Commands
                 _dbContext = dbContext;
             }
 
-            public override async Task<int> HandleAsync(RemoveProjectCommand request)
+            public override async Task HandleAsync(RemoveProjectCommand request)
             {
                 var project = new Project();
                 
@@ -28,8 +28,10 @@ namespace ProjectHealthReport.Features.Projects.Commands
                 _dbContext.Projects.Remove(project);
                 await _dbContext.SaveChangesAsync();
 
-                return 1;
+                request.Response = 1;
             }
         }
+
+        public int Response { get; set; }
     }
 }

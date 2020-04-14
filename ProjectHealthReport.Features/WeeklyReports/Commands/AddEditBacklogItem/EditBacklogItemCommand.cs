@@ -54,7 +54,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditBacklogItem
                 _mapper = mapper;
             }
 
-            public override async Task<int> HandleAsync(EditBacklogItemCommand request)
+            public override async Task HandleAsync(EditBacklogItemCommand request)
             {
                 var backlogItemInDb = await _dbContext.BacklogItems.AsNoTracking().SingleAsync(b => b.Id == request.Id);
                 var backlogItemProxy = _mapper.Map<EditBacklogItemCommand>(backlogItemInDb);
@@ -65,8 +65,10 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditBacklogItem
 
                 await _dbContext.SaveChangesAsync();
 
-                return 1;
+                request.Response = 1;
             }
         }
+
+        public int Response { get; set; }
     }
 }

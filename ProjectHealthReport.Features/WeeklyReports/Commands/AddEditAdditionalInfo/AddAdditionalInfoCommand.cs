@@ -39,7 +39,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditAdditionalI
                 _mapper = mapper;
             }
 
-            public override async Task<int> HandleAsync(AddAdditionalInfoCommand request)
+            public override async Task HandleAsync(AddAdditionalInfoCommand request)
             {
                 if (request.IssueId == 0)
                 {
@@ -79,8 +79,10 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditAdditionalI
                     await _dbContext.SaveChangesAsync();
                 }
 
-                return 1;
+                request.Response = 1;
             }
         }
+
+        public int Response { get; set; }
     }
 }

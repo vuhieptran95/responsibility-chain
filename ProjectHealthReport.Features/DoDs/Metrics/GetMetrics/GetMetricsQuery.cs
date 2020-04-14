@@ -69,7 +69,7 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.GetMetrics
                 _mapper = mapper;
             }
 
-            public override async Task<Dto> HandleAsync(GetMetricsQuery request)
+            public override async Task HandleAsync(GetMetricsQuery request)
             {
                 var metrics = await _dbContext.Metrics.Include(m => m.Thresholds)
                     .ThenInclude(t => t.MetricStatus)
@@ -78,7 +78,7 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.GetMetrics
 
                 var metricsGroup = metrics.GroupBy(m => m.Tool);
 
-                return new Dto()
+                request.Response = new Dto()
                 {
                     MetricGroups = metricsGroup.Select(m => new Dto.MetricsGroup()
                         {
@@ -90,5 +90,7 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.GetMetrics
                 };
             }
         }
+
+        public Dto Response { get; set; }
     }
 }

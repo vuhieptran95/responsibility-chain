@@ -49,15 +49,17 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditBacklogItem
                 _mapper = mapper;
             }
 
-            public override async Task<int> HandleAsync(AddBacklogItemCommand request)
+            public override async Task HandleAsync(AddBacklogItemCommand request)
             {
                 var backlogItem = _mapper.Map<BacklogItem>(request);
 
                 await _dbContext.BacklogItems.AddAsync(backlogItem);
                 await _dbContext.SaveChangesAsync();
 
-                return 1;
+                request.Response = 1;
             }
         }
+
+        public int Response { get; set; }
     }
 }

@@ -31,7 +31,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjectIndexPhr
                 _rules = rules;
             }
 
-            public override async Task<Dto> HandleAsync(GetProjectIndexPhrQuery request)
+            public override async Task HandleAsync(GetProjectIndexPhrQuery request)
             {
                 var dto = new Dto();
 
@@ -96,7 +96,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjectIndexPhr
                         .ToListAsync();
                 }
 
-                return dto;
+                request.Response = dto;
             }
         }
 
@@ -115,5 +115,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjectIndexPhr
                 public bool IsNotSubmitted { get; set; } = false;
             }
         }
+
+        public Dto Response { get; set; }
     }
 }

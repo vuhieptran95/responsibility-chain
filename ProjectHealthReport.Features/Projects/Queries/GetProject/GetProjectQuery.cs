@@ -28,7 +28,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProject
                 _mapper = mapper;
             }
 
-            public override async Task<Dto> HandleAsync(GetProjectQuery request)
+            public override async Task HandleAsync(GetProjectQuery request)
             {
                 var dto = await _dbContext.Projects
                     .Where(p => p.Id == request.ProjectId)
@@ -42,7 +42,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProject
 
                 dto.BacklogItem = backlogItem;
                 
-                return dto;
+                request.Response = dto;
             }
         }
 
@@ -93,5 +93,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProject
                     .ForMember(des => des.ProjectState, opt => opt.MapFrom(src => src.ProjectStateType.State));
             }
         }
+
+        public Dto Response { get; set; }
     }
 }

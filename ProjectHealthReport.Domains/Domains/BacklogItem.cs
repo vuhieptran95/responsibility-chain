@@ -33,6 +33,18 @@ namespace ProjectHealthReport.Domains.Domains
             _project = project;
         }
 
+        public BacklogItem(int id, int projectId, int? sprint, int itemsAdded, int? storyPointsAdded, int itemsDone, int? storyPointsDone, int yearWeek)
+        {
+            _id = id;
+            _projectId = projectId;
+            _sprint = sprint;
+            _itemsAdded = itemsAdded;
+            _storyPointsAdded = storyPointsAdded;
+            _itemsDone = itemsDone;
+            _storyPointsDone = storyPointsDone;
+            _yearWeek = yearWeek;
+        }
+
         public int Id => _id;
 
         public int ProjectId => _projectId;

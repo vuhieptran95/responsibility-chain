@@ -23,7 +23,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetGeneratedWeeklyR
             {
                 _mediator = mediator;
             }
-            public override async Task<Dto> HandleAsync(GetGeneratedWeeklyReportPhrQuery request)
+            public override async Task HandleAsync(GetGeneratedWeeklyReportPhrQuery request)
             {
                 var getProjectQuery = new GetProjectQuery {ProjectId = request.ProjectId};
                 var getWeeklyReportQuery = new GetWeeklyReportPhrQuery()
@@ -43,7 +43,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetGeneratedWeeklyR
                     WeeklyReport = weeklyReport
                 };
 
-                return dto;
+                request.Response = dto;
             }
         }
         
@@ -52,5 +52,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetGeneratedWeeklyR
             public GetProjectQuery.Dto Project { get; set; }
             public GetWeeklyReportPhrQuery.Dto WeeklyReport { get; set; }
         }
+
+        public Dto Response { get; set; }
     }
 }

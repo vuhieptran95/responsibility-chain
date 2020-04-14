@@ -56,7 +56,8 @@ namespace ProjectHealthReport.Domains.Domains
         public Project(int id, string name, string code, string division, string keyAccountManager,
             DateTime projectStartDate,
             bool phrRequired, bool dmrRequired, bool dodRequired, int projectStateTypeId,
-            List<(string, string)> userRoleList, DateTime createdDate, string deliveryResponsibleName, string platformVersion, string jiraLink,
+            List<(string, string)> userRoleList, DateTime createdDate, string deliveryResponsibleName,
+            string platformVersion, string jiraLink,
             string sourceCodeLink, string note,
             DateTime? projectEndDate,
             DateTime? phrRequiredFrom, DateTime? dmrRequiredFrom,
@@ -88,30 +89,54 @@ namespace ProjectHealthReport.Domains.Domains
             _dmrRequiredTo = dmrRequiredTo;
             _projectStateTypeId = projectStateTypeId;
             _projectStateType = projectStateType;
-            _statuses = statuses ?? Statuses;
-            _backlogItems = backlogItems ?? BacklogItems;
-            _qualityReports = qualityReports ?? QualityReports;
-            _additionalInfos = additionalInfos ?? AdditionalInfos;
-            _divisionProjectStatuses = divisionProjectStatuses ?? DivisionProjectStatuses;
-            _weeklyReportStatuses = weeklyReportStatuses ?? WeeklyReportStatuses;
-            _projectAccesses = projectAccesses ?? ProjectAccesses;
-            _doDReports = doDReports ?? DoDReports;
+            _statuses = statuses;
+            _backlogItems = backlogItems;
+            _qualityReports = qualityReports;
+            _additionalInfos = additionalInfos;
+            _divisionProjectStatuses = divisionProjectStatuses;
+            _weeklyReportStatuses = weeklyReportStatuses;
+            _projectAccesses = projectAccesses;
+            _doDReports = doDReports;
 
             ValidateDomain(userRoleList);
         }
 
+        public Project(int id, string name, string code, string division, string keyAccountManager, bool phrRequired,
+            bool dmrRequired, bool dodRequired, int projectStateTypeId, string deliveryResponsibleName,
+            string platformVersion, string jiraLink, string sourceCodeLink, string note, DateTime createdDate,
+            DateTime projectStartDate, DateTime? projectEndDate, DateTime? phrRequiredFrom, DateTime? dmrRequiredFrom,
+            DateTime? dmrRequiredTo) : this()
+        {
+            _id = id;
+            _name = name;
+            _code = code;
+            _division = division;
+            _keyAccountManager = keyAccountManager;
+            _phrRequired = phrRequired;
+            _dmrRequired = dmrRequired;
+            _dodRequired = dodRequired;
+            _projectStateTypeId = projectStateTypeId;
+            _deliveryResponsibleName = deliveryResponsibleName;
+            _platformVersion = platformVersion;
+            _jiraLink = jiraLink;
+            _sourceCodeLink = sourceCodeLink;
+            _note = note;
+            _createdDate = createdDate;
+            _projectStartDate = projectStartDate;
+            _projectEndDate = projectEndDate;
+            _phrRequiredFrom = phrRequiredFrom;
+            _dmrRequiredFrom = dmrRequiredFrom;
+            _dmrRequiredTo = dmrRequiredTo;
+        }
+
         public int Id => _id;
 
-        [Required]
         public string Name => _name;
 
-        [Required]
         public string Code => _code;
 
-        [Required]
         public string Division => _division;
 
-        [Required]
         public string KeyAccountManager => _keyAccountManager;
 
         public bool PhrRequired => _phrRequired;
@@ -146,21 +171,21 @@ namespace ProjectHealthReport.Domains.Domains
 
         public ProjectStateType ProjectStateType => _projectStateType;
 
-        public ICollection<Status> Statuses => _statuses;
+        public IEnumerable<Status> Statuses => _statuses;
 
-        public ICollection<BacklogItem> BacklogItems => _backlogItems;
+        public IEnumerable<BacklogItem> BacklogItems => _backlogItems;
 
-        public ICollection<QualityReport> QualityReports => _qualityReports;
+        public IEnumerable<QualityReport> QualityReports => _qualityReports;
 
-        public ICollection<AdditionalInfo> AdditionalInfos => _additionalInfos;
+        public IEnumerable<AdditionalInfo> AdditionalInfos => _additionalInfos;
 
-        public ICollection<DivisionProjectStatus> DivisionProjectStatuses => _divisionProjectStatuses;
+        public IEnumerable<DivisionProjectStatus> DivisionProjectStatuses => _divisionProjectStatuses;
 
-        public ICollection<WeeklyReportStatus> WeeklyReportStatuses => _weeklyReportStatuses;
+        public IEnumerable<WeeklyReportStatus> WeeklyReportStatuses => _weeklyReportStatuses;
 
-        public ICollection<ProjectAccess> ProjectAccesses => _projectAccesses;
+        public IEnumerable<ProjectAccess> ProjectAccesses => _projectAccesses;
 
-        public ICollection<DoDReport> DoDReports => _doDReports;
+        public IEnumerable<DoDReport> DoDReports => _doDReports;
     }
 
     public partial class Project
@@ -181,6 +206,7 @@ namespace ProjectHealthReport.Domains.Domains
             {
                 return;
             }
+
             DomainExceptionCode.Throw(DomainError.D001, this);
         }
 
@@ -197,7 +223,8 @@ namespace ProjectHealthReport.Domains.Domains
                 DomainExceptionCode.Throw(DomainError.D003, this);
             }
 
-            if (DeliveryResponsibleName != null && !userRoleList.Where(i => i.Item2 == AuthorizationHelper.RolePic).Select(i => i.Item1)
+            if (DeliveryResponsibleName != null && !userRoleList.Where(i => i.Item2 == AuthorizationHelper.RolePic)
+                .Select(i => i.Item1)
                 .Contains(DeliveryResponsibleName))
             {
                 DomainExceptionCode.Throw(DomainError.D004, this);
@@ -215,8 +242,6 @@ namespace ProjectHealthReport.Domains.Domains
             {
                 DomainExceptionCode.Throw(DomainError.D006, this);
             }
-
-            
         }
 
         public void ValidateProjectEndDate()

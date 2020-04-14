@@ -33,7 +33,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetWeeklyReportPhr
                 _mapper = mapper;
             }
 
-            public override async Task<Dto> HandleAsync(GetWeeklyReportPhrQuery request)
+            public override async Task HandleAsync(GetWeeklyReportPhrQuery request)
             {
                 var yearWeek = TimeHelper.CalculateYearWeek(request.Year, request.Week);
                 var yearWeekToDisplayClosedItems =
@@ -206,8 +206,10 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetWeeklyReportPhr
 
                 dto.Metrics = toolGroups.SelectMany(t => t.Metrics, (t, m) => m).ToList();
 
-                return dto;
+                request.Response = dto;
             }
         }
+
+        public Dto Response { get; set; }
     }
 }

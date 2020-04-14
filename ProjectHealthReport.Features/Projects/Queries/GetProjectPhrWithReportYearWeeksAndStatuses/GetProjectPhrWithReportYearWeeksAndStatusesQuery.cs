@@ -42,7 +42,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjectPhrWithReportY
                 _dbContext = dbContext;
             }
 
-            public override async Task<Dto> HandleAsync(GetProjectPhrWithReportYearWeeksAndStatusesQuery request)
+            public override async Task HandleAsync(GetProjectPhrWithReportYearWeeksAndStatusesQuery request)
             {
                 var yearWeeks = await _dbContext.Projects.Where(p => p.Id == request.ProjectId)
                     .Select(p => new
@@ -125,8 +125,10 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjectPhrWithReportY
                     YearWeekStatuses = yearWeekStatuses
                 };
 
-                return dto;
+                request.Response = dto;
             }
         }
+
+        public Dto Response { get; set; }
     }
 }

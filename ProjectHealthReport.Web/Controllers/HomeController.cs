@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ProjectHealthReport.Features.TestFeature;
 using ProjectHealthReport.Web.Models;
 using ResponsibilityChain.Business;
 
@@ -26,16 +25,14 @@ namespace ProjectHealthReport.Web.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var dto = await _mediator.SendAsync(new GetTestFeatureQuery());
             return View();
         }
         
         [Authorize(AuthenticationSchemes = "Bearer")]
-        public async Task<IActionResult> Index2()
+        public IActionResult Index2()
         {
-            var dto = await _mediator.SendAsync(new GetTestFeatureQuery());
             return View("Index");
         }
 

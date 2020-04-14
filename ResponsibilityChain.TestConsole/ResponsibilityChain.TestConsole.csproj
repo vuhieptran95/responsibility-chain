@@ -9,4 +9,8 @@
       <ProjectReference Include="..\ResponsibilityChain\ResponsibilityChain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="9.0.0" />
+    </ItemGroup>
+
 </Project>

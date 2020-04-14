@@ -54,6 +54,8 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.EditMetrics
                         null));
             }
         }
+
+        public int Response { get; set; }
     }
 
     public class AddMetricCommandHandler : ExecutionHandlerBase<AddMetricCommand, int>
@@ -67,7 +69,7 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.EditMetrics
             _mapper = mapper;
         }
 
-        public override async Task<int> HandleAsync(AddMetricCommand request)
+        public override async Task HandleAsync(AddMetricCommand request)
         {
             var metric = _mapper.Map<Metric>(request.Metric);
 
@@ -76,14 +78,14 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.EditMetrics
                 await _dbContext.Metrics.AddAsync(metric);
                 await _dbContext.SaveChangesAsync();
 
-                metric.AddThresholds(metric.Thresholds.ToList());
+                metric.ReplaceThresholds(metric.Thresholds.ToList());
 
                 await _dbContext.SaveChangesAsync();
 
                 await transaction.CommitAsync();
             }
 
-            return metric.Id;
+            request.Response = metric.Id;
         }
     }
 }

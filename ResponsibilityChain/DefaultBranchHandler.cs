@@ -2,11 +2,11 @@
 
 namespace ResponsibilityChain
 {
-    public class DefaultBranchHandler<TRequest, TResponse> : Handler<TRequest, TResponse>
+    public class DefaultBranchHandler<TRequest, TResponse> : Handler<TRequest, TResponse> where TRequest: IRequest<TResponse>
     {
-        public override Task<TResponse> HandleAsync(TRequest request)
+        public override Task HandleAsync(TRequest request)
         {
-            return Task.FromResult<TResponse>(default);
+            return Task.CompletedTask;
         }
     }
 }

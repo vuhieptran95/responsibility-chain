@@ -40,7 +40,7 @@ namespace ProjectHealthReport.Features.Divisions.Commands
                 _dbContext = dbContext;
                 _mapper = mapper;
             }
-            public override async Task<int> HandleAsync(AddEditDivisionWeeklyReportCommand request)
+            public override async Task HandleAsync(AddEditDivisionWeeklyReportCommand request)
             {
                 var statuses = _mapper.Map<IEnumerable<DivisionProjectStatus>>(request.DivisionProjectStatuses);
                 foreach (var status in statuses)
@@ -52,8 +52,10 @@ namespace ProjectHealthReport.Features.Divisions.Commands
 
                 await _dbContext.SaveChangesAsync();
 
-                return 1;
+                request.Response = 1;
             }
         }
+
+        public int Response { get; set; }
     }
 }

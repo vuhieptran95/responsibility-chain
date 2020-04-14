@@ -8,6 +8,15 @@ namespace ProjectHealthReport.Domains.Domains
 {
     public class DoDReport : IWeeklyReport
     {
+        private int _projectId;
+        private string _reportFileName;
+        private string _linkToReport;
+        private Metric _metric;
+        private Project _project;
+        private string _value;
+        private int _yearWeek;
+        private int _metricId;
+
         public DoDReport()
         {
             
@@ -15,31 +24,53 @@ namespace ProjectHealthReport.Domains.Domains
         public DoDReport(int projectId, int metricId, int yearWeek, string value, string linkToReport,
             string reportFileName, Project project, Metric metric)
         {
-            ProjectId = projectId;
-            MetricId = metricId;
+            _projectId = projectId;
+            _metricId = metricId;
             YearWeek = yearWeek;
-            Value = value;
-            LinkToReport = linkToReport;
-            ReportFileName = reportFileName;
-            Project = project;
-            Metric = metric;
+            _value = value;
+            _linkToReport = linkToReport;
+            _reportFileName = reportFileName;
+            _project = project;
+            _metric = metric;
 
             Validate();
         }
 
-        public int ProjectId { get; private set; }
-        public int MetricId { get; private set; }
-        public int YearWeek { get; set; }
-        [Required] public string Value { get; private set; }
-        public Project Project { get; private set; }
-        public Metric Metric { get; private set; }
-        public string LinkToReport { get; private set; }
-        public string ReportFileName { get; private set; }
+        public DoDReport(int projectId, string reportFileName, string linkToReport, string value, int yearWeek, int metricId)
+        {
+            _projectId = projectId;
+            _reportFileName = reportFileName;
+            _linkToReport = linkToReport;
+            _value = value;
+            _yearWeek = yearWeek;
+            _metricId = metricId;
+        }
+
+        public int ProjectId => _projectId;
+
+        public int MetricId => _metricId;
+
+        public int YearWeek
+        {
+            get => _yearWeek;
+            set => _yearWeek = value;
+        }
+
+        [Required]
+        public string Value => _value;
+
+        public Project Project => _project;
+
+        public Metric Metric => _metric;
+
+        public string LinkToReport => _linkToReport;
+
+        public string ReportFileName => _reportFileName;
 
         public void SetReportFile(string name, string link)
         {
-            LinkToReport = link;
-            ReportFileName = name;
+            _linkToReport = link;
+            _reportFileName = name;
 
             ReportFileMustHaveBothLinkAndFileName();
         }

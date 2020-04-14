@@ -11,10 +11,13 @@ namespace ProjectHealthReport.Features.Helpers
     {
         public class Handler: ExecutionHandlerBase<GetDivisionNamesQuery, List<string>>
         {
-            public override Task<List<string>> HandleAsync(GetDivisionNamesQuery request)
+            public override Task HandleAsync(GetDivisionNamesQuery request)
             {
-                return Task.FromResult(AuthorizationHelper.DeliveryManagers.Select(i => i.Value).ToList());
+                request.Response = (AuthorizationHelper.DeliveryManagers.Select(i => i.Value).ToList());
+                return Task.CompletedTask;
             }
         }
+
+        public List<string> Response { get; set; }
     }
 }

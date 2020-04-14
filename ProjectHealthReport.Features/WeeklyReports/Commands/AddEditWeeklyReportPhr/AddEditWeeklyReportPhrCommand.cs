@@ -42,7 +42,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditWeeklyRepor
                 _mediator = mediator;
             }
 
-            public override async Task<int> HandleAsync(AddEditWeeklyReportPhrCommand request)
+            public override async Task HandleAsync(AddEditWeeklyReportPhrCommand request)
             {
                 var currentYearWeek =
                     TimeHelper.CalculateYearWeek(request.Report.SelectedYear, request.Report.SelectedWeek);
@@ -138,7 +138,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditWeeklyRepor
 
                         await transaction.CommitAsync();
 
-                        return 1;
+                        request.Response = 1;
                     }
                     catch (Exception)
                     {
@@ -165,5 +165,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditWeeklyRepor
             profile.CreateMap<GetWeeklyReportPhrQuery.Dto.AdditionalInfoDto, AddAdditionalInfoCommand>();
             profile.CreateMap<GetWeeklyReportPhrQuery.Dto.AdditionalInfoDto, EditAdditionalInfoCommand>();
         }
+
+        public int Response { get; set; }
     }
 }

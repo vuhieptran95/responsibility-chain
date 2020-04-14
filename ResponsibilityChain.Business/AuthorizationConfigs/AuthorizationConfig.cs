@@ -6,7 +6,7 @@ using ResponsibilityChain.Business.RequestContexts;
 
 namespace ResponsibilityChain.Business.AuthorizationConfigs
 {
-    public class AuthorizationConfig<TRequest, TResponse> : Handler<TRequest, TResponse>
+    public class AuthorizationConfig<TRequest, TResponse> : Handler<TRequest, TResponse> where TRequest: IRequest<TResponse>
     {
         protected readonly RequestContext RequestContext;
 
@@ -19,7 +19,7 @@ namespace ResponsibilityChain.Business.AuthorizationConfigs
             // AccessRights.Add(("item4", "*"));
         }
 
-        public override Task<TResponse> HandleAsync(TRequest request)
+        public override Task HandleAsync(TRequest request)
         {
             var accessRights = CalculateRights(AccessRights);
 

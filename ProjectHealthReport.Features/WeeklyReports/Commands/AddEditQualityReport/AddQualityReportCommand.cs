@@ -51,15 +51,17 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditQualityRepo
             }
 
 
-            public override async Task<int> HandleAsync(AddQualityReportCommand request)
+            public override async Task HandleAsync(AddQualityReportCommand request)
             {
                 var qualityReport = _mapper.Map<QualityReport>(request);
 
                 await _dbContext.QualityReports.AddAsync(qualityReport);
                 await _dbContext.SaveChangesAsync();
 
-                return 1;
+                request.Response = 1;
             }
         }
+
+        public int Response { get; set; }
     }
 }

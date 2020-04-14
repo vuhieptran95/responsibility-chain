@@ -36,15 +36,17 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditStatus
                 _mapper = mapper;
             }
 
-            public override async Task<int> HandleAsync(AddStatusCommand request)
+            public override async Task HandleAsync(AddStatusCommand request)
             {
                 var status = _mapper.Map<Status>(request);
 
                 await _dbContext.Statuses.AddAsync(status);
                 await _dbContext.SaveChangesAsync();
 
-                return 1;
+                request.Response = 1;
             }
         }
+
+        public int Response { get; set; }
     }
 }

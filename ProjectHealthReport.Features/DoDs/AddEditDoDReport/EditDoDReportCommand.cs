@@ -16,7 +16,7 @@ namespace ProjectHealthReport.Features.DoDs.AddEditDoDReport
     {
         public class EditOneProjectAtATime : ValidationHandler<EditDoDReportCommand, int>
         {
-            public override Task<int> HandleAsync(EditDoDReportCommand request)
+            public override Task HandleAsync(EditDoDReportCommand request)
             {
                 if (request.DodReports.Count > 0)
                 {
@@ -31,6 +31,8 @@ namespace ProjectHealthReport.Features.DoDs.AddEditDoDReport
                 return base.HandleAsync(request);
             }
         }
+
+        public int Response { get; set; }
     }
 
     public partial class EditDoDReportCommand : IRequest<int>
@@ -68,9 +70,9 @@ namespace ProjectHealthReport.Features.DoDs.AddEditDoDReport
                 _mapper = mapper;
             }
 
-            public override async Task<int> HandleAsync(EditDoDReportCommand request)
+            public override async Task HandleAsync(EditDoDReportCommand request)
             {
-                if (request.DodReports.Count < 1) return 1;
+                if (request.DodReports.Count < 1) return;
 
                 var projectId = request.DodReports[0].ProjectId;
                 var yearWeek = request.DodReports[0].YearWeek;
@@ -101,7 +103,7 @@ namespace ProjectHealthReport.Features.DoDs.AddEditDoDReport
                 _dbContext.UpdateRange(recordsToUpdate);
 
                 await _dbContext.SaveChangesAsync();
-                return 1;
+                request.Response = 1;
             }
         }
     }
