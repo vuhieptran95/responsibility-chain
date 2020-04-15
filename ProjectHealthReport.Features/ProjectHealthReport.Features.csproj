@@ -12,7 +12,10 @@
 
     <ItemGroup>
       <PackageReference Include="AutoMapper" Version="9.0.0" />
+      <PackageReference Include="Dapper" Version="2.0.35" />
       <PackageReference Include="DinkToPdf" Version="1.0.8" />
+      <PackageReference Include="MessagePack" Version="2.1.115" />
+      <PackageReference Include="MessagePackAnalyzer" Version="2.1.115" />
     </ItemGroup>
 
 </Project>

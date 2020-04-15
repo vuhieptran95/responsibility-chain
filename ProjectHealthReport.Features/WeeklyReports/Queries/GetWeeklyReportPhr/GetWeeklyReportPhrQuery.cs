@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
+using MessagePack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using ProjectHealthReport.Domains.Domains;
@@ -32,69 +34,33 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetWeeklyReportPhr
             private readonly IMapper _mapper;
             private readonly IMediator _mediator;
             private readonly IMemoryCache _cache;
-            private readonly RequestHandler<GetProjectCachingQuery, Project> _getProjectCaching;
 
-            public Handler(ReportDbContext dbContext, IMapper mapper, IMediator mediator, IMemoryCache cache,
-                RequestHandler<GetProjectCachingQuery, Project> getProjectCaching)
+            public Handler(ReportDbContext dbContext, IMapper mapper, IMediator mediator, IMemoryCache cache)
             {
                 _dbContext = dbContext;
                 _mapper = mapper;
                 _mediator = mediator;
                 _cache = cache;
-                _getProjectCaching = getProjectCaching;
             }
 
             public override async Task HandleAsync(GetWeeklyReportPhrQuery request)
             {
                 var yearWeek = TimeHelper.CalculateYearWeek(request.Year, request.Week);
-                var yearWeekToDisplayClosedItems =
-                    TimeHelper.GetYearWeeksOfXRecentWeeksStartFrom(request.Year, request.Week,
-                        request.NumberOfWeekNotShowClosedItem);
-                var lastWeek = TimeHelper.GetYearWeeksOfXRecentWeeksStartFrom(request.Year, request.Week, 1)
-                    .FirstOrDefault();
 
-                var watch = new Stopwatch();
-                watch.Start();
+                var project = await _dbContext.Projects.AsNoTracking().FirstAsync(p => p.Id == request.ProjectId);
 
-                // var project = await _dbContext.Projects.AsNoTracking()
-                //     .Include(p => p.Statuses)
-                //     .Include(p => p.BacklogItems)
-                //     .Include(p => p.QualityReports)
-                //     .Include(p => p.DoDReports)
-                //     .ThenInclude(d => d.Metric)
-                //     .Where(request.ResourceFilter)
-                //     .FirstAsync(p => p.Id == request.ProjectId);
-
-                // var project = await _mediator.SendAsync(new GetProjectCachingQuery()
-                // {
-                //     ProjectId = request.ProjectId
-                // });
-
-                var cacheReq = new GetProjectCachingQuery()
+                var data = await _mediator.SendAsync(new GetProjectCachingQuery()
                 {
-                    ProjectId = request.ProjectId
-                };
-                await _getProjectCaching.HandleAsync(cacheReq);
+                    ProjectId = request.ProjectId,
+                    ResourceFilter = request.ResourceFilter
+                });
 
-                var project = cacheReq.Response;
+                var cache = MessagePackSerializer.Deserialize<GetProjectCachingQuery.WeeklyData>(data.Bytes,
+                    MessagePackSerializerOptions.Standard.WithCompression(MessagePackCompression.Lz4Block));
 
-                // var project = await _cache.GetOrCreateAsync("asdf",
-                //     async entry =>
-                //     {
-                //         entry.AbsoluteExpiration = DateTimeOffset.Now.AddSeconds(30);
-                //         return await _dbContext.Projects.AsNoTracking()
-                //             .Include(p => p.Statuses)
-                //             .Include(p => p.BacklogItems)
-                //             .Include(p => p.QualityReports)
-                //             .Include(p => p.DoDReports)
-                //             .ThenInclude(d => d.Metric)
-                //             .Where(request.ResourceFilter)
-                //             .FirstAsync(p => p.Id == request.ProjectId);
-                //     });
-
-                watch.Stop();
-
-                var time = watch.Elapsed;
+                project.SetCollections(_mapper.Map<IEnumerable<QualityReport>>(cache.QualityReports),
+                    _mapper.Map<IEnumerable<BacklogItem>>(cache.BacklogItems),
+                    _mapper.Map<IEnumerable<Status>>(cache.Statuses));
 
                 var listProject = new List<Project> {project};
 

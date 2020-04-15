@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using ProjectHealthReport.Domains.Migrations;
 
 namespace ProjectHealthReport.Domains.Domains
@@ -57,30 +58,11 @@ namespace ProjectHealthReport.Domains.Domains
             DateTime? phrRequiredFrom, DateTime? dmrRequiredFrom,
             DateTime? dmrRequiredTo, ProjectStateType projectStateType,
             List<Status> statuses, List<BacklogItem> backlogItems,
+            List<QualityReport> qualityReports,
             List<DivisionProjectStatus> divisionProjectStatuses,
             List<WeeklyReportStatus> weeklyReportStatuses, List<ProjectAccess> projectAccesses,
-            List<DoDReport> doDReports) : this()
+            List<DoDReport> doDReports) : this(id, name, code, division, keyAccountManager, projectStartDate, phrRequired, dmrRequired, dodRequired, projectStateTypeId, userRoleList, createdDate, deliveryResponsibleName, platformVersion, jiraLink, sourceCodeLink, note, projectEndDate, phrRequiredFrom, dmrRequiredFrom, dmrRequiredTo)
         {
-            _id = id;
-            _name = name;
-            _code = code;
-            _division = division;
-            _keyAccountManager = keyAccountManager;
-            _deliveryResponsibleName = deliveryResponsibleName;
-            _platformVersion = platformVersion;
-            _jiraLink = jiraLink;
-            _sourceCodeLink = sourceCodeLink;
-            _note = note;
-            _projectStartDate = projectStartDate;
-            _projectEndDate = projectEndDate;
-            _phrRequired = phrRequired;
-            _phrRequiredFrom = phrRequiredFrom;
-            _dmrRequired = dmrRequired;
-            _dodRequired = dodRequired;
-            _createdDate = createdDate;
-            _dmrRequiredFrom = dmrRequiredFrom;
-            _dmrRequiredTo = dmrRequiredTo;
-            _projectStateTypeId = projectStateTypeId;
             _projectStateType = projectStateType;
             _statuses = statuses;
             _backlogItems = backlogItems;
@@ -88,14 +70,19 @@ namespace ProjectHealthReport.Domains.Domains
             _weeklyReportStatuses = weeklyReportStatuses;
             _projectAccesses = projectAccesses;
             _doDReports = doDReports;
+            _qualityReports = qualityReports;
 
             ValidateDomain(userRoleList);
         }
 
-        public Project(int id, string name, string code, string division, string keyAccountManager, bool phrRequired,
-            bool dmrRequired, bool dodRequired, int projectStateTypeId, string deliveryResponsibleName,
-            string platformVersion, string jiraLink, string sourceCodeLink, string note, DateTime createdDate,
-            DateTime projectStartDate, DateTime? projectEndDate, DateTime? phrRequiredFrom, DateTime? dmrRequiredFrom,
+        public Project(int id, string name, string code, string division, string keyAccountManager,
+            DateTime projectStartDate,
+            bool phrRequired, bool dmrRequired, bool dodRequired, int projectStateTypeId,
+            List<(string, string)> userRoleList, DateTime createdDate, string deliveryResponsibleName,
+            string platformVersion, string jiraLink,
+            string sourceCodeLink, string note,
+            DateTime? projectEndDate,
+            DateTime? phrRequiredFrom, DateTime? dmrRequiredFrom,
             DateTime? dmrRequiredTo) : this()
         {
             _id = id;
@@ -103,21 +90,29 @@ namespace ProjectHealthReport.Domains.Domains
             _code = code;
             _division = division;
             _keyAccountManager = keyAccountManager;
-            _phrRequired = phrRequired;
-            _dmrRequired = dmrRequired;
-            _dodRequired = dodRequired;
-            _projectStateTypeId = projectStateTypeId;
             _deliveryResponsibleName = deliveryResponsibleName;
             _platformVersion = platformVersion;
             _jiraLink = jiraLink;
             _sourceCodeLink = sourceCodeLink;
             _note = note;
-            _createdDate = createdDate;
             _projectStartDate = projectStartDate;
             _projectEndDate = projectEndDate;
+            _phrRequired = phrRequired;
             _phrRequiredFrom = phrRequiredFrom;
+            _dmrRequired = dmrRequired;
+            _dodRequired = dodRequired;
+            _createdDate = createdDate;
             _dmrRequiredFrom = dmrRequiredFrom;
             _dmrRequiredTo = dmrRequiredTo;
+            _projectStateTypeId = projectStateTypeId;
+        }
+
+        public void SetCollections(IEnumerable<QualityReport> qualityReports, IEnumerable<BacklogItem> backlogItems,
+            IEnumerable<Status> statuses)
+        {
+            _qualityReports = qualityReports.ToList();
+            _backlogItems = backlogItems.ToList();
+            _statuses = statuses.ToList();
         }
 
         public int Id => _id;

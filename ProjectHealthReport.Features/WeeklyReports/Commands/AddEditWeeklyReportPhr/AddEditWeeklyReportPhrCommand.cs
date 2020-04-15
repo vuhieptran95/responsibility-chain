@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using MessagePack;
 using Microsoft.EntityFrameworkCore;
 using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Helpers;
 using ProjectHealthReport.Domains.Mappings;
+using ProjectHealthReport.Features.Projects.Queries.GetProjectCaching;
 using ProjectHealthReport.Features.WeeklyReports.Queries.GetWeeklyReportPhr;
 using ResponsibilityChain;
 using ResponsibilityChain.Business;
@@ -38,12 +41,20 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditWeeklyRepor
                 {
                     try
                     {
-                        var project = await _dbContext.Projects
-                            .Include(p => p.Statuses)
-                            .Include(p => p.BacklogItems)
-                            .Include(p => p.QualityReports)
-                            .Include(p => p.DoDReports)
-                            .FirstAsync(p => p.Id == request.Report.ProjectId);
+                        var project = await _dbContext.Projects.AsNoTracking().FirstAsync(p => p.Id == request.Report.ProjectId);
+                        var data = await _mediator.SendAsync(new GetProjectCachingQuery()
+                        {
+                            ProjectId = request.Report.ProjectId
+                        });
+                        
+                        var cache = MessagePackSerializer.Deserialize<GetProjectCachingQuery.WeeklyData>(data.Bytes,
+                            MessagePackSerializerOptions.Standard.WithCompression(MessagePackCompression.Lz4Block));
+                
+                        project.SetCollections(_mapper.Map<IEnumerable<QualityReport>>(cache.QualityReports), 
+                            _mapper.Map<IEnumerable<BacklogItem>>(cache.BacklogItems),
+                            _mapper.Map<IEnumerable<Status>>(cache.Statuses));
+
+                        _dbContext.Projects.Attach(project);
 
                         var s = request.Report.Status;
                         var status = new Status(s.Id, request.Report.ProjectId, s.StatusColor, s.ProjectStatus,

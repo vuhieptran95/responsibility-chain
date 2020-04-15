@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Mappings;
@@ -50,7 +51,7 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.GetThresholds
             public override async Task HandleAsync(GetThresholdsQuery request)
             {
                 var projectMetrics = await _dbContext.Thresholds
-                    .Select(m => _mapper.Map<Dto.ThresholdDto>(m))
+                    .ProjectTo<Dto.ThresholdDto>(_mapper.ConfigurationProvider)
                     .ToListAsync();
 
                 request.Response = new Dto() {Thresholds = projectMetrics};
