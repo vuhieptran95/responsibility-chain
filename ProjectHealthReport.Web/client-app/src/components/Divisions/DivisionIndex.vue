@@ -7,7 +7,7 @@
                     :hide-default-footer="true"
                     class="elevation-1">
                 <template v-slot:item.action="{item}">
-                    <v-btn @@click.stop :href="getAddReportLink(item.name)" color="primary">Add
+                    <v-btn @click.stop :to="getAddReportLink(item.name)" color="primary">Add
                         Report
                     </v-btn>
                 </template>

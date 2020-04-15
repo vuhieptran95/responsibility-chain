@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Helpers;
+using ProjectHealthReport.Features.Projects.Queries.GetProjectCaching;
 using ResponsibilityChain;
+using ResponsibilityChain.Business;
 using ResponsibilityChain.Business.Executions;
 
 namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetWeeklyReportPhr
@@ -26,11 +30,18 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetWeeklyReportPhr
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;
+            private readonly IMediator _mediator;
+            private readonly IMemoryCache _cache;
+            private readonly RequestHandler<GetProjectCachingQuery, Project> _getProjectCaching;
 
-            public Handler(ReportDbContext dbContext, IMapper mapper)
+            public Handler(ReportDbContext dbContext, IMapper mapper, IMediator mediator, IMemoryCache cache,
+                RequestHandler<GetProjectCachingQuery, Project> getProjectCaching)
             {
                 _dbContext = dbContext;
                 _mapper = mapper;
+                _mediator = mediator;
+                _cache = cache;
+                _getProjectCaching = getProjectCaching;
             }
 
             public override async Task HandleAsync(GetWeeklyReportPhrQuery request)
@@ -42,9 +53,52 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetWeeklyReportPhr
                 var lastWeek = TimeHelper.GetYearWeeksOfXRecentWeeksStartFrom(request.Year, request.Week, 1)
                     .FirstOrDefault();
 
-                var dto = await _dbContext.Projects
-                    .Where(request.ResourceFilter)
-                    .Where(p => p.Id == request.ProjectId)
+                var watch = new Stopwatch();
+                watch.Start();
+
+                // var project = await _dbContext.Projects.AsNoTracking()
+                //     .Include(p => p.Statuses)
+                //     .Include(p => p.BacklogItems)
+                //     .Include(p => p.QualityReports)
+                //     .Include(p => p.DoDReports)
+                //     .ThenInclude(d => d.Metric)
+                //     .Where(request.ResourceFilter)
+                //     .FirstAsync(p => p.Id == request.ProjectId);
+
+                // var project = await _mediator.SendAsync(new GetProjectCachingQuery()
+                // {
+                //     ProjectId = request.ProjectId
+                // });
+
+                var cacheReq = new GetProjectCachingQuery()
+                {
+                    ProjectId = request.ProjectId
+                };
+                await _getProjectCaching.HandleAsync(cacheReq);
+
+                var project = cacheReq.Response;
+
+                // var project = await _cache.GetOrCreateAsync("asdf",
+                //     async entry =>
+                //     {
+                //         entry.AbsoluteExpiration = DateTimeOffset.Now.AddSeconds(30);
+                //         return await _dbContext.Projects.AsNoTracking()
+                //             .Include(p => p.Statuses)
+                //             .Include(p => p.BacklogItems)
+                //             .Include(p => p.QualityReports)
+                //             .Include(p => p.DoDReports)
+                //             .ThenInclude(d => d.Metric)
+                //             .Where(request.ResourceFilter)
+                //             .FirstAsync(p => p.Id == request.ProjectId);
+                //     });
+
+                watch.Stop();
+
+                var time = watch.Elapsed;
+
+                var listProject = new List<Project> {project};
+
+                var dto = listProject
                     .Select(p => new Dto
                     {
                         ProjectId = p.Id,
@@ -71,55 +125,9 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetWeeklyReportPhr
                             .Where(x => x.YearWeek < yearWeek)
                             .OrderBy(x => x.YearWeek)
                             .Select(q => _mapper.Map<Dto.QualityReportDto>(q)).ToList(),
-                        AdditionalInfos = p.AdditionalInfos
-                            .Where(a => a.YearWeek == yearWeek)
-                            .OrderBy(a => a.YearWeek)
-                            .SelectMany(a => a.AdditionalInfoIssues, (a, i) => new Dto.AdditionalInfoDto
-                            {
-                                Id = a.Id,
-                                YearWeek = a.YearWeek,
-                                Action = i.Issue.Action,
-                                Impact = i.Issue.Impact,
-                                Item = i.Issue.Item,
-                                IssueId = i.Issue.Id,
-                                Status = i.Status,
-                                OpenedYearWeek = i.Issue.OpenedYearWeek,
-                            }).ToList(),
-                        AdditionalInfoListWithEditableStatus = p.AdditionalInfos
-                            .Where(a => a.YearWeek == lastWeek)
-                            .OrderBy(a => a.YearWeek)
-                            .SelectMany(a => a.AdditionalInfoIssues, (a, i) => new Dto.AdditionalInfoDto
-                            {
-                                Id = a.Id,
-                                YearWeek = a.YearWeek,
-                                Action = i.Issue.Action,
-                                Impact = i.Issue.Impact,
-                                Item = i.Issue.Item,
-                                IssueId = i.Issue.Id,
-                                Status = i.Status,
-                                OpenedYearWeek = i.Issue.OpenedYearWeek
-                            })
-                            .Where(a => a.Status == "Open")
-                            .ToList(),
-                        AdditionalInfoListReadOnly = p.AdditionalInfos
-                            .Where(x => yearWeekToDisplayClosedItems.Contains(x.YearWeek))
-                            .OrderBy(x => x.YearWeek)
-                            .SelectMany(a => a.AdditionalInfoIssues, (a, i) => new Dto.AdditionalInfoDto
-                            {
-                                Id = a.Id,
-                                YearWeek = a.YearWeek,
-                                Action = i.Issue.Action,
-                                Impact = i.Issue.Impact,
-                                Item = i.Issue.Item,
-                                IssueId = i.Issue.Id,
-                                Status = i.Status,
-                                OpenedYearWeek = i.Issue.OpenedYearWeek
-                            })
-                            .Where(a => a.Status == "Closed")
-                            .ToList()
                     })
-                    .SingleAsync();
-                
+                    .Single();
+
                 if (dto.BacklogItemListReadOnly.Count > 0)
                 {
                     GetWeeklyReportPhrHelper.CalculateBacklogItemsRemaining(dto.BacklogItemListReadOnly);

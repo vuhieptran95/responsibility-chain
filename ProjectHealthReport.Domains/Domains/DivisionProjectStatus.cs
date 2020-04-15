@@ -38,6 +38,23 @@ namespace ProjectHealthReport.Domains.Domains
             _actions = actions;
         }
 
+        public void UpdateValue(int id, int yearWeek, int projectId, string statusColor, string projectStatus,
+            string actions)
+        {
+            _id = id;
+            YearWeek = yearWeek;
+            _projectId = projectId;
+            _statusColor = statusColor;
+            _projectStatus = projectStatus;
+            _actions = actions;
+        }
+
+        public void UpdateValue(DivisionProjectStatus status)
+        {
+            UpdateValue(status.Id, status.YearWeek, status.ProjectId, status.StatusColor, status.ProjectStatus,
+                status.Actions);
+        }
+
         public int Id => _id;
 
         public int YearWeek

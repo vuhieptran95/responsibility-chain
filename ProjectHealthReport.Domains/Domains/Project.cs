@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text.RegularExpressions;
-using ProjectHealthReport.Domains.Exceptions;
-using ProjectHealthReport.Domains.Helpers;
 using ProjectHealthReport.Domains.Migrations;
 
 namespace ProjectHealthReport.Domains.Domains
@@ -35,7 +31,6 @@ namespace ProjectHealthReport.Domains.Domains
         private ICollection<Status> _statuses;
         private ICollection<BacklogItem> _backlogItems;
         private ICollection<QualityReport> _qualityReports;
-        private ICollection<AdditionalInfo> _additionalInfos;
         private ICollection<DivisionProjectStatus> _divisionProjectStatuses;
         private ICollection<WeeklyReportStatus> _weeklyReportStatuses;
         private ICollection<ProjectAccess> _projectAccesses;
@@ -46,7 +41,6 @@ namespace ProjectHealthReport.Domains.Domains
             _statuses = new HashSet<Status>();
             _backlogItems = new HashSet<BacklogItem>();
             _qualityReports = new HashSet<QualityReport>();
-            _additionalInfos = new HashSet<AdditionalInfo>();
             _divisionProjectStatuses = new HashSet<DivisionProjectStatus>();
             _weeklyReportStatuses = new HashSet<WeeklyReportStatus>();
             _projectAccesses = new HashSet<ProjectAccess>();
@@ -63,7 +57,6 @@ namespace ProjectHealthReport.Domains.Domains
             DateTime? phrRequiredFrom, DateTime? dmrRequiredFrom,
             DateTime? dmrRequiredTo, ProjectStateType projectStateType,
             List<Status> statuses, List<BacklogItem> backlogItems,
-            List<QualityReport> qualityReports, List<AdditionalInfo> additionalInfos,
             List<DivisionProjectStatus> divisionProjectStatuses,
             List<WeeklyReportStatus> weeklyReportStatuses, List<ProjectAccess> projectAccesses,
             List<DoDReport> doDReports) : this()
@@ -91,8 +84,6 @@ namespace ProjectHealthReport.Domains.Domains
             _projectStateType = projectStateType;
             _statuses = statuses;
             _backlogItems = backlogItems;
-            _qualityReports = qualityReports;
-            _additionalInfos = additionalInfos;
             _divisionProjectStatuses = divisionProjectStatuses;
             _weeklyReportStatuses = weeklyReportStatuses;
             _projectAccesses = projectAccesses;
@@ -177,8 +168,6 @@ namespace ProjectHealthReport.Domains.Domains
 
         public IEnumerable<QualityReport> QualityReports => _qualityReports;
 
-        public IEnumerable<AdditionalInfo> AdditionalInfos => _additionalInfos;
-
         public IEnumerable<DivisionProjectStatus> DivisionProjectStatuses => _divisionProjectStatuses;
 
         public IEnumerable<WeeklyReportStatus> WeeklyReportStatuses => _weeklyReportStatuses;
@@ -186,102 +175,5 @@ namespace ProjectHealthReport.Domains.Domains
         public IEnumerable<ProjectAccess> ProjectAccesses => _projectAccesses;
 
         public IEnumerable<DoDReport> DoDReports => _doDReports;
-    }
-
-    public partial class Project
-    {
-        public void ValidateDomain(List<(string, string)> userRoleList)
-        {
-            OrganizationInfoMustBeValid(userRoleList);
-            ValidateLinkProperties();
-            ValidateProjectEndDate();
-            ValidatePhrRequired();
-            ValidateDmrRequired();
-            ValidateProjectCode();
-        }
-
-        public void ValidateProjectCode()
-        {
-            if (Regex.IsMatch(Code, "^[a-zA-Z0-9]+$") && Code.Length < 4 && Code.ToUpper() == Code)
-            {
-                return;
-            }
-
-            DomainExceptionCode.Throw(DomainError.D001, this);
-        }
-
-        public void OrganizationInfoMustBeValid(List<(string, string)> userRoleList)
-        {
-            if (!AuthorizationHelper.DeliveryManagers.Select(i => i.Value).Contains(Division))
-            {
-                DomainExceptionCode.Throw(DomainError.D002, this);
-            }
-
-            if (!userRoleList.Where(i => i.Item2 == AuthorizationHelper.RoleKam).Select(i => i.Item1)
-                .Contains(KeyAccountManager))
-            {
-                DomainExceptionCode.Throw(DomainError.D003, this);
-            }
-
-            if (DeliveryResponsibleName != null && !userRoleList.Where(i => i.Item2 == AuthorizationHelper.RolePic)
-                .Select(i => i.Item1)
-                .Contains(DeliveryResponsibleName))
-            {
-                DomainExceptionCode.Throw(DomainError.D004, this);
-            }
-        }
-
-        public void ValidateLinkProperties()
-        {
-            if (JiraLink != null && !MiscHelper.ValidateLink(JiraLink))
-            {
-                DomainExceptionCode.Throw(DomainError.D005, this);
-            }
-
-            if (SourceCodeLink != null && !MiscHelper.ValidateLink(SourceCodeLink))
-            {
-                DomainExceptionCode.Throw(DomainError.D006, this);
-            }
-        }
-
-        public void ValidateProjectEndDate()
-        {
-            if (ProjectEndDate.HasValue && ProjectEndDate.Value > ProjectStartDate)
-            {
-                DomainExceptionCode.Throw(DomainError.D007, this);
-            }
-        }
-
-        public void ValidatePhrRequired()
-        {
-            if (PhrRequired && !PhrRequiredFrom.HasValue)
-            {
-                DomainExceptionCode.Throw(DomainError.D008, this);
-            }
-
-            if (PhrRequired && DeliveryResponsibleName == null)
-            {
-                DomainExceptionCode.Throw(DomainError.D013, this);
-            }
-
-            if (DodRequired && !PhrRequired)
-            {
-                DomainExceptionCode.Throw(DomainError.D011, this);
-            }
-        }
-
-        public void ValidateDmrRequired()
-        {
-            if (DmrRequired && !DmrRequiredFrom.HasValue)
-            {
-                DomainExceptionCode.Throw(DomainError.D009, this);
-            }
-
-            if (DmrRequired && DmrRequiredFrom.HasValue && DmrRequiredTo.HasValue &&
-                DmrRequiredFrom.Value > DmrRequiredTo.Value)
-            {
-                DomainExceptionCode.Throw(DomainError.D010, this);
-            }
-        }
     }
 }

@@ -325,42 +325,6 @@
 <partial name="DoDReport" model="Model"/>
 
 <div>
-    <h6>Risk/Issue/Impediment</h6>
-
-    <table id="tableAdditionalInfo" data-selected-year="@Model.WeeklyReport.SelectedYear" data-selected-week="@Model.WeeklyReport.SelectedWeek" data-property-name="AdditionalInfos" class="table table-bordered">
-        <tbody class="text-left">
-        <tr class="text-center">
-            <th>Week</th>
-            <th>Item</th>
-            <th>Impact</th>
-            <th>Action</th>
-            <th>Open/Closed</th>
-        </tr>
-        @foreach (var item in Model.WeeklyReport.AdditionalInfoListReadOnly)
-        {
-            <tr>
-                <td class="text-center" width="9%">@item.Year - @item.Week</td>
-                <td width="26%">@item.Item</td>
-                <td width="26%">@item.Impact</td>
-                <td width="26%">@item.Action</td>
-                <td class="text-center" width="13%">@item.Status</td>
-            </tr>
-        }
-        @foreach (var item in Model.WeeklyReport.AdditionalInfos)
-        {
-            <tr>
-                <td class="text-center" width="9%">@TimeHelper.CalculateYear(item.OpenedYearWeek) - @TimeHelper.CalculateWeek(item.OpenedYearWeek)</td>
-                <td width="26%">@item.Item</td>
-                <td width="26%">@item.Impact</td>
-                <td width="26%">@item.Action</td>
-                <td class="text-center" width="13%">@item.Status</td>
-            </tr>
-        }
-        </tbody>
-    </table>
-</div>
-
-<div>
     <h6>Note</h6>
     @if (!string.IsNullOrEmpty(Model.Project?.Note))
     {
@@ -369,7 +333,6 @@
         </div>
     }
     <p style="margin-bottom:0.5rem">* This report displays data of week @Model.WeeklyReport.SelectedYear - @Model.WeeklyReport.SelectedWeek and @Model.WeeklyReport.NumberOfWeek previous weeks.</p>
-    <p style="margin-bottom:0.5rem">* Closed items older than @Model.WeeklyReport.NumberOfWeekNotShowClosedItem weeks are not listed.</p>
     <p style="margin-bottom:0.5rem">* Initial values are not included in Average calculation.</p>
     @if (Model?.WeeklyReport?.Status?.MilestoneDate == null || string.IsNullOrEmpty(Model?.WeeklyReport?.Status?.Milestone))
     {

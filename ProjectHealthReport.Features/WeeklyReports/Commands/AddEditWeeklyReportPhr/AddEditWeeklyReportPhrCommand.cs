@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Helpers;
 using ProjectHealthReport.Domains.Mappings;
-using ProjectHealthReport.Features.DoDs.AddEditDoDReport;
-using ProjectHealthReport.Features.WeeklyReports.Commands.AddEditAdditionalInfo;
-using ProjectHealthReport.Features.WeeklyReports.Commands.AddEditBacklogItem;
-using ProjectHealthReport.Features.WeeklyReports.Commands.AddEditQualityReport;
-using ProjectHealthReport.Features.WeeklyReports.Commands.AddEditStatus;
 using ProjectHealthReport.Features.WeeklyReports.Queries.GetWeeklyReportPhr;
 using ResponsibilityChain;
 using ResponsibilityChain.Business;
@@ -21,13 +15,6 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditWeeklyRepor
     public class AddEditWeeklyReportPhrCommand : IRequest<int>, IMapFrom<object>
     {
         public GetWeeklyReportPhrQuery.Dto Report { get; set; }
-        public List<IssueRemovedId> IssueRemovedIds { get; set; }
-
-        public class IssueRemovedId
-        {
-            public int Id { get; set; }
-            public int IssueId { get; set; }
-        }
 
         public class Handler : ExecutionHandlerBase<AddEditWeeklyReportPhrCommand, int>
         {
@@ -51,90 +38,29 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditWeeklyRepor
                 {
                     try
                     {
-                        if (request.Report.Status.Id == 0)
-                        {
-                            var addStatusCommand = _mapper.Map<AddStatusCommand>(request.Report.Status);
-                            addStatusCommand.ProjectId = request.Report.ProjectId;
-                            addStatusCommand.YearWeek = currentYearWeek;
+                        var project = await _dbContext.Projects
+                            .Include(p => p.Statuses)
+                            .Include(p => p.BacklogItems)
+                            .Include(p => p.QualityReports)
+                            .Include(p => p.DoDReports)
+                            .FirstAsync(p => p.Id == request.Report.ProjectId);
 
-                            await _mediator.SendAsync(addStatusCommand);
-                        }
-                        else
-                        {
-                            var editStatusCommand = _mapper.Map<EditStatusCommand>(request.Report.Status);
-                            editStatusCommand.ProjectId = request.Report.ProjectId;
+                        var s = request.Report.Status;
+                        var status = new Status(s.Id, request.Report.ProjectId, s.StatusColor, s.ProjectStatus,
+                            s.RetrospectiveFeedBack, s.MilestoneDate, s.Milestone, currentYearWeek);
+                        project.AddEditStatus(status);
 
-                            await _mediator.SendAsync(editStatusCommand);
-                        }
+                        var i = request.Report.BacklogItem;
+                        var item = new BacklogItem(i.Id, request.Report.ProjectId, i.Sprint, i.ItemsAdded,
+                            i.StoryPointsAdded, i.ItemsDone, i.StoryPointsDone, currentYearWeek);
+                        project.AddEditBacklogItem(item);
 
-                        if (request.Report.BacklogItem.Id == 0)
-                        {
-                            var addBacklogItemCommand = _mapper.Map<AddBacklogItemCommand>(request.Report.BacklogItem);
-                            addBacklogItemCommand.ProjectId = request.Report.ProjectId;
-                            addBacklogItemCommand.YearWeek = currentYearWeek;
+                        var q = request.Report.QualityReport;
+                        var report = new QualityReport(q.Id, request.Report.ProjectId, q.CriticalBugs, q.MajorBugs,
+                            q.MinorBugs, q.DoneBugs, q.ReOpenBugs, currentYearWeek);
+                        project.AddEditQualityReport(report);
 
-                            await _mediator.SendAsync(addBacklogItemCommand);
-                        }
-                        else
-                        {
-                            var editBacklogItemCommand = _mapper.Map<EditBacklogItemCommand>(request.Report.BacklogItem);
-                            editBacklogItemCommand.ProjectId = request.Report.ProjectId;
-
-                            await _mediator.SendAsync(editBacklogItemCommand);
-                        }
-
-                        if (request.Report.QualityReport.Id == 0)
-                        {
-                            var addQualityReportCommand = _mapper.Map<AddQualityReportCommand>(request.Report.QualityReport);
-                            addQualityReportCommand.ProjectId = request.Report.ProjectId;
-                            addQualityReportCommand.YearWeek = currentYearWeek;
-
-                            await _mediator.SendAsync(addQualityReportCommand);
-                        }
-                        else
-                        {
-                            var editQualityReportCommand = _mapper.Map<EditQualityReportCommand>(request.Report.QualityReport);
-                            editQualityReportCommand.ProjectId = request.Report.ProjectId;
-
-                            await _mediator.SendAsync(editQualityReportCommand);
-                        }
-
-                        if (request.Report.DodRequired)
-                        {
-                            var dodReports = request.Report.DodRecords.Where(r => r.Value != null).ToList();
-
-                            await _mediator.SendAsync(new EditDoDReportCommand()
-                                {DodReports = _mapper.Map<List<EditDoDReportCommand.DoDReportDto>>(dodReports)});
-                        }
-
-                        foreach (var ai in request.Report.AdditionalInfos)
-                        {
-                            if (ai.Id == 0 || ai.YearWeek != currentYearWeek)
-                            {
-                                var addCommand = _mapper.Map<AddAdditionalInfoCommand>(ai);
-                                addCommand.ProjectId = request.Report.ProjectId;
-
-                                await _mediator.SendAsync(addCommand);
-                            }
-                            else
-                            {
-                                var editCommand = _mapper.Map<EditAdditionalInfoCommand>(ai);
-                                editCommand.ProjectId = request.Report.ProjectId;
-
-                                await _mediator.SendAsync(editCommand);
-                            }
-                        }
-
-                        foreach (var issueIds in request.IssueRemovedIds)
-                        {
-                            var removeCommand = new RemoveAdditionalInfoCommand()
-                            {
-                                Id = issueIds.Id,
-                                IssueId = issueIds.IssueId
-                            };
-
-                            await _mediator.SendAsync(removeCommand);
-                        }
+                        await _dbContext.SaveChangesAsync();
 
                         await transaction.CommitAsync();
 
@@ -147,23 +73,6 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditWeeklyRepor
                     }
                 }
             }
-        }
-
-        public void MappingFrom(Profile profile)
-        {
-            profile.CreateMap<GetWeeklyReportPhrQuery.Dto.DoDReportDto, EditDoDReportCommand.DoDReportDto>();
-
-            profile.CreateMap<GetWeeklyReportPhrQuery.Dto.StatusDto, AddStatusCommand>();
-            profile.CreateMap<GetWeeklyReportPhrQuery.Dto.StatusDto, EditStatusCommand>();
-
-            profile.CreateMap<GetWeeklyReportPhrQuery.Dto.BacklogItemDto, AddBacklogItemCommand>();
-            profile.CreateMap<GetWeeklyReportPhrQuery.Dto.BacklogItemDto, EditBacklogItemCommand>();
-
-            profile.CreateMap<GetWeeklyReportPhrQuery.Dto.QualityReportDto, AddQualityReportCommand>();
-            profile.CreateMap<GetWeeklyReportPhrQuery.Dto.QualityReportDto, EditQualityReportCommand>();
-
-            profile.CreateMap<GetWeeklyReportPhrQuery.Dto.AdditionalInfoDto, AddAdditionalInfoCommand>();
-            profile.CreateMap<GetWeeklyReportPhrQuery.Dto.AdditionalInfoDto, EditAdditionalInfoCommand>();
         }
 
         public int Response { get; set; }

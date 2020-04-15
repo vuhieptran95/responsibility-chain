@@ -13,6 +13,7 @@ using ResponsibilityChain.Business.Logging;
 using ResponsibilityChain.Business.RequestContexts;
 using ResponsibilityChain.Business.Validations;
 using Module = Autofac.Module;
+using TypeExtensions = Autofac.TypeExtensions;
 
 namespace ProjectHealthReport.Features
 {
@@ -47,6 +48,11 @@ namespace ProjectHealthReport.Features
             
             builder.RegisterGeneric(typeof(CacheHandler<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(CacheConfig<>)).InstancePerLifetimeScope();
+
+            builder.RegisterAssemblyTypes(currentAssembly)
+                .AsClosedTypesOf(typeof(CacheConfig<>))
+                .InstancePerLifetimeScope();
+                
             builder.RegisterGeneric(typeof(PreEvent<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(PostEvent<,>)).InstancePerLifetimeScope();
 

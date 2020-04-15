@@ -20,6 +20,8 @@ namespace ResponsibilityChain.TestConsole
         public Src()
         {
             Name = "sfd";
+            
+            _dess = new List<Des>();
         }
 
         public Src(int id, string name, IEnumerable<Des> dess): this()

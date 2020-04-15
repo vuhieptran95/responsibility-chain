@@ -20,20 +20,28 @@ namespace ProjectHealthReport.Domains.Domains
         }
 
         public Status(int id, int projectId, string statusColor, string projectStatus, string retrospectiveFeedBack,
-            DateTime? milestoneDate, string milestone, int yearWeek, Project project)
+            DateTime? milestoneDate, string milestone, int yearWeek, Project project) : this(id, projectId, statusColor,
+            projectStatus, retrospectiveFeedBack, milestoneDate, milestone, yearWeek)
         {
-            _id = id;
-            _projectId = projectId;
-            _statusColor = statusColor;
-            _projectStatus = projectStatus;
-            _retrospectiveFeedBack = retrospectiveFeedBack;
-            _milestoneDate = milestoneDate;
-            _milestone = milestone;
-            YearWeek = yearWeek;
             _project = project;
         }
 
-        public Status(int id, int yearWeek, string milestone, DateTime? milestoneDate, string retrospectiveFeedBack,
+        public Status(int id, int projectId, string statusColor,
+            string projectStatus, string retrospectiveFeedBack,
+            DateTime? milestoneDate, string milestone, int yearWeek)
+        {
+            _id = id;
+            _yearWeek = yearWeek;
+            _milestone = milestone;
+            _milestoneDate = milestoneDate;
+            _retrospectiveFeedBack = retrospectiveFeedBack;
+            _projectStatus = projectStatus;
+            _statusColor = statusColor;
+            _projectId = projectId;
+        }
+
+        public void UpdateValue(int id, int yearWeek, string milestone, DateTime? milestoneDate,
+            string retrospectiveFeedBack,
             string projectStatus, string statusColor, int projectId)
         {
             _id = id;
@@ -44,6 +52,12 @@ namespace ProjectHealthReport.Domains.Domains
             _projectStatus = projectStatus;
             _statusColor = statusColor;
             _projectId = projectId;
+        }
+
+        public void UpdateValue(Status s)
+        {
+            UpdateValue(Id, s.YearWeek, s.Milestone, s.MilestoneDate, s.RetrospectiveFeedBack, s.ProjectStatus,
+                s.StatusColor, s.ProjectId);
         }
 
         public int Id => _id;

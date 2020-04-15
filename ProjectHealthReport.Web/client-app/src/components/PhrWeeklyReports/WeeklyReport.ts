@@ -5,7 +5,6 @@
     status: Status;
     backlogItem: BacklogItem;
     qualityReport: QualityReport;
-    additionalInfos: AdditionalInfo[];
     dodRecords: DodRecord[];
     years: number[];
     weeks: number[];
@@ -21,7 +20,6 @@
     lastWorkingDateOfWeek: string;
     backlogItemListReadOnly: BacklogItem[];
     qualityReportListReadOnly: QualityReport[];
-    additionalInfoListReadOnly: AdditionalInfo[];
     metrics: DodMetric[];
 }
 
@@ -198,7 +196,6 @@ export const defaultReport: Report = {
     },
     dodRecords: [],
     dodRequired: false,
-    additionalInfos: [],
     years: [],
     weeks: [],
     numberOfWeeks: [],
@@ -213,6 +210,5 @@ export const defaultReport: Report = {
     lastWorkingDateOfWeek: "",
     backlogItemListReadOnly: [],
     qualityReportListReadOnly: [],
-    additionalInfoListReadOnly: [],
     metrics: []
 }

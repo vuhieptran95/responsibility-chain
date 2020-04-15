@@ -22,23 +22,14 @@ namespace ProjectHealthReport.Domains.Domains
         {
         }
 
-        public Threshold(int metricStatusId, int metricId, decimal? upperBound, decimal? lowerBound,
-            string upperBoundOperator, string lowerBoundOperator, bool isRange, string value, Metric metric,
-            MetricStatus metricStatus)
-        {
-            _metricStatusId = metricStatusId;
-            _metricId = metricId;
-            _upperBound = upperBound;
-            _lowerBound = lowerBound;
-            _upperBoundOperator = upperBoundOperator;
-            _lowerBoundOperator = lowerBoundOperator;
-            _isRange = isRange;
-            _value = value;
-            _metric = metric;
-            _metricStatus = metricStatus;
 
-            ValidateIsRange();
-            ValidateOperators();
+        public Threshold(int metricStatusId, int metricId, decimal? upperBound, decimal? lowerBound,
+            string upperBoundOperator, string lowerBoundOperator, bool isRange, string value, MetricStatus metricStatus,
+            Metric metric) : this(metricStatusId, metricId, upperBound, lowerBound, upperBoundOperator,
+            lowerBoundOperator, isRange, value)
+        {
+            _metricStatus = metricStatus;
+            _metric = metric;
         }
 
         public Threshold(int metricStatusId, int metricId, decimal? upperBound, decimal? lowerBound,

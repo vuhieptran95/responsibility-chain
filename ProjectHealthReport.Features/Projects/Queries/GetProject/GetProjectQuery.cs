@@ -7,7 +7,6 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Mappings;
-using ProjectHealthReport.Features.Projects.Queries.GetProjects;
 using ResponsibilityChain;
 using ResponsibilityChain.Business.Executions;
 

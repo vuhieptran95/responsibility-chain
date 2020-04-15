@@ -27,21 +27,5 @@ namespace ProjectHealthReport.Web.Controllers
             return Ok(dto);
         }
 
-        [HttpGet("{name}/{yearWeek}")]
-        public async Task<ActionResult> GetDivisionWeeklyReport(string name, int yearWeek)
-        {
-            var dto = await _mediator.SendAsync(new GetDivisionWeeklyReportQuery()
-                {DivisionName = name, SelectedYearWeek = yearWeek});
-
-            return Ok(dto);
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> AddEditDivisonWeeklyReport([FromBody] AddEditDivisionWeeklyReportCommand command)
-        {
-            var dto = await _mediator.SendAsync(command);
-
-            return Ok(dto);
-        }
     }
 }

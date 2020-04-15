@@ -4,8 +4,7 @@ namespace ProjectHealthReport.Domains.Domains
 {
     public class BacklogItem : IWeeklyReport
     {
-        [Key]
-        private int _id;
+        [Key] private int _id;
         private int _projectId;
         private int? _sprint;
         private int _itemsAdded;
@@ -17,10 +16,17 @@ namespace ProjectHealthReport.Domains.Domains
 
         public BacklogItem()
         {
-            
         }
+
         public BacklogItem(int id, int projectId, int? sprint, int itemsAdded, int? storyPointsAdded, int itemsDone,
-            int? storyPointsDone, int yearWeek, Project project)
+            int? storyPointsDone, int yearWeek, Project project) : this(id, projectId, sprint, itemsAdded,
+            storyPointsAdded, itemsDone, storyPointsDone, yearWeek)
+        {
+            _project = project;
+        }
+
+        public BacklogItem(int id, int projectId, int? sprint, int itemsAdded, int? storyPointsAdded, int itemsDone,
+            int? storyPointsDone, int yearWeek)
         {
             _id = id;
             _projectId = projectId;
@@ -30,10 +36,11 @@ namespace ProjectHealthReport.Domains.Domains
             _itemsDone = itemsDone;
             _storyPointsDone = storyPointsDone;
             YearWeek = yearWeek;
-            _project = project;
         }
 
-        public BacklogItem(int id, int projectId, int? sprint, int itemsAdded, int? storyPointsAdded, int itemsDone, int? storyPointsDone, int yearWeek)
+        public void UpdateValue(int id, int projectId, int? sprint, int itemsAdded, int? storyPointsAdded,
+            int itemsDone,
+            int? storyPointsDone, int yearWeek)
         {
             _id = id;
             _projectId = projectId;
@@ -42,7 +49,13 @@ namespace ProjectHealthReport.Domains.Domains
             _storyPointsAdded = storyPointsAdded;
             _itemsDone = itemsDone;
             _storyPointsDone = storyPointsDone;
-            _yearWeek = yearWeek;
+            YearWeek = yearWeek;
+        }
+
+        public void UpdateValue(BacklogItem item)
+        {
+            UpdateValue(item.Id, item.ProjectId, item.Sprint, item.ItemsAdded, item.StoryPointsAdded, item.ItemsDone,
+                item.StoryPointsDone, item.YearWeek);
         }
 
         public int Id => _id;

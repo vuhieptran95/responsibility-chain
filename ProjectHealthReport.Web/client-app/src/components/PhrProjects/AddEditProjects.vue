@@ -110,13 +110,6 @@
                                 </v-col>
                             </v-row>
                             <v-row>
-                                <v-col md="12" >
-                                    <p class="teal lighten-4 pa-2" style="border: 1px solid grey; border-radius: 3px;">
-                                        If Initial story points are provided (greater than 0), all subsequent weekly reports will require story points fields to be mandatory.
-                                    </p>
-                                </v-col>
-                            </v-row>
-                            <v-row>
                                 <v-col class="text-right">
                                     <v-btn @click="handleSaveProject" color="primary">Save Project</v-btn>
                                 </v-col>

@@ -20,9 +20,6 @@ namespace ProjectHealthReport.Domains.Domains
         public DbSet<Status> Statuses { get; set; }
         public DbSet<QualityReport> QualityReports { get; set; }
         public DbSet<BacklogItem> BacklogItems { get; set; }
-        public DbSet<AdditionalInfo> AdditionalInfos { get; set; }
-        public DbSet<AdditionalInfoIssues> AdditionalInfoIssues { get; set; }
-        public DbSet<Issue> Issues { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
         public DbSet<Metric> Metrics { get; set; }
         public DbSet<MetricStatus> MetricStatuses { get; set; }
@@ -109,33 +106,8 @@ namespace ProjectHealthReport.Domains.Domains
                 e.Property(s => s.Milestone).HasColumnName("Milestone");
                 e.Property(s => s.MilestoneDate).HasColumnName("MilestoneDate");
                 e.Property(s => s.ProjectStatus).HasColumnName("ProjectStatus");
-                e.Property(s => s.StatusColor).HasColumnName("StatusColor");
+                e.Property(s => s.StatusColor).HasColumnName("StatusColor").IsRequired();
                 e.Property(s => s.RetrospectiveFeedBack).HasColumnName("RetrospectiveFeedBack");
-            });
-
-
-            modelBuilder.Entity<AdditionalInfo>(e =>
-            {
-                e.HasKey(ai => new {ai.Id});
-                e.HasIndex(b => new {b.YearWeek, b.ProjectId}).IsUnique();
-            });
-
-            modelBuilder.Entity<AdditionalInfoIssues>(e =>
-            {
-                e.HasKey(ai => new {ai.IssueId, ai.AdditionalInfoId});
-                e.Property(ai => ai.Status).HasColumnName("Status").IsRequired();
-            });
-            
-            modelBuilder.Entity<Issue>(e =>
-            {
-                e.HasKey(i => i.Id);
-                e.Property(i => i.Action).HasColumnName("Action");
-                e.Property(i => i.Impact).HasColumnName("Impact");
-                e.Property(i => i.Item).HasColumnName("Item");
-                e.Property(i => i.OpenedYearWeek).HasColumnName("OpenedYearWeek");
-                e.HasMany(i => i.AdditionalInfoIssues)
-                    .WithOne(aii => aii.Issue)
-                    .HasForeignKey(aii => aii.IssueId);
             });
 
             modelBuilder.Entity<WeeklyReportStatus>(e =>
@@ -176,9 +148,9 @@ namespace ProjectHealthReport.Domains.Domains
                 e.HasKey(p => p.Id);
                 e.HasIndex(p => p.Code).IsUnique();
                 e.HasIndex(p => new {p.Id, p.DeliveryResponsibleName}).IsUnique();
-                e.Property(p => p.Name).HasColumnName("Name");
-                e.Property(p => p.Code).HasColumnName("Code");
-                e.Property(p => p.KeyAccountManager).HasColumnName("KeyAccountManager");
+                e.Property(p => p.Name).HasColumnName("Name").IsRequired();
+                e.Property(p => p.Code).HasColumnName("Code").IsRequired();
+                e.Property(p => p.KeyAccountManager).HasColumnName("KeyAccountManager").IsRequired();
                 e.Property(p => p.PhrRequired).HasColumnName("PhrRequired");
                 e.Property(p => p.DmrRequired).HasColumnName("DmrRequired");
                 e.Property(p => p.DodRequired).HasColumnName("DodRequired");
@@ -194,12 +166,10 @@ namespace ProjectHealthReport.Domains.Domains
                 e.Property(p => p.PhrRequiredFrom).HasColumnName("PhrRequiredFrom");
                 e.Property(p => p.DmrRequiredFrom).HasColumnName("DmrRequiredFrom");
                 e.Property(p => p.DmrRequiredTo).HasColumnName("DmrRequiredTo");
-                e.Property(p => p.Division).HasColumnName("Division");
+                e.Property(p => p.Division).HasColumnName("Division").IsRequired();
                 e.HasMany(p => p.Statuses).WithOne(s => s.Project)
                     .HasForeignKey(s => s.ProjectId);
                 e.HasMany(p => p.BacklogItems).WithOne(b => b.Project)
-                    .HasForeignKey(s => s.ProjectId);
-                e.HasMany(p => p.AdditionalInfos).WithOne(a => a.Project)
                     .HasForeignKey(s => s.ProjectId);
                 e.HasMany(p => p.QualityReports).WithOne(q => q.Project)
                     .HasForeignKey(s => s.ProjectId);

@@ -19,34 +19,47 @@ namespace ResponsibilityChain.Business.Caching
 
         public override async Task HandleAsync(TRequest request)
         {
-            if (!CacheConfig.IsEnabled)
+            if (!CacheConfig.IsCacheEnabled)
             {
                 await base.HandleAsync(request);
-                return;
             }
-            
-            await Cache.GetOrCreateAsync(CacheConfig.GetDefaultCacheKey(request) + CacheConfig.CacheKey,
-                async entry =>
-                {
-                    entry.AbsoluteExpiration = CacheConfig.DateTimeOffset;
-                    await base.HandleAsync(request);
-                    return request.Response;
-                });
+            else
+            {
+                request.Response = await Cache.GetOrCreateAsync(CacheConfig.GetCacheKey(request),
+                    async entry =>
+                    {
+                        entry.AbsoluteExpiration = CacheConfig.CacheDateTimeOffset;
+                        await base.HandleAsync(request);
+                        return request.Response;
+                    });
+            }
         }
     }
 
     public class CacheConfig<TRequest>
     {
-        public bool IsEnabled { get; protected set; } = false;
-        public string CacheKey { get; set; }
+        protected bool IsEnabled;
+        protected DateTimeOffset DateTimeOffset;
 
-        public string GetDefaultCacheKey(TRequest request)
+        public CacheConfig(bool isEnabled = false, DateTimeOffset dateTimeOffset = default)
         {
-            var content = JsonSerializer.Serialize(request);
-            var requestType = request.GetType().FullName;
-            return $"{requestType}_{content}_";
+            DateTimeOffset = dateTimeOffset;
+            IsEnabled = isEnabled;
         }
 
-        public DateTimeOffset DateTimeOffset { get; set; }
+        public bool IsCacheEnabled
+        {
+            get => IsEnabled;
+        }
+
+        public virtual string GetCacheKey(TRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DateTimeOffset CacheDateTimeOffset
+        {
+            get => DateTimeOffset;
+        }
     }
 }

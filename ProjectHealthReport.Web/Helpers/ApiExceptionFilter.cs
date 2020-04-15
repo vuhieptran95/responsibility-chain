@@ -8,13 +8,13 @@ namespace ProjectHealthReport.Web.Helpers
 {
     public class ApiExceptionFilter : ExceptionFilterAttribute
     {
-        public override void OnException(ExceptionContext context)
-        {
-            var error = ExtractErrorResponseFromContext(context);
-
-            context.HttpContext.Response.StatusCode = (int) error.HttpStatusCode;
-            context.Result = new JsonResult(error);
-        }
+        // public override void OnException(ExceptionContext context)
+        // {
+        //     var error = ExtractErrorResponseFromContext(context);
+        //
+        //     context.HttpContext.Response.StatusCode = (int) error.HttpStatusCode;
+        //     context.Result = new JsonResult(error);
+        // }
 
         private static ErrorResponse ExtractErrorResponseFromContext(ExceptionContext context)
         {

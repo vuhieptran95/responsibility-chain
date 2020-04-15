@@ -31,6 +31,11 @@ namespace ProjectHealthReport.Features.Divisions.Queries
 
             public override async Task HandleAsync(GetDivisionWeeklyReportQuery request)
             {
+                if (request.DivisionName == "AMS247")
+                {
+                    request.DivisionName = "AMS 24/7";
+                }
+                
                 var divisionProjectStatusDto = (await _dbContext.Projects
                         .Where(p => p.Division == request.DivisionName
                                     && p.DmrRequired)

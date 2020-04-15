@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ProjectHealthReport.Features.Projects.Commands;
 using ProjectHealthReport.Features.Projects.Queries.GetProject;
+using ProjectHealthReport.Features.Projects.Queries.GetProjectCaching;
 using ProjectHealthReport.Features.Projects.Queries.GetProjectIndexPhr;
 using ProjectHealthReport.Features.Projects.Queries.GetProjectPhrWithReportYearWeeksAndStatuses;
 using ProjectHealthReport.Features.Projects.Queries.GetProjects;
@@ -91,6 +92,14 @@ namespace ProjectHealthReport.Web.Controllers
         public async Task<ActionResult> EditProjectNonMasterData([FromBody] EditProjectNonMasterDataCommand command)
         {
             var dto = await _mediator.SendAsync(command);
+
+            return Ok(dto);
+        }
+
+        [HttpGet("caching/{id}")]
+        public async Task<ActionResult> GetProjectCaching(int id)
+        {
+            var dto = await _mediator.SendAsync(new GetProjectCachingQuery(){ProjectId = id});
 
             return Ok(dto);
         }

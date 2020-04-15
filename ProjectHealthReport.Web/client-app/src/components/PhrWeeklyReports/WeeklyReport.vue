@@ -55,12 +55,6 @@
                                              @report-link-change="handleReportLinkChange"
                                              :report="report"/>
 
-                            <WeeklyReportAdditionalInfo
-                                    @view-settings-change="handleAdditionalInfoViewSettingsChange"
-                                    @additional-infos-change="handleAdditionalInfosChange"
-                                    :issue-removed-ids-object="{issueRemovedIds: issueRemovedIds}"
-                                    :report="report"/>
-
                             <div class="mt-4 d-flex justify-content-between">
                                 <v-btn color="primary" v-on:click="addEditReport()">Save weekly report</v-btn>
                                 <v-btn outlined color="primary" @click="getGeneratedReport()">Generate report with
@@ -115,7 +109,6 @@
     import WeeklyReportBacklog from "@/components/PhrWeeklyReports/WeeklyReportBacklog.vue";
     import WeeklyReportStatus from "@/components/PhrWeeklyReports/WeeklyReportStatus.vue";
     import WeeklyReportQualityReport from "@/components/PhrWeeklyReports/WeeklyReportQualityReport.vue";
-    import WeeklyReportAdditionalInfo from "@/components/PhrWeeklyReports/WeeklyReportAdditionalInfo.vue";
     import WeeklyReportPopupNoInitial from "@/components/PhrWeeklyReports/WeeklyReportPopupNoInitial.vue";
     import WeeklyReportDod from "@/components/PhrWeeklyReports/WeeklyReportDod.vue";
 
@@ -123,7 +116,6 @@
         components: {
             WeeklyReportDod,
             WeeklyReportPopupNoInitial,
-            WeeklyReportAdditionalInfo,
             WeeklyReportQualityReport, WeeklyReportStatus, WeeklyReportBacklog, DisplayText
         }
     })
@@ -166,8 +158,6 @@
                 }
 
                 if (!this.report.qualityReport) this.report.qualityReport = defaultReport.qualityReport;
-
-                this.report.additionalInfos = _.sortBy(this.report.additionalInfos, 'openedYearWeek');
 
                 this.initialReport = _.cloneDeep(this.report);
 
@@ -242,7 +232,7 @@
         }
 
         getProjectDetails(projectId: number) {
-            return `/Projects/AddEditProject?id=${projectId}`;
+            return `/phr/projects/add-edit?id=${projectId}`;
         };
 
         async getAllowedWeeks() {
@@ -291,16 +281,6 @@
             } catch (e) {
                 handleAxiosError(e)
             }
-        }
-
-        handleAdditionalInfosChange(additionalInfos: AdditionalInfo[], issueRemovedIds: Issue[]) {
-            this.report.additionalInfos = additionalInfos;
-            this.issueRemovedIds = issueRemovedIds;
-        }
-
-        async handleAdditionalInfoViewSettingsChange(numberOfWeekNotShowClosedItem: number) {
-            this.report.numberOfWeekNotShowClosedItem = numberOfWeekNotShowClosedItem;
-            await this.handleViewSettingsChanged();
         }
     }
 </script>

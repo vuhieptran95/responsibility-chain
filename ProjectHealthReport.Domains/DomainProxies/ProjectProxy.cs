@@ -46,7 +46,6 @@ namespace ProjectHealthReport.Domains.DomainProxies
         public ICollection<StatusProxy> Statuses { get; set; }
         public ICollection<BacklogItemProxy> BacklogItems { get; set; }
         public ICollection<QualityReportProxy> QualityReports { get; set; }
-        public ICollection<AdditionalInfoProxy> AdditionalInfos { get; set; }
         public ICollection<DivisionProjectStatusProxy> DivisionProjectStatuses { get; set; }
         public ICollection<WeeklyReportStatusProxy> WeeklyReportStatuses { get; set; }
         public ICollection<ProjectAccessProxy> ProjectAccesses { get; set; }

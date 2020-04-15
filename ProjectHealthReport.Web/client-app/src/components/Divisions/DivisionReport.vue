@@ -38,7 +38,7 @@
                                                 :value="selectedYearWeek"
                                                 :items="yearWeeks"
                                                 :menu-props="{ top: true, offsetY: true }"
-                                                @@change="handleCurrentReportWeekChange"
+                                                @change="handleCurrentReportWeekChange"
                                                 label="Current Report Week"
                                         ></v-select>
                                     </v-col>
@@ -46,7 +46,7 @@
                                         <p style="padding-top:1.2rem">{{workingDays}}</p>
                                     </v-col>
                                     <v-col class="text-right mt-2" sm="6">
-                                        <v-btn @@click="handleSaveReport" color="primary" class="mr-2">Save Report
+                                        <v-btn @click="handleSaveReport" color="primary" class="mr-2">Save Report
                                         </v-btn>
 
                                         <v-dialog
@@ -86,7 +86,7 @@
                                                     <v-btn
                                                             color="primary"
                                                             text
-                                                            @@click="handleCopyFromLastWeek"
+                                                            @click="handleCopyFromLastWeek"
                                                     >
                                                         Copy
                                                     </v-btn>
@@ -218,7 +218,7 @@
 
         async init() {
             axios.get(`${HELPER_ENDPOINT}allowed-yearweeks/2020`).then(res => {
-                this.yearWeeks = res.data.allowedYearWeeks.map((i: any) => {
+                this.yearWeeks = res.data.map((i: any) => {
                     i = this.vueHelper.formatYearWeek(i);
                     return i;
                 });
@@ -243,7 +243,7 @@
 
         async handleSaveReport() {
             // @ts-ignore
-            this.$refs.form.validate();
+            if (!this.$refs.form.validate()) return;
 
             let divisionProjectStatuses = this.items.map(i => {
                 i.statusColor = i.statuscolor;
@@ -272,7 +272,7 @@
             let queryString = window.location.href.split('?')[1];
             let divisionName = queryString.split('=')[1];
             try {
-                let res = await axios.get(`${WEEKLYREPORT_ENDPOINT}division/${divisionName}/year-week/${this.selectedCopyYearWeek}`);
+                let res = await axios.get(`${WEEKLYREPORT_ENDPOINT}dmr/${divisionName}/${this.selectedCopyYearWeek}`);
                 let statuses = res.data.divisionProjectStatuses;
                 for (let i = 0; i < this.items.length; i++) {
                     let status = statuses.filter((s: any) => s.code === this.items[i].code)[0];

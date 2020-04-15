@@ -17,7 +17,14 @@
         }
 
         public QualityReport(int id, int projectId, int criticalBugs, int majorBugs, int minorBugs, int doneBugs,
-            int reOpenBugs, int yearWeek, Project project)
+            int reOpenBugs, int yearWeek, Project project) : this(id, projectId, criticalBugs, majorBugs, minorBugs,
+            doneBugs, reOpenBugs, yearWeek)
+        {
+            _project = project;
+        }
+
+        public QualityReport(int id, int projectId, int criticalBugs, int majorBugs, int minorBugs, int doneBugs,
+            int reOpenBugs, int yearWeek)
         {
             _id = id;
             _projectId = projectId;
@@ -27,19 +34,25 @@
             _doneBugs = doneBugs;
             _reOpenBugs = reOpenBugs;
             YearWeek = yearWeek;
-            _project = project;
         }
 
-        public QualityReport(int yearWeek, int reOpenBugs, int doneBugs, int minorBugs, int majorBugs, int criticalBugs, int projectId, int id)
+        public void UpdateValue(int id, int projectId, int criticalBugs, int majorBugs, int minorBugs, int doneBugs,
+            int reOpenBugs, int yearWeek)
         {
-            _yearWeek = yearWeek;
-            _reOpenBugs = reOpenBugs;
-            _doneBugs = doneBugs;
-            _minorBugs = minorBugs;
-            _majorBugs = majorBugs;
-            _criticalBugs = criticalBugs;
-            _projectId = projectId;
             _id = id;
+            _projectId = projectId;
+            _criticalBugs = criticalBugs;
+            _majorBugs = majorBugs;
+            _minorBugs = minorBugs;
+            _doneBugs = doneBugs;
+            _reOpenBugs = reOpenBugs;
+            YearWeek = yearWeek;
+        }
+
+        public void UpdateValue(QualityReport report)
+        {
+            UpdateValue(report.Id, report.ProjectId, report.CriticalBugs, report.MajorBugs, report.MinorBugs,
+                report.DoneBugs, report.ReOpenBugs, report.YearWeek);
         }
 
         public int Id => _id;
