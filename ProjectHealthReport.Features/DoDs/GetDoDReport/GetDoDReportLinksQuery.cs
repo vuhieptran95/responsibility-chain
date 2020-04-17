@@ -15,7 +15,7 @@ namespace ProjectHealthReport.Features.DoDs.GetDoDReport
         public int YearWeek { get; set; }
         public int NumberOfWeek { get; set; }
 
-        public class Handler : ExecutionHandlerBase<GetDoDReportLinksQuery, Dto>
+        public class Handler : ExecutionHandler<GetDoDReportLinksQuery, Dto>
         {
             private readonly ReportDbContext _dbContext;
 

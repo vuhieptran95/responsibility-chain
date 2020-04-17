@@ -10,7 +10,7 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.RemoveMetrics
     {
         public string Tool { get; set; }
 
-        public class RemoveMetricsCommandHandler : ExecutionHandlerBase<RemoveMetricsCommand, int>
+        public class RemoveMetricsCommandHandler : ExecutionHandler<RemoveMetricsCommand, int>
         {
             private readonly ReportDbContext _dbContext;
 

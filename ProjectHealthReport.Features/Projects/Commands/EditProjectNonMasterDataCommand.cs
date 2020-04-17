@@ -45,7 +45,7 @@ namespace ProjectHealthReport.Features.Projects.Commands
             public string Role { get; set; }
         }
 
-        public class Handler : ExecutionHandlerBase<EditProjectNonMasterDataCommand, int>
+        public class Handler : ExecutionHandler<EditProjectNonMasterDataCommand, int>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;

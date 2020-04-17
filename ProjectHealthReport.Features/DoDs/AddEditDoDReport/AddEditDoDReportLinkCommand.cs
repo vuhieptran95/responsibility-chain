@@ -14,7 +14,7 @@ namespace ProjectHealthReport.Features.DoDs.AddEditDoDReport
         public string LinkToReport { get; set; }
         public string ReportFileName { get; set; }
 
-        public class Handler : ExecutionHandlerBase<AddEditDoDReportLinkCommand, int>
+        public class Handler : ExecutionHandler<AddEditDoDReportLinkCommand, int>
         {
             private readonly ReportDbContext _dbContext;
 

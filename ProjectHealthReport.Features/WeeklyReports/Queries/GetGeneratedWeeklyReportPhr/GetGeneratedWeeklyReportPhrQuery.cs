@@ -15,7 +15,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetGeneratedWeeklyR
         public int NumberOfWeek { get; set; } = 4;
         public int NumberOfWeekNotShowClosedItem { get; set; } = 2;
         
-        public class Handler : ExecutionHandlerBase<GetGeneratedWeeklyReportPhrQuery, Dto>
+        public class Handler : ExecutionHandler<GetGeneratedWeeklyReportPhrQuery, Dto>
         {
             private readonly IMediator _mediator;
 

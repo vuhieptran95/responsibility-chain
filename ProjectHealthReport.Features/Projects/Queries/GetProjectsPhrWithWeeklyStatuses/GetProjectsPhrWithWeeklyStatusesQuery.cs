@@ -34,7 +34,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjectsPhrWithWeekly
             }
         }
 
-        public class Handler : ExecutionHandlerBase<GetProjectsPhrWithWeeklyStatusesQuery, Dto>
+        public class Handler : ExecutionHandler<GetProjectsPhrWithWeeklyStatusesQuery, Dto>
         {
             private readonly ReportDbContext _dbContext;
 

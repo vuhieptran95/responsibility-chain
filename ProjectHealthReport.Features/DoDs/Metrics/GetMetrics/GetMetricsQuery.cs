@@ -57,7 +57,7 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.GetMetrics
             }
         }
 
-        public class Handler : ExecutionHandlerBase<GetMetricsQuery, Dto>
+        public class Handler : ExecutionHandler<GetMetricsQuery, Dto>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;

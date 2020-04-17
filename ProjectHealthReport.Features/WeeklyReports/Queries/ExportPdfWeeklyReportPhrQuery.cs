@@ -10,7 +10,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries
     {
         public string HtmlContent { get; set; }
 
-        public class Handler : ExecutionHandlerBase<ExportPdfWeeklyReportPhrQuery, byte[]>
+        public class Handler : ExecutionHandler<ExportPdfWeeklyReportPhrQuery, byte[]>
         {
             private readonly IConverter _converter;
 

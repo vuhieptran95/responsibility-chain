@@ -9,7 +9,7 @@ namespace ProjectHealthReport.Features.Projects.Commands
     {
         public int ProjectId { get; set; }
 
-        public class Handler : ExecutionHandlerBase<RemoveProjectCommand, int>
+        public class Handler : ExecutionHandler<RemoveProjectCommand, int>
         {
             private readonly ReportDbContext _dbContext;
 

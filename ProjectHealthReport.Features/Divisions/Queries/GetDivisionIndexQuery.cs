@@ -7,7 +7,7 @@ namespace ProjectHealthReport.Features.Divisions.Queries
 {
     public class GetDivisionIndexQuery : IRequest<GetDivisionIndexQuery.Dto>
     {
-        public class Handler : ExecutionHandlerBase<GetDivisionIndexQuery, Dto>
+        public class Handler : ExecutionHandler<GetDivisionIndexQuery, Dto>
         {
             public override Task HandleAsync(GetDivisionIndexQuery request)
             {

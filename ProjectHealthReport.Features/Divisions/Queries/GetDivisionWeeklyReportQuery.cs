@@ -18,7 +18,7 @@ namespace ProjectHealthReport.Features.Divisions.Queries
         [Required] public string DivisionName { get; set; }
         public int SelectedYearWeek { get; set; }
 
-        public class Handler : ExecutionHandlerBase<GetDivisionWeeklyReportQuery, Dto>
+        public class Handler : ExecutionHandler<GetDivisionWeeklyReportQuery, Dto>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;

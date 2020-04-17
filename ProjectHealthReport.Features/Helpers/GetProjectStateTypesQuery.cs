@@ -10,7 +10,7 @@ namespace ProjectHealthReport.Features.Helpers
 {
     public class GetProjectStateTypesQuery : IRequest<GetProjectStateTypesQuery.Dto>
     {
-        public class Handler : ExecutionHandlerBase<GetProjectStateTypesQuery, Dto>
+        public class Handler : ExecutionHandler<GetProjectStateTypesQuery, Dto>
         {
             private readonly ReportDbContext _dbContext;
 

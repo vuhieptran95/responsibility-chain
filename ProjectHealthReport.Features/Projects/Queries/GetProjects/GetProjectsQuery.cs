@@ -14,7 +14,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjects
 {
     public class GetProjectsQuery : IRequest<GetProjectsQuery.Dto>
     {
-        public class Handler : ExecutionHandlerBase<GetProjectsQuery, Dto>
+        public class Handler : ExecutionHandler<GetProjectsQuery, Dto>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;

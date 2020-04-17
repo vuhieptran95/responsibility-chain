@@ -9,7 +9,7 @@ namespace ProjectHealthReport.Features.Helpers
 {
     public class GetUserEmailsQuery : IRequest<List<string>>
     {
-        public class Handler: ExecutionHandlerBase<GetUserEmailsQuery, List<string>>
+        public class Handler: ExecutionHandler<GetUserEmailsQuery, List<string>>
         {
             public override Task HandleAsync(GetUserEmailsQuery request)
             {

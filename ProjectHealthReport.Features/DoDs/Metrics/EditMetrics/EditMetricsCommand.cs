@@ -50,7 +50,7 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.EditMetrics
 
         }
 
-        public class Handler : ExecutionHandlerBase<EditMetricsCommand, int>
+        public class Handler : ExecutionHandler<EditMetricsCommand, int>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;

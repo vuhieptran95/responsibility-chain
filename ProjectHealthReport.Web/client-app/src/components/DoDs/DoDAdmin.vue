@@ -92,13 +92,13 @@
                                     </v-col>
                                     <v-col md="1">
                                         <v-select :disabled="!threshold.isRange" hide-details :items="operators" outlined
-                                                  v-model="threshold.lowerBoundOperator"
+                                                  v-model="threshold.lowerBoundOperator" dense
                                                   label="Lower Bound Operator"/>
                                     </v-col>
                                     <v-col md="1"><p class="display-2 text-center">X</p></v-col>
                                     <v-col md="1">
                                         <v-select :disabled="!threshold.isRange" hide-details :items="operators" outlined
-                                                  v-model="threshold.upperBoundOperator"
+                                                  v-model="threshold.upperBoundOperator" dense
                                                   label="Upper Bound Operator"/>
                                     </v-col>
                                     <v-col md="2">

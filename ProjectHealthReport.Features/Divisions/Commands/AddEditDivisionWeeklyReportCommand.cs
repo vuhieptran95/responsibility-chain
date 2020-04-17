@@ -27,7 +27,7 @@ namespace ProjectHealthReport.Features.Divisions.Commands
             public int YearWeek { get; set; }
         }
         
-        public class Handler: ExecutionHandlerBase<AddEditDivisionWeeklyReportCommand, int>
+        public class Handler: ExecutionHandler<AddEditDivisionWeeklyReportCommand, int>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;

@@ -28,7 +28,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetWeeklyReportPhr
 
         public Expression<Func<Project, bool>> ResourceFilter { get; set; } = p => true;
 
-        public class Handler : ExecutionHandlerBase<GetWeeklyReportPhrQuery, Dto>
+        public class Handler : ExecutionHandler<GetWeeklyReportPhrQuery, Dto>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;
@@ -47,16 +47,12 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetWeeklyReportPhr
             {
                 var yearWeek = TimeHelper.CalculateYearWeek(request.Year, request.Week);
 
-                var project = await _dbContext.Projects.AsNoTracking().FirstAsync(p => p.Id == request.ProjectId);
+                var project = await _dbContext.Projects.AsNoTracking().Where(request.ResourceFilter).FirstAsync(p => p.Id == request.ProjectId);
 
-                var data = await _mediator.SendAsync(new GetProjectCachingQuery()
+                var cache = (await _mediator.SendAsync(new GetProjectCachingQuery()
                 {
                     ProjectId = request.ProjectId,
-                    ResourceFilter = request.ResourceFilter
-                });
-
-                var cache = MessagePackSerializer.Deserialize<GetProjectCachingQuery.WeeklyData>(data.Bytes,
-                    MessagePackSerializerOptions.Standard.WithCompression(MessagePackCompression.Lz4Block));
+                })).GetResponse();
 
                 project.SetCollections(_mapper.Map<IEnumerable<QualityReport>>(cache.QualityReports),
                     _mapper.Map<IEnumerable<BacklogItem>>(cache.BacklogItems),

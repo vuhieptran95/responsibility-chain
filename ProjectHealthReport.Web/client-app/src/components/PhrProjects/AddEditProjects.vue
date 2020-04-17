@@ -159,10 +159,6 @@
         vueHelper = VueHelper;
 
         mounted() {
-            axios.get(HELPER_ENDPOINT + "user-emails").then(res => {
-                this.nitecans = res.data;
-            }).catch(handleAxiosError);
-            
             this.init();
         }
         
@@ -177,6 +173,9 @@
                     this.project.projectEndDate = this.project.projectEndDate === null ? null : moment(this.project.projectEndDate).format("YYYY-MM-DD");
                 
                     this.usersAsPIC = this.project.projectAccesses.map(i => i.email);
+                    if (this.project.userEmails){
+                        this.nitecans = this.project.userEmails.map(i => ({username : i, email: i, role: "", division: ""}));
+                    }
                 }).catch(handleAxiosError)
             }
         }

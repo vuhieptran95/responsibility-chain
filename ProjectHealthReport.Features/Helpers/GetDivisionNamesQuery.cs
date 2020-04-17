@@ -9,7 +9,7 @@ namespace ProjectHealthReport.Features.Helpers
 {
     public class GetDivisionNamesQuery : IRequest<List<string>>
     {
-        public class Handler: ExecutionHandlerBase<GetDivisionNamesQuery, List<string>>
+        public class Handler: ExecutionHandler<GetDivisionNamesQuery, List<string>>
         {
             public override Task HandleAsync(GetDivisionNamesQuery request)
             {

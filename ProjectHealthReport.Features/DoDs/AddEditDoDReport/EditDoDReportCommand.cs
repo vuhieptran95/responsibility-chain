@@ -14,7 +14,7 @@ namespace ProjectHealthReport.Features.DoDs.AddEditDoDReport
 {
     public partial class EditDoDReportCommand
     {
-        public class EditOneProjectAtATime : ValidationHandler<EditDoDReportCommand, int>
+        public class EditOneProjectAtATime : PreValidation<EditDoDReportCommand, int>
         {
             public override Task HandleAsync(EditDoDReportCommand request)
             {
@@ -27,8 +27,7 @@ namespace ProjectHealthReport.Features.DoDs.AddEditDoDReport
                     }
                     
                 }
-
-                return base.HandleAsync(request);
+                return Task.CompletedTask;
             }
         }
 
@@ -59,7 +58,7 @@ namespace ProjectHealthReport.Features.DoDs.AddEditDoDReport
             }
         }
 
-        public class Handler : ExecutionHandlerBase<EditDoDReportCommand, int>
+        public class Handler : ExecutionHandler<EditDoDReportCommand, int>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;

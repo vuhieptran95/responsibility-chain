@@ -14,6 +14,7 @@
     projectStartDate: string;
     projectEndDate: string | null;
     note: string;
+    userEmails: string[] | null;
 }
 
 interface BacklogItem {
@@ -48,5 +49,6 @@ export const defaultProject: Project = {
         itemsAdded: null,
         storyPointsAdded: null
     },
-    projectAccesses: []
+    projectAccesses: [],
+    userEmails: []
 }

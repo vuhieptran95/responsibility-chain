@@ -47,19 +47,13 @@ namespace ResponsibilityChain.Business.Caching
             IsEnabled = isEnabled;
         }
 
-        public bool IsCacheEnabled
-        {
-            get => IsEnabled;
-        }
+        public bool IsCacheEnabled => IsEnabled;
 
         public virtual string GetCacheKey(TRequest request)
         {
             throw new NotImplementedException();
         }
 
-        public DateTimeOffset CacheDateTimeOffset
-        {
-            get => DateTimeOffset;
-        }
+        public DateTimeOffset CacheDateTimeOffset => DateTimeOffset;
     }
 }

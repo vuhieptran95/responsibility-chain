@@ -34,7 +34,7 @@ namespace ProjectHealthReport.Features.DoDs.AddEditDoDReport
             }
         }
         
-        public class Handler: ExecutionHandlerBase<AddDoDReportCommand, int>
+        public class Handler: ExecutionHandler<AddDoDReportCommand, int>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;

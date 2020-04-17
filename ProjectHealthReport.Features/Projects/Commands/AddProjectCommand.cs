@@ -48,7 +48,7 @@ namespace ProjectHealthReport.Features.Projects.Commands
         public DateTime ProjectStartDate { get; set; }
         public DateTime? ProjectEndDate { get; set; }
 
-        public class Handler : ExecutionHandlerBase<AddProjectCommand, int>
+        public class Handler : ExecutionHandler<AddProjectCommand, int>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;

@@ -14,23 +14,17 @@ using ProjectHealthReport.Domains.DomainProxies;
 using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Helpers;
 using ProjectHealthReport.Domains.Migrations;
+using ProjectHealthReport.Features.Common;
 using ResponsibilityChain;
 using ResponsibilityChain.Business.Caching;
 using ResponsibilityChain.Business.Executions;
 
 namespace ProjectHealthReport.Features.Projects.Queries.GetProjectCaching
 {
-    public class GetProjectCachingQuery : IRequest<GetProjectCachingQuery.CacheResponse>
+    public class GetProjectCachingQuery : IRequest<CacheResponse<GetProjectCachingQuery.WeeklyData>>
     {
         public int ProjectId { get; set; }
-        public Expression<Func<Project, bool>> ResourceFilter { get; set; } = p => true;
-        public CacheResponse Response { get; set; }
-
-        public class CacheResponse
-        {
-            public byte[] Bytes { get; set; }
-            public Type Type { get; set; }
-        }
+        public CacheResponse<WeeklyData> Response { get; set; } = new CacheResponse<WeeklyData>();
 
         [MessagePackObject]
         public class WeeklyData
@@ -47,7 +41,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjectCaching
             [Key(2)] public IEnumerable<QualityReportProxy> QualityReports { get; set; }
         }
 
-        public class Handler : ExecutionHandlerBase<GetProjectCachingQuery, CacheResponse>
+        public class Handler : ExecutionHandler<GetProjectCachingQuery, CacheResponse<WeeklyData>>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;
@@ -96,26 +90,7 @@ WHERE ProjectId = @ProjectId;";
                     await con.CloseAsync();
                 }
 
-                request.Response = new CacheResponse()
-                {
-                    Bytes = MessagePackSerializer.Serialize(data,
-                        MessagePackSerializerOptions.Standard.WithCompression(MessagePackCompression.Lz4Block)),
-                    Type = typeof(WeeklyData)
-                };
-
-                // var res = await _dbContext.Projects.AsNoTracking()
-                //     .Include(p => p.BacklogItems)
-                //     .Include(p => p.Statuses)
-                //     .Include(p => p.QualityReports)
-                //     .Where(request.ResourceFilter)
-                //     .FirstAsync(p => p.Id == request.ProjectId);
-                // var resProxy = _mapper.Map<ProjectProxy>(res);
-                // resProxy.BacklogItems.ToList().ForEach(b => b.Project = null);
-                // resProxy.Statuses.ToList().ForEach(b => b.Project = null);
-                // resProxy.QualityReports.ToList().ForEach(b => b.Project = null);
-                //
-                // request.Response = _mapper.Map<Project>(resProxy,
-                //     options => options.Items[MiscHelper.UserRoleListCtor] = AuthorizationHelper.UserRoleList);
+                request.Response.SetResponse(data);
             }
         }
 
@@ -125,7 +100,7 @@ WHERE ProjectId = @ProjectId;";
                 dateTimeOffset)
             {
                 IsEnabled = true;
-                DateTimeOffset = DateTimeOffset.Now.AddSeconds(20);
+                DateTimeOffset = DateTimeOffset.Now.AddDays(1);
             }
 
             public override string GetCacheKey(GetProjectCachingQuery request)

@@ -11,7 +11,7 @@ namespace ProjectHealthReport.Features.Helpers
     {
         public int SelectedYear { get; set; }
 
-        public class Handler : ExecutionHandlerBase<GetAllowedWeeksOfYearQuery, List<int>>
+        public class Handler : ExecutionHandler<GetAllowedWeeksOfYearQuery, List<int>>
         {
             public override Task HandleAsync(GetAllowedWeeksOfYearQuery request)
             {

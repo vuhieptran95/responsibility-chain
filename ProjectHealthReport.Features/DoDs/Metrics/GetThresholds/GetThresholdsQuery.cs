@@ -37,7 +37,7 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.GetThresholds
             }
         }
 
-        public class Handler : ExecutionHandlerBase<GetThresholdsQuery,Dto>
+        public class Handler : ExecutionHandler<GetThresholdsQuery,Dto>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MessagePack;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Helpers;
 using ProjectHealthReport.Domains.Mappings;
@@ -11,6 +12,8 @@ using ProjectHealthReport.Features.Projects.Queries.GetProjectCaching;
 using ProjectHealthReport.Features.WeeklyReports.Queries.GetWeeklyReportPhr;
 using ResponsibilityChain;
 using ResponsibilityChain.Business;
+using ResponsibilityChain.Business.Caching;
+using ResponsibilityChain.Business.EventsHandlers;
 using ResponsibilityChain.Business.Executions;
 
 namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditWeeklyReportPhr
@@ -19,7 +22,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditWeeklyRepor
     {
         public GetWeeklyReportPhrQuery.Dto Report { get; set; }
 
-        public class Handler : ExecutionHandlerBase<AddEditWeeklyReportPhrCommand, int>
+        public class Handler : ExecutionHandler<AddEditWeeklyReportPhrCommand, int>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;
@@ -41,16 +44,14 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditWeeklyRepor
                 {
                     try
                     {
-                        var project = await _dbContext.Projects.AsNoTracking().FirstAsync(p => p.Id == request.Report.ProjectId);
-                        var data = await _mediator.SendAsync(new GetProjectCachingQuery()
+                        var project = await _dbContext.Projects.AsNoTracking()
+                            .FirstAsync(p => p.Id == request.Report.ProjectId);
+                        var cache = (await _mediator.SendAsync(new GetProjectCachingQuery()
                         {
-                            ProjectId = request.Report.ProjectId
-                        });
-                        
-                        var cache = MessagePackSerializer.Deserialize<GetProjectCachingQuery.WeeklyData>(data.Bytes,
-                            MessagePackSerializerOptions.Standard.WithCompression(MessagePackCompression.Lz4Block));
-                
-                        project.SetCollections(_mapper.Map<IEnumerable<QualityReport>>(cache.QualityReports), 
+                            ProjectId = request.Report.ProjectId,
+                        })).GetResponse();
+
+                        project.SetCollections(_mapper.Map<IEnumerable<QualityReport>>(cache.QualityReports),
                             _mapper.Map<IEnumerable<BacklogItem>>(cache.BacklogItems),
                             _mapper.Map<IEnumerable<Status>>(cache.Statuses));
 
@@ -83,6 +84,26 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditWeeklyRepor
                         throw;
                     }
                 }
+            }
+        }
+        
+        public class PostEventRemoveCache: PostEvent<AddEditWeeklyReportPhrCommand, int>
+        {
+            private readonly CacheConfig<GetProjectCachingQuery> _cacheConfig;
+            private readonly IMemoryCache _cache;
+
+            public PostEventRemoveCache(CacheConfig<GetProjectCachingQuery> cacheConfig, IMemoryCache cache)
+            {
+                _cacheConfig = cacheConfig;
+                _cache = cache;
+            }
+            
+            public override Task HandleAsync(AddEditWeeklyReportPhrCommand request)
+            {
+                var key =_cacheConfig.GetCacheKey(new GetProjectCachingQuery() {ProjectId = request.Report.ProjectId});
+                _cache.Remove(key);
+
+                return Task.CompletedTask;
             }
         }
 

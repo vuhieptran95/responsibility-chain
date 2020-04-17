@@ -36,7 +36,7 @@ namespace ProjectHealthReport.Features.Projects.Commands
         public DateTime? DmrRequiredTo { get; set; }
 
 
-        public class Handler : ExecutionHandlerBase<EditProjectMasterDataCommand, int>
+        public class Handler : ExecutionHandler<EditProjectMasterDataCommand, int>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;

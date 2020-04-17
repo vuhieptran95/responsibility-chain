@@ -1,19 +1,35 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ProjectHealthReport.Domains.Helpers;
 using ResponsibilityChain;
+using ResponsibilityChain.Business.Caching;
 using ResponsibilityChain.Business.Executions;
 
 namespace ProjectHealthReport.Features.Helpers
 {
-    public class GetListUserRoleQuery : IRequest<List<(string, string)>>
+    public class GetListUserRoleQuery : IRequest<List<(string Email, string Name)>>
     {
-        public class Handler: ExecutionHandlerBase<GetListUserRoleQuery, List<(string,string)>>
+        public class Handler: ExecutionHandler<GetListUserRoleQuery, List<(string Email, string Name)>>
         {
-            public override Task HandleAsync(GetListUserRoleQuery request)
+            public override async Task HandleAsync(GetListUserRoleQuery request)
             {
+                await Task.Delay(2000);
                 request.Response = (AuthorizationHelper.UserRoleList);
-                return Task.CompletedTask;
+            }
+        }
+        
+        public class CacheConfig: CacheConfig<GetListUserRoleQuery>
+        {
+            public CacheConfig(bool isEnabled = false, DateTimeOffset dateTimeOffset = default) : base(isEnabled, dateTimeOffset)
+            {
+                IsEnabled = true;
+                DateTimeOffset = DateTimeOffset.Now.AddDays(1);
+            }
+
+            public override string GetCacheKey(GetListUserRoleQuery request)
+            {
+                return request.GetType().FullName;
             }
         }
 

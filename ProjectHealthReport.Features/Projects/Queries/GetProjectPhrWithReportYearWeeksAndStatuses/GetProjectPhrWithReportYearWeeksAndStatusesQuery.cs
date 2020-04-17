@@ -33,7 +33,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjectPhrWithReportY
             }
         }
 
-        public class Handler : ExecutionHandlerBase<GetProjectPhrWithReportYearWeeksAndStatusesQuery, Dto>
+        public class Handler : ExecutionHandler<GetProjectPhrWithReportYearWeeksAndStatusesQuery, Dto>
         {
             private readonly ReportDbContext _dbContext;
 

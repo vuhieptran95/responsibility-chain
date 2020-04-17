@@ -18,7 +18,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjectIndexPhr
     {
         public Expression<Func<Domains.Domains.Project, bool>> ResourceFilter { get; set; } = p => true;
 
-        public class Hander : ExecutionHandlerBase<GetProjectIndexPhrQuery, Dto>
+        public class Hander : ExecutionHandler<GetProjectIndexPhrQuery, Dto>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;

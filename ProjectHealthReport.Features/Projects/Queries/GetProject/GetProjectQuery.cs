@@ -7,8 +7,11 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Mappings;
+using ProjectHealthReport.Features.Helpers;
 using ResponsibilityChain;
+using ResponsibilityChain.Business;
 using ResponsibilityChain.Business.Executions;
+using ResponsibilityChain.Business.PostProcessors;
 
 namespace ProjectHealthReport.Features.Projects.Queries.GetProject
 {
@@ -16,7 +19,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProject
     {
         public int ProjectId { get; set; }
 
-        public class Handler : ExecutionHandlerBase<GetProjectQuery, Dto>
+        public class Handler : ExecutionHandler<GetProjectQuery, Dto>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;
@@ -42,6 +45,21 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProject
                 dto.BacklogItem = backlogItem;
                 
                 request.Response = dto;
+            }
+        }
+        
+        public class GetUserEmailsProcessor: PostProcessor<GetProjectQuery, Dto>
+        {
+            private readonly IMediator _mediator;
+
+            public GetUserEmailsProcessor(IMediator mediator)
+            {
+                _mediator = mediator;
+            }
+            public override async Task HandleAsync(GetProjectQuery request)
+            {
+                var userRoleList = await _mediator.SendAsync(new GetListUserRoleQuery());
+                request.Response.UserEmails = userRoleList.Select(i => i.Email);
             }
         }
 
@@ -70,6 +88,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProject
             public DateTime ProjectStartDate { get; set; }
             public DateTime? ProjectEndDate { get; set; }
             public string Note { get; set; }
+            public IEnumerable<string> UserEmails { get; set; }
 
             public class BacklogItemDto : IMapFrom<BacklogItem>
             {
