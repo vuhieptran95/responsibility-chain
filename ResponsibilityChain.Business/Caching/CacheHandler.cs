@@ -8,52 +8,51 @@ namespace ResponsibilityChain.Business.Caching
 {
     public class CacheHandler<TRequest, TResponse> : Handler<TRequest, TResponse> where TRequest: IRequest<TResponse>
     {
-        protected readonly IMemoryCache Cache;
-        protected readonly CacheConfig<TRequest> CacheConfig;
+        private readonly IMemoryCache _cache;
+        private readonly ICacheConfig<TRequest> _cacheConfig;
 
-        public CacheHandler(IMemoryCache cache, CacheConfig<TRequest> cacheConfig)
+        public CacheHandler(IMemoryCache cache, ICacheConfig<TRequest> cacheConfig)
         {
-            Cache = cache;
-            CacheConfig = cacheConfig;
+            _cache = cache;
+            _cacheConfig = cacheConfig;
         }
 
         public override async Task HandleAsync(TRequest request)
         {
-            if (!CacheConfig.IsCacheEnabled)
+            if (!_cacheConfig.IsCacheEnabled)
             {
                 await base.HandleAsync(request);
             }
             else
             {
-                request.Response = await Cache.GetOrCreateAsync(CacheConfig.GetCacheKey(request),
+                request.Response = await _cache.GetOrCreateAsync(_cacheConfig.GetCacheKey(request),
                     async entry =>
                     {
-                        entry.AbsoluteExpiration = CacheConfig.CacheDateTimeOffset;
+                        entry.AbsoluteExpiration = _cacheConfig.CacheDateTimeOffset;
                         await base.HandleAsync(request);
                         return request.Response;
                     });
             }
         }
     }
-
-    public class CacheConfig<TRequest>
+    
+    public interface ICacheConfig<TRequest>
     {
-        protected bool IsEnabled;
-        protected DateTimeOffset DateTimeOffset;
+        bool IsCacheEnabled { get; }
+        DateTimeOffset CacheDateTimeOffset { get; }
+        string GetCacheKey(TRequest request);
+    }
 
-        public CacheConfig(bool isEnabled = false, DateTimeOffset dateTimeOffset = default)
-        {
-            DateTimeOffset = dateTimeOffset;
-            IsEnabled = isEnabled;
-        }
+    public class CacheConfig<TRequest> : ICacheConfig<TRequest>
+    {
 
-        public bool IsCacheEnabled => IsEnabled;
+        public bool IsCacheEnabled => false;
 
-        public virtual string GetCacheKey(TRequest request)
+        public string GetCacheKey(TRequest request)
         {
             throw new NotImplementedException();
         }
 
-        public DateTimeOffset CacheDateTimeOffset => DateTimeOffset;
+        public DateTimeOffset CacheDateTimeOffset => default;
     }
 }

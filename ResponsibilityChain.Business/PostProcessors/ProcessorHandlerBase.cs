@@ -5,11 +5,11 @@ namespace ResponsibilityChain.Business.PostProcessors
     public class ProcessorHandlerBase<TRequest, TResponse> : Handler<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
     {
-        private readonly PreProcessor<TRequest, TResponse>[] _preProcessors;
-        private readonly PostProcessor<TRequest, TResponse>[] _postProcessors;
+        private readonly IPreProcessor<TRequest, TResponse>[] _preProcessors;
+        private readonly IPostProcessor<TRequest, TResponse>[] _postProcessors;
 
-        public ProcessorHandlerBase(PreProcessor<TRequest, TResponse>[] preProcessors,
-            PostProcessor<TRequest, TResponse>[] postProcessors)
+        public ProcessorHandlerBase(IPreProcessor<TRequest, TResponse>[] preProcessors,
+            IPostProcessor<TRequest, TResponse>[] postProcessors)
         {
             _preProcessors = preProcessors;
             _postProcessors = postProcessors;
@@ -31,19 +31,16 @@ namespace ResponsibilityChain.Business.PostProcessors
         }
     }
 
-    public class PreProcessor<TRequest, TResponse> : Handler<TRequest, TResponse> where TRequest : IRequest<TResponse>
+    public interface IPreProcessor<TRequest, TResponse> : IHandler<TRequest, TResponse>
+        where TRequest : IRequest<TResponse>
     {
-        public override Task HandleAsync(TRequest request)
-        {
-            return Task.CompletedTask;
-        }
+        
+    }
+    
+    public interface IPostProcessor<TRequest, TResponse> : IHandler<TRequest, TResponse>
+        where TRequest : IRequest<TResponse>
+    {
+        
     }
 
-    public class PostProcessor<TRequest, TResponse> : Handler<TRequest, TResponse> where TRequest : IRequest<TResponse>
-    {
-        public override Task HandleAsync(TRequest request)
-        {
-            return Task.CompletedTask;
-        }
-    }
 }

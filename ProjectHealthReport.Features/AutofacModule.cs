@@ -49,17 +49,30 @@ namespace ProjectHealthReport.Features
             builder.RegisterGeneric(typeof(ProcessorHandlerBase<,>)).InstancePerLifetimeScope();
             
             builder.RegisterGeneric(typeof(CacheHandler<,>)).InstancePerLifetimeScope();
-            builder.RegisterGeneric(typeof(CacheConfig<>)).InstancePerLifetimeScope();
+            builder.RegisterGeneric(typeof(CacheConfig<>))
+                .As(typeof(ICacheConfig<>))
+                .InstancePerLifetimeScope();
 
             builder.RegisterAssemblyTypes(currentAssembly)
-                .AsClosedTypesOf(typeof(CacheConfig<>))
+                .AsClosedTypesOf(typeof(ICacheConfig<>))
+                .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
                 
-            builder.RegisterGeneric(typeof(PreEvent<,>)).InstancePerLifetimeScope();
-            builder.RegisterGeneric(typeof(PostEvent<,>)).InstancePerLifetimeScope();
+            builder.RegisterAssemblyTypes(currentAssembly)
+                .AsClosedTypesOf(typeof(IPostProcessor<,>))
+                .InstancePerLifetimeScope();
             
-            builder.RegisterGeneric(typeof(PostProcessor<,>)).InstancePerLifetimeScope();
-            builder.RegisterGeneric(typeof(PreProcessor<,>)).InstancePerLifetimeScope();
+            builder.RegisterAssemblyTypes(currentAssembly)
+                .AsClosedTypesOf(typeof(IPreProcessor<,>))
+                .InstancePerLifetimeScope();
+            
+            builder.RegisterAssemblyTypes(currentAssembly)
+                .AsClosedTypesOf(typeof(IPreEvent<,>))
+                .InstancePerLifetimeScope();
+            
+            builder.RegisterAssemblyTypes(currentAssembly)
+                .AsClosedTypesOf(typeof(IPostEvent<,>))
+                .InstancePerLifetimeScope();
 
             builder.RegisterAssemblyTypes(currentAssembly)
                 .AsClosedTypesOf(typeof(Handler<,>))

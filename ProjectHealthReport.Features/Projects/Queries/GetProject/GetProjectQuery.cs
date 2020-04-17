@@ -48,7 +48,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProject
             }
         }
         
-        public class GetUserEmailsProcessor: PostProcessor<GetProjectQuery, Dto>
+        public class GetUserEmailsProcessor: IPostProcessor<GetProjectQuery, Dto>
         {
             private readonly IMediator _mediator;
 
@@ -56,7 +56,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProject
             {
                 _mediator = mediator;
             }
-            public override async Task HandleAsync(GetProjectQuery request)
+            public async Task HandleAsync(GetProjectQuery request)
             {
                 var userRoleList = await _mediator.SendAsync(new GetListUserRoleQuery());
                 request.Response.UserEmails = userRoleList.Select(i => i.Email);

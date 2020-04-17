@@ -94,16 +94,12 @@ WHERE ProjectId = @ProjectId;";
             }
         }
 
-        public class CacheConfig : CacheConfig<GetProjectCachingQuery>
+        public class CacheConfig : ICacheConfig<GetProjectCachingQuery>
         {
-            public CacheConfig(bool isEnabled = false, DateTimeOffset dateTimeOffset = default) : base(isEnabled,
-                dateTimeOffset)
-            {
-                IsEnabled = true;
-                DateTimeOffset = DateTimeOffset.Now.AddDays(1);
-            }
+            public bool IsCacheEnabled { get; } = true;
+            public DateTimeOffset CacheDateTimeOffset { get; } = DateTimeOffset.Now.AddDays(1);
 
-            public override string GetCacheKey(GetProjectCachingQuery request)
+            public string GetCacheKey(GetProjectCachingQuery request)
             {
                 return typeof(GetProjectCachingQuery).FullName + "_" + request.ProjectId;
             }

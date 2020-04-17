@@ -2,18 +2,19 @@
 
 namespace ResponsibilityChain.Business.EventsHandlers
 {
-    public class EventsHandler<TRequest, TResponse> : BranchHandler<TRequest, TResponse> where TRequest: IRequest<TResponse>
+    public class EventsHandler<TRequest, TResponse> : BranchHandler<TRequest, TResponse>
+        where TRequest : IRequest<TResponse>
     {
-        private readonly PreEvent<TRequest, TResponse>[] _preEvents;
-        private readonly PostEvent<TRequest, TResponse>[] _postEvents;
-        
+        private readonly IPreEvent<TRequest, TResponse>[] _preEvents;
+        private readonly IPostEvent<TRequest, TResponse>[] _postEvents;
 
-        public EventsHandler(PreEvent<TRequest, TResponse>[] preEvents, PostEvent<TRequest, TResponse>[] postEvents)
+
+        public EventsHandler(IPreEvent<TRequest, TResponse>[] preEvents, IPostEvent<TRequest, TResponse>[] postEvents)
         {
             _preEvents = preEvents;
             _postEvents = postEvents;
         }
-        
+
 
         public override async Task HandleAsync(TRequest request)
         {
@@ -31,19 +32,11 @@ namespace ResponsibilityChain.Business.EventsHandlers
         }
     }
 
-    public class PreEvent<TRequest, TResponse> : BranchHandler<TRequest, TResponse> where TRequest: IRequest<TResponse>
+    public interface IPreEvent<TRequest, TResponse> : IHandler<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
-        public override Task HandleAsync(TRequest request)
-        {
-            return Task.CompletedTask;
-        }
     }
-
-    public class PostEvent<TRequest, TResponse> : BranchHandler<TRequest, TResponse> where TRequest: IRequest<TResponse>
+    
+    public interface IPostEvent<TRequest, TResponse> : IHandler<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
-        public override Task HandleAsync(TRequest request)
-        {
-            return Task.CompletedTask;
-        }
     }
 }

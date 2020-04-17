@@ -19,15 +19,12 @@ namespace ProjectHealthReport.Features.Helpers
             }
         }
         
-        public class CacheConfig: CacheConfig<GetListUserRoleQuery>
+        public class CacheConfig: ICacheConfig<GetListUserRoleQuery>
         {
-            public CacheConfig(bool isEnabled = false, DateTimeOffset dateTimeOffset = default) : base(isEnabled, dateTimeOffset)
-            {
-                IsEnabled = true;
-                DateTimeOffset = DateTimeOffset.Now.AddDays(1);
-            }
+            public bool IsCacheEnabled { get; } = true;
+            public DateTimeOffset CacheDateTimeOffset { get; } = DateTimeOffset.Now.AddDays(1);
 
-            public override string GetCacheKey(GetListUserRoleQuery request)
+            public string GetCacheKey(GetListUserRoleQuery request)
             {
                 return request.GetType().FullName;
             }

@@ -3,7 +3,12 @@ using System.Threading.Tasks;
 
 namespace ResponsibilityChain
 {
-    public class Handler<TRequest, TResponse> where TRequest: IRequest<TResponse>
+    public interface IHandler<TRequest, TResponse> where TRequest : IRequest<TResponse>
+    {
+        Task HandleAsync(TRequest request);
+    }
+
+    public class Handler<TRequest, TResponse> : IHandler<TRequest, TResponse> where TRequest: IRequest<TResponse>
     {
         public virtual Task HandleAsync(TRequest request)
         {
