@@ -19,7 +19,6 @@ namespace ResponsibilityChain
 
             Console.WriteLine($"Type of Next is {Next.GetType()}");
             await Next.HandleAsync(request);
-            
         }
 
         public void AddHandler(Handler<TRequest, TResponse> handler)

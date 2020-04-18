@@ -64,5 +64,13 @@ namespace ProjectHealthReport.Web.Controllers
         {
             return Ok(_requestContext);
         }
+
+        [HttpGet("authorization-config")]
+        public async Task<ActionResult> Method()
+        {
+            var dto = await _mediator.SendAsync(new GetRequestAuthorizationConfigs());
+
+            return Ok(dto);
+        }
     }
 }

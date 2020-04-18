@@ -8,8 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Mappings;
 using ProjectHealthReport.Features.Helpers;
+using ProjectHealthReport.Features.Projects.Queries.GetProjectCaching;
 using ResponsibilityChain;
 using ResponsibilityChain.Business;
+using ResponsibilityChain.Business.AuthorizationConfigs;
 using ResponsibilityChain.Business.Executions;
 using ResponsibilityChain.Business.PostProcessors;
 
@@ -17,6 +19,13 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProject
 {
     public class GetProjectQuery : IRequest<GetProjectQuery.Dto>
     {
+        public class AuthorizationConfig: IAuthorizationConfig<GetProjectQuery>
+        {
+            public List<(string[] Resources, string[] Actions)> GetAccessRights()
+            {
+                return new List<(string[] Resources, string[] Actions)>();
+            }
+        }
         public int ProjectId { get; set; }
 
         public class Handler : IExecution<GetProjectQuery, Dto>
