@@ -45,7 +45,7 @@ namespace ProjectHealthReport.Features.Projects.Commands
             public string Role { get; set; }
         }
 
-        public class Handler : ExecutionHandler<EditProjectNonMasterDataCommand, int>
+        public class Handler : IExecution<EditProjectNonMasterDataCommand, int>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;
@@ -58,7 +58,7 @@ namespace ProjectHealthReport.Features.Projects.Commands
                 _mediator = mediator;
             }
 
-            public override async Task HandleAsync(EditProjectNonMasterDataCommand request)
+            public async Task HandleAsync(EditProjectNonMasterDataCommand request)
             {
                 using (var transaction = await _dbContext.Database.BeginTransactionAsync())
                 {

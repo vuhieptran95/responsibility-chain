@@ -10,7 +10,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries
     {
         public string HtmlContent { get; set; }
 
-        public class Handler : ExecutionHandler<ExportPdfWeeklyReportPhrQuery, byte[]>
+        public class Handler : IExecution<ExportPdfWeeklyReportPhrQuery, byte[]>
         {
             private readonly IConverter _converter;
 
@@ -19,7 +19,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries
                 _converter = converter;
             }
 
-            public override Task HandleAsync(ExportPdfWeeklyReportPhrQuery request)
+            public Task HandleAsync(ExportPdfWeeklyReportPhrQuery request)
             {
                 var doc = new HtmlToPdfDocument()
                 {

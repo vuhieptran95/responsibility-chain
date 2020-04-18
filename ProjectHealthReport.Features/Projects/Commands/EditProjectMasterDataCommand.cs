@@ -36,7 +36,7 @@ namespace ProjectHealthReport.Features.Projects.Commands
         public DateTime? DmrRequiredTo { get; set; }
 
 
-        public class Handler : ExecutionHandler<EditProjectMasterDataCommand, int>
+        public class Handler : IExecution<EditProjectMasterDataCommand, int>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;
@@ -49,7 +49,7 @@ namespace ProjectHealthReport.Features.Projects.Commands
                 _mediator = mediator;
             }
 
-            public override async Task HandleAsync(EditProjectMasterDataCommand request)
+            public async Task HandleAsync(EditProjectMasterDataCommand request)
             {
                 var projectInDb = await _dbContext.Projects.AsNoTracking().SingleAsync(p => p.Id == request.Id);
                 var projectProxy = _mapper.Map<ProjectProxy>(projectInDb);

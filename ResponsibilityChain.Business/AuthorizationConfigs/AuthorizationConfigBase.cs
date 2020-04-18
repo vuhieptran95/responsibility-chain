@@ -6,14 +6,16 @@ using ResponsibilityChain.Business.RequestContexts;
 
 namespace ResponsibilityChain.Business.AuthorizationConfigs
 {
-    public class AuthorizationConfig<TRequest, TResponse> : Handler<TRequest, TResponse> where TRequest: IRequest<TResponse>
+    public class AuthorizationConfigBase<TRequest, TResponse> : Handler<TRequest, TResponse>
+        where TRequest : IRequest<TResponse>
     {
-        protected readonly RequestContext RequestContext;
+        private readonly RequestContext _requestContext;
+        private readonly IAuthorizationConfig<TRequest> _config;
 
-        public AuthorizationConfig(RequestContext requestContext)
+        public AuthorizationConfigBase(RequestContext requestContext, IAuthorizationConfig<TRequest> config)
         {
-            AccessRights = new List<(string, string)>();
-            RequestContext = requestContext;
+            _requestContext = requestContext;
+            _config = config;
             // AccessRights.Add(("item1 item2", "read create"));
             // AccessRights.Add(("item3 item2", "edit"));
             // AccessRights.Add(("item4", "*"));
@@ -21,22 +23,21 @@ namespace ResponsibilityChain.Business.AuthorizationConfigs
 
         public override Task HandleAsync(TRequest request)
         {
-            var accessRights = CalculateRights(AccessRights);
+            var accessRights = CalculateRights(_config.GetAccessRights());
 
-            var violatedRights = accessRights.Except(RequestContext.AccessRights).ToList();
+            var violatedRights = accessRights.Except(_requestContext.AccessRights).ToList();
 
             if (violatedRights.Count > 0)
             {
                 var violated = string.Join(' ', violatedRights);
-                throw new UnauthorizedAccessException($"{violated} right(s) are not permitted for this user");
+                throw new UnauthorizedAccessException(
+                    $"{violated} right(s) are not permitted for this user: {_requestContext.UserEmail}");
             }
 
             return base.HandleAsync(request);
         }
 
-        public List<(string, string)> AccessRights { get; set; }
-
-        public List<string> CalculateRights(List<(string, string)> rights)
+        private List<string> CalculateRights(List<(string[] Resources, string[] Actions)> rights)
         {
             var listRight = new List<string>();
             if (rights == null)
@@ -46,10 +47,8 @@ namespace ResponsibilityChain.Business.AuthorizationConfigs
 
             foreach (var right in rights)
             {
-                var resources = right.Item1
-                    .Split(' ').Where(i => !string.IsNullOrWhiteSpace(i)).Distinct().ToList();
-                var actions = right.Item2
-                    .Split(' ').Where(i => !string.IsNullOrWhiteSpace(i)).Distinct().ToList();
+                var resources = right.Resources.Where(i => !string.IsNullOrWhiteSpace(i)).Distinct().ToList();
+                var actions = right.Actions.Where(i => !string.IsNullOrWhiteSpace(i)).Distinct().ToList();
                 if (resources.Contains("*"))
                 {
                     resources = new List<string> {"read", "create", "delete", "update"};
@@ -64,4 +63,5 @@ namespace ResponsibilityChain.Business.AuthorizationConfigs
             return listRight;
         }
     }
+
 }

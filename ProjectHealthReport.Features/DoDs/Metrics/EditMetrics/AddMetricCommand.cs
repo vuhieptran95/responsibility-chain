@@ -58,7 +58,7 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.EditMetrics
         public int Response { get; set; }
     }
 
-    public class AddMetricCommandHandler : ExecutionHandler<AddMetricCommand, int>
+    public class AddMetricCommandHandler : IExecution<AddMetricCommand, int>
     {
         private readonly ReportDbContext _dbContext;
         private readonly IMapper _mapper;
@@ -69,7 +69,7 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.EditMetrics
             _mapper = mapper;
         }
 
-        public override async Task HandleAsync(AddMetricCommand request)
+        public async Task HandleAsync(AddMetricCommand request)
         {
             var metric = _mapper.Map<Metric>(request.Metric);
 

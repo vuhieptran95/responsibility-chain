@@ -10,9 +10,9 @@ namespace ProjectHealthReport.Features.Helpers
 {
     public class GetListUserRoleQuery : IRequest<List<(string Email, string Name)>>
     {
-        public class Handler: ExecutionHandler<GetListUserRoleQuery, List<(string Email, string Name)>>
+        public class Handler: IExecution<GetListUserRoleQuery, List<(string Email, string Name)>>
         {
-            public override async Task HandleAsync(GetListUserRoleQuery request)
+            public async Task HandleAsync(GetListUserRoleQuery request)
             {
                 await Task.Delay(2000);
                 request.Response = (AuthorizationHelper.UserRoleList);

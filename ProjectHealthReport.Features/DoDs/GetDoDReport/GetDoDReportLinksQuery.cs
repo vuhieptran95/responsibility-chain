@@ -15,7 +15,7 @@ namespace ProjectHealthReport.Features.DoDs.GetDoDReport
         public int YearWeek { get; set; }
         public int NumberOfWeek { get; set; }
 
-        public class Handler : ExecutionHandler<GetDoDReportLinksQuery, Dto>
+        public class Handler : IExecution<GetDoDReportLinksQuery, Dto>
         {
             private readonly ReportDbContext _dbContext;
 
@@ -24,7 +24,7 @@ namespace ProjectHealthReport.Features.DoDs.GetDoDReport
                 _dbContext = dbContext;
             }
 
-            public override async Task HandleAsync(GetDoDReportLinksQuery request)
+            public async Task HandleAsync(GetDoDReportLinksQuery request)
             {
                 var yearWeeksToGetDod =
                     TimeHelper.GetYearWeeksOfXRecentWeeksStartFrom(TimeHelper.CalculateYear(request.YearWeek),

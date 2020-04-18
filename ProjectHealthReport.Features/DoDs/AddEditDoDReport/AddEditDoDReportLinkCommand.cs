@@ -14,7 +14,7 @@ namespace ProjectHealthReport.Features.DoDs.AddEditDoDReport
         public string LinkToReport { get; set; }
         public string ReportFileName { get; set; }
 
-        public class Handler : ExecutionHandler<AddEditDoDReportLinkCommand, int>
+        public class Handler : IExecution<AddEditDoDReportLinkCommand, int>
         {
             private readonly ReportDbContext _dbContext;
 
@@ -23,7 +23,7 @@ namespace ProjectHealthReport.Features.DoDs.AddEditDoDReport
                 _dbContext = dbContext;
             }
 
-            public override async Task HandleAsync(AddEditDoDReportLinkCommand request)
+            public async Task HandleAsync(AddEditDoDReportLinkCommand request)
             {
                 var dodRecords = await _dbContext.DoDReports.Where(d =>
                     d.ProjectId == request.ProjectId & d.YearWeek == request.YearWeek).ToListAsync();

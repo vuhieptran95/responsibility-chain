@@ -33,7 +33,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjectPhrWithReportY
             }
         }
 
-        public class Handler : ExecutionHandler<GetProjectPhrWithReportYearWeeksAndStatusesQuery, Dto>
+        public class Handler : IExecution<GetProjectPhrWithReportYearWeeksAndStatusesQuery, Dto>
         {
             private readonly ReportDbContext _dbContext;
 
@@ -42,7 +42,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjectPhrWithReportY
                 _dbContext = dbContext;
             }
 
-            public override async Task HandleAsync(GetProjectPhrWithReportYearWeeksAndStatusesQuery request)
+            public async Task HandleAsync(GetProjectPhrWithReportYearWeeksAndStatusesQuery request)
             {
                 var yearWeeks = await _dbContext.Projects.Where(p => p.Id == request.ProjectId)
                     .Select(p => new

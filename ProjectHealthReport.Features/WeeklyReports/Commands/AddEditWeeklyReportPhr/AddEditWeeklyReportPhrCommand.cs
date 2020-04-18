@@ -22,7 +22,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditWeeklyRepor
     {
         public GetWeeklyReportPhrQuery.Dto Report { get; set; }
 
-        public class Handler : ExecutionHandler<AddEditWeeklyReportPhrCommand, int>
+        public class Handler : IExecution<AddEditWeeklyReportPhrCommand, int>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;
@@ -35,7 +35,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditWeeklyRepor
                 _mediator = mediator;
             }
 
-            public override async Task HandleAsync(AddEditWeeklyReportPhrCommand request)
+            public async Task HandleAsync(AddEditWeeklyReportPhrCommand request)
             {
                 var currentYearWeek =
                     TimeHelper.CalculateYearWeek(request.Report.SelectedYear, request.Report.SelectedWeek);

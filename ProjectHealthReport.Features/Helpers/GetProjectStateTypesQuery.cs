@@ -10,7 +10,7 @@ namespace ProjectHealthReport.Features.Helpers
 {
     public class GetProjectStateTypesQuery : IRequest<GetProjectStateTypesQuery.Dto>
     {
-        public class Handler : ExecutionHandler<GetProjectStateTypesQuery, Dto>
+        public class Handler : IExecution<GetProjectStateTypesQuery, Dto>
         {
             private readonly ReportDbContext _dbContext;
 
@@ -19,7 +19,7 @@ namespace ProjectHealthReport.Features.Helpers
                 _dbContext = dbContext;
             }
 
-            public override async Task HandleAsync(GetProjectStateTypesQuery request)
+            public async Task HandleAsync(GetProjectStateTypesQuery request)
             {
                 var stateTypes = await _dbContext.ProjectStateTypes.Select(s =>
                     new Dto.ProjectStateType()

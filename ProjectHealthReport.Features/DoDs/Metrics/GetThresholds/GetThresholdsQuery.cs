@@ -37,7 +37,7 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.GetThresholds
             }
         }
 
-        public class Handler : ExecutionHandler<GetThresholdsQuery,Dto>
+        public class Handler : IExecution<GetThresholdsQuery,Dto>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;
@@ -48,7 +48,7 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.GetThresholds
                 _mapper = mapper;
             }
 
-            public override async Task HandleAsync(GetThresholdsQuery request)
+            public async Task HandleAsync(GetThresholdsQuery request)
             {
                 var projectMetrics = await _dbContext.Thresholds
                     .ProjectTo<Dto.ThresholdDto>(_mapper.ConfigurationProvider)

@@ -37,13 +37,13 @@ namespace ProjectHealthReport.Features
                 .InstancePerLifetimeScope();
 
             builder.RegisterGeneric(typeof(RequestHandler<,>)).InstancePerLifetimeScope();
-            builder.RegisterGeneric(typeof(AuthorizationConfig<,>)).InstancePerLifetimeScope();
+            builder.RegisterGeneric(typeof(AuthorizationConfigBase<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(AuthorizationHandlerBase<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(AuthorizationHandler<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(AuthorizationExceptionHandler<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(DefaultBranchHandler<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(ValidationHandlerBase<,>)).InstancePerLifetimeScope();
-            builder.RegisterGeneric(typeof(ExecutionHandler<,>)).InstancePerLifetimeScope();
+            builder.RegisterGeneric(typeof(ExecutionHandlerBase<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(LoggingHandler<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(EventsHandler<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(ProcessorHandlerBase<,>)).InstancePerLifetimeScope();
@@ -52,10 +52,17 @@ namespace ProjectHealthReport.Features
             builder.RegisterGeneric(typeof(CacheConfig<>))
                 .As(typeof(ICacheConfig<>))
                 .InstancePerLifetimeScope();
+            
+            builder.RegisterGeneric(typeof(DefaultAuthorizationConfig<>))
+                .As(typeof(IAuthorizationConfig<>))
+                .InstancePerLifetimeScope();
 
             builder.RegisterAssemblyTypes(currentAssembly)
                 .AsClosedTypesOf(typeof(ICacheConfig<>))
-                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
+            
+            builder.RegisterAssemblyTypes(currentAssembly)
+                .AsClosedTypesOf(typeof(IAuthorizationConfig<>))
                 .InstancePerLifetimeScope();
                 
             builder.RegisterAssemblyTypes(currentAssembly)
@@ -72,6 +79,10 @@ namespace ProjectHealthReport.Features
             
             builder.RegisterAssemblyTypes(currentAssembly)
                 .AsClosedTypesOf(typeof(IPostEvent<,>))
+                .InstancePerLifetimeScope();
+            
+            builder.RegisterAssemblyTypes(currentAssembly)
+                .AsClosedTypesOf(typeof(IExecution<,>))
                 .InstancePerLifetimeScope();
 
             builder.RegisterAssemblyTypes(currentAssembly)

@@ -48,7 +48,7 @@ namespace ProjectHealthReport.Features.Projects.Commands
         public DateTime ProjectStartDate { get; set; }
         public DateTime? ProjectEndDate { get; set; }
 
-        public class Handler : ExecutionHandler<AddProjectCommand, int>
+        public class Handler : IExecution<AddProjectCommand, int>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;
@@ -61,7 +61,7 @@ namespace ProjectHealthReport.Features.Projects.Commands
                 _mediator = mediator;
             }
 
-            public override async Task HandleAsync(AddProjectCommand request)
+            public async Task HandleAsync(AddProjectCommand request)
             {
                 using (var transaction = await _dbContext.Database.BeginTransactionAsync())
                 {

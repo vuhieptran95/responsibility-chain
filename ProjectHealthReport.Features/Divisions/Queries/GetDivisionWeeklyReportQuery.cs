@@ -18,7 +18,7 @@ namespace ProjectHealthReport.Features.Divisions.Queries
         [Required] public string DivisionName { get; set; }
         public int SelectedYearWeek { get; set; }
 
-        public class Handler : ExecutionHandler<GetDivisionWeeklyReportQuery, Dto>
+        public class Handler : IExecution<GetDivisionWeeklyReportQuery, Dto>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;
@@ -29,7 +29,7 @@ namespace ProjectHealthReport.Features.Divisions.Queries
                 _mapper = mapper;
             }
 
-            public override async Task HandleAsync(GetDivisionWeeklyReportQuery request)
+            public async Task HandleAsync(GetDivisionWeeklyReportQuery request)
             {
                 if (request.DivisionName == "AMS247")
                 {

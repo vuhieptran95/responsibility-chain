@@ -10,7 +10,7 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.RemoveMetrics
     {
         public string Tool { get; set; }
 
-        public class RemoveMetricsCommandHandler : ExecutionHandler<RemoveMetricsCommand, int>
+        public class RemoveMetricsCommandHandler : IExecution<RemoveMetricsCommand, int>
         {
             private readonly ReportDbContext _dbContext;
 
@@ -19,7 +19,7 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.RemoveMetrics
                 _dbContext = dbContext;
             }
 
-            public override async Task HandleAsync(RemoveMetricsCommand request)
+            public async Task HandleAsync(RemoveMetricsCommand request)
             {
                 var metricsToRemove = _dbContext.Metrics.Where(m => m.Tool == request.Tool);
                 _dbContext.Metrics.RemoveRange(metricsToRemove);

@@ -19,7 +19,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProject
     {
         public int ProjectId { get; set; }
 
-        public class Handler : ExecutionHandler<GetProjectQuery, Dto>
+        public class Handler : IExecution<GetProjectQuery, Dto>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;
@@ -30,7 +30,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProject
                 _mapper = mapper;
             }
 
-            public override async Task HandleAsync(GetProjectQuery request)
+            public async Task HandleAsync(GetProjectQuery request)
             {
                 var dto = await _dbContext.Projects
                     .Where(p => p.Id == request.ProjectId)

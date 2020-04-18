@@ -27,7 +27,7 @@ namespace ProjectHealthReport.Features.Divisions.Commands
             public int YearWeek { get; set; }
         }
         
-        public class Handler: ExecutionHandler<AddEditDivisionWeeklyReportCommand, int>
+        public class Handler: IExecution<AddEditDivisionWeeklyReportCommand, int>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;
@@ -37,7 +37,7 @@ namespace ProjectHealthReport.Features.Divisions.Commands
                 _dbContext = dbContext;
                 _mapper = mapper;
             }
-            public override async Task HandleAsync(AddEditDivisionWeeklyReportCommand request)
+            public async Task HandleAsync(AddEditDivisionWeeklyReportCommand request)
             {
                 var statuses = request.DivisionProjectStatuses.ToList();
                 if (!statuses.Any())

@@ -10,7 +10,7 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.RemoveMetrics
     {
         public int MetricId { get; set; }
 
-        public class Handler : ExecutionHandler<RemoveMetricCommand, int>
+        public class Handler : IExecution<RemoveMetricCommand, int>
         {
             private readonly ReportDbContext _dbContext;
 
@@ -20,7 +20,7 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.RemoveMetrics
             }
 
 
-            public override async Task HandleAsync(RemoveMetricCommand request)
+            public async Task HandleAsync(RemoveMetricCommand request)
             {
                 var metric = await _dbContext.Metrics.FirstAsync(m => m.Id == request.MetricId);
                 _dbContext.Metrics.Remove(metric);

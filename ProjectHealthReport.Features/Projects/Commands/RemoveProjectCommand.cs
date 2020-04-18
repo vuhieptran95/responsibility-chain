@@ -9,7 +9,7 @@ namespace ProjectHealthReport.Features.Projects.Commands
     {
         public int ProjectId { get; set; }
 
-        public class Handler : ExecutionHandler<RemoveProjectCommand, int>
+        public class Handler : IExecution<RemoveProjectCommand, int>
         {
             private readonly ReportDbContext _dbContext;
 
@@ -18,7 +18,7 @@ namespace ProjectHealthReport.Features.Projects.Commands
                 _dbContext = dbContext;
             }
 
-            public override async Task HandleAsync(RemoveProjectCommand request)
+            public async Task HandleAsync(RemoveProjectCommand request)
             {
                 var project = new Project();
                 

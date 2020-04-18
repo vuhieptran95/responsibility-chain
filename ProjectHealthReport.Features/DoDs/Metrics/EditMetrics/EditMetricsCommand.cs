@@ -50,7 +50,7 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.EditMetrics
 
         }
 
-        public class Handler : ExecutionHandler<EditMetricsCommand, int>
+        public class Handler : IExecution<EditMetricsCommand, int>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;
@@ -61,7 +61,7 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.EditMetrics
                 _mapper = mapper;
             }
 
-            public override async Task HandleAsync(EditMetricsCommand request)
+            public async Task HandleAsync(EditMetricsCommand request)
             {
                 var metricDtos = request.MetricGroups.SelectMany(g => g.Metrics, (g, m) =>
                 {

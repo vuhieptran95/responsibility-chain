@@ -34,7 +34,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjectsPhrWithWeekly
             }
         }
 
-        public class Handler : ExecutionHandler<GetProjectsPhrWithWeeklyStatusesQuery, Dto>
+        public class Handler : IExecution<GetProjectsPhrWithWeeklyStatusesQuery, Dto>
         {
             private readonly ReportDbContext _dbContext;
 
@@ -43,7 +43,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjectsPhrWithWeekly
                 _dbContext = dbContext;
             }
 
-            public override async Task HandleAsync(GetProjectsPhrWithWeeklyStatusesQuery request)
+            public async Task HandleAsync(GetProjectsPhrWithWeeklyStatusesQuery request)
             {
                 var projects = await _dbContext.Projects
                     .Where(p => p.PhrRequired)

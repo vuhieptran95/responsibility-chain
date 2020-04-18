@@ -34,7 +34,7 @@ namespace ProjectHealthReport.Features.DoDs.AddEditDoDReport
             }
         }
         
-        public class Handler: ExecutionHandler<AddDoDReportCommand, int>
+        public class Handler: IExecution<AddDoDReportCommand, int>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;
@@ -45,7 +45,7 @@ namespace ProjectHealthReport.Features.DoDs.AddEditDoDReport
                 _mapper = mapper;
             }
 
-            public override async Task HandleAsync(AddDoDReportCommand request)
+            public async Task HandleAsync(AddDoDReportCommand request)
             {
                 var listDtos = request.DodReports.ToList();
                 

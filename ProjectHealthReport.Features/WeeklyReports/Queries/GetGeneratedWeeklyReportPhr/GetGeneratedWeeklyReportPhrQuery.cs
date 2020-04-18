@@ -15,7 +15,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetGeneratedWeeklyR
         public int NumberOfWeek { get; set; } = 4;
         public int NumberOfWeekNotShowClosedItem { get; set; } = 2;
         
-        public class Handler : ExecutionHandler<GetGeneratedWeeklyReportPhrQuery, Dto>
+        public class Handler : IExecution<GetGeneratedWeeklyReportPhrQuery, Dto>
         {
             private readonly IMediator _mediator;
 
@@ -23,7 +23,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetGeneratedWeeklyR
             {
                 _mediator = mediator;
             }
-            public override async Task HandleAsync(GetGeneratedWeeklyReportPhrQuery request)
+            public async Task HandleAsync(GetGeneratedWeeklyReportPhrQuery request)
             {
                 var getProjectQuery = new GetProjectQuery {ProjectId = request.ProjectId};
                 var getWeeklyReportQuery = new GetWeeklyReportPhrQuery()

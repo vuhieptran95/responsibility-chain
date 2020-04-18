@@ -11,9 +11,9 @@ namespace ProjectHealthReport.Features.Helpers
     {
         public int SelectedYear { get; set; }
 
-        public class Handler : ExecutionHandler<GetAllowedWeeksOfYearQuery, List<int>>
+        public class Handler : IExecution<GetAllowedWeeksOfYearQuery, List<int>>
         {
-            public override Task HandleAsync(GetAllowedWeeksOfYearQuery request)
+            public Task HandleAsync(GetAllowedWeeksOfYearQuery request)
             {
                 var listWeeks = new List<int>();
                 var currentYear = TimeHelper.GetCurrentYearIso();

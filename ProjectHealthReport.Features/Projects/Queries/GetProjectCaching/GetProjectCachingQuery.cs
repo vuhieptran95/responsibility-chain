@@ -41,7 +41,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjectCaching
             [Key(2)] public IEnumerable<QualityReportProxy> QualityReports { get; set; }
         }
 
-        public class Handler : ExecutionHandler<GetProjectCachingQuery, CacheResponse<WeeklyData>>
+        public class Handler : IExecution<GetProjectCachingQuery, CacheResponse<WeeklyData>>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;
@@ -54,7 +54,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjectCaching
                 _configuration = configuration;
             }
 
-            public override async Task HandleAsync(GetProjectCachingQuery request)
+            public async Task HandleAsync(GetProjectCachingQuery request)
             {
                 await Task.Delay(2000);
 

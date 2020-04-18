@@ -10,7 +10,7 @@ namespace ResponsibilityChain
 
     public class Handler<TRequest, TResponse> : IHandler<TRequest, TResponse> where TRequest: IRequest<TResponse>
     {
-        public virtual Task HandleAsync(TRequest request)
+        public virtual async Task HandleAsync(TRequest request)
         {
             if (Next == null)
             {
@@ -18,7 +18,8 @@ namespace ResponsibilityChain
             }
 
             Console.WriteLine($"Type of Next is {Next.GetType()}");
-            return Next.HandleAsync(request);
+            await Next.HandleAsync(request);
+            
         }
 
         public void AddHandler(Handler<TRequest, TResponse> handler)

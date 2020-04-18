@@ -14,7 +14,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjects
 {
     public class GetProjectsQuery : IRequest<GetProjectsQuery.Dto>
     {
-        public class Handler : ExecutionHandler<GetProjectsQuery, Dto>
+        public class Handler : IExecution<GetProjectsQuery, Dto>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;
@@ -25,7 +25,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjects
                 _mapper = mapper;
             }
 
-            public override async Task HandleAsync(GetProjectsQuery request)
+            public async Task HandleAsync(GetProjectsQuery request)
             {
                 var projects = await _dbContext.Projects.OrderByDescending(p => p.Id)
                     .ProjectTo<Dto.ProjectDto>(_mapper.ConfigurationProvider)

@@ -57,7 +57,7 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.GetMetrics
             }
         }
 
-        public class Handler : ExecutionHandler<GetMetricsQuery, Dto>
+        public class Handler : IExecution<GetMetricsQuery, Dto>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;
@@ -68,7 +68,7 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.GetMetrics
                 _mapper = mapper;
             }
 
-            public override async Task HandleAsync(GetMetricsQuery request)
+            public async Task HandleAsync(GetMetricsQuery request)
             {
                 var metrics = await _dbContext.Metrics.Include(m => m.Thresholds)
                     .ThenInclude(t => t.MetricStatus)

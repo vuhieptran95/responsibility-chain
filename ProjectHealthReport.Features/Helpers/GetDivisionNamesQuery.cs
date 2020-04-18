@@ -9,9 +9,9 @@ namespace ProjectHealthReport.Features.Helpers
 {
     public class GetDivisionNamesQuery : IRequest<List<string>>
     {
-        public class Handler: ExecutionHandler<GetDivisionNamesQuery, List<string>>
+        public class Handler: IExecution<GetDivisionNamesQuery, List<string>>
         {
-            public override Task HandleAsync(GetDivisionNamesQuery request)
+            public Task HandleAsync(GetDivisionNamesQuery request)
             {
                 request.Response = (AuthorizationHelper.DeliveryManagers.Select(i => i.Value).ToList());
                 return Task.CompletedTask;

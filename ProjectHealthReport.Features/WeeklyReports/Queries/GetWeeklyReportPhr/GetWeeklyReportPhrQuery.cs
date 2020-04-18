@@ -28,7 +28,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetWeeklyReportPhr
 
         public Expression<Func<Project, bool>> ResourceFilter { get; set; } = p => true;
 
-        public class Handler : ExecutionHandler<GetWeeklyReportPhrQuery, Dto>
+        public class Handler : IExecution<GetWeeklyReportPhrQuery, Dto>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;
@@ -43,7 +43,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetWeeklyReportPhr
                 _cache = cache;
             }
 
-            public override async Task HandleAsync(GetWeeklyReportPhrQuery request)
+            public async Task HandleAsync(GetWeeklyReportPhrQuery request)
             {
                 var yearWeek = TimeHelper.CalculateYearWeek(request.Year, request.Week);
 

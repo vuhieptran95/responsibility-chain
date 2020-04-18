@@ -13,22 +13,22 @@ namespace ResponsibilityChain.Business
     {
         public RequestHandler(
             LoggingHandler<TRequest, TResponse> loggingHandler,
-            AuthorizationConfig<TRequest, TResponse> authorizationConfig,
+            AuthorizationConfigBase<TRequest, TResponse> authorizationConfigBase,
             AuthorizationHandlerBase<TRequest, TResponse> authorizationHandlerBase,
             ValidationHandlerBase<TRequest, TResponse> validationHandlerBase,
             EventsHandler<TRequest, TResponse> eventsHandler,
             CacheHandler<TRequest, TResponse> cacheHandler,
             ProcessorHandlerBase<TRequest, TResponse> processorHandlerBase,
-            ExecutionHandler<TRequest, TResponse> executionHandler)
+            ExecutionHandlerBase<TRequest, TResponse> executionHandlerBase)
         {
             AddHandler(loggingHandler);
-            AddHandler(authorizationConfig);
+            AddHandler(authorizationConfigBase);
             AddHandler(authorizationHandlerBase);
             AddHandler(validationHandlerBase);
             AddHandler(eventsHandler);
             AddHandler(cacheHandler);
             AddHandler(processorHandlerBase);
-            AddHandler(executionHandler);
+            AddHandler(executionHandlerBase);
         }
     }
 }

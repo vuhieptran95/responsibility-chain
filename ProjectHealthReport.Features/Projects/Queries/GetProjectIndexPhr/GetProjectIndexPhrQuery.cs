@@ -18,7 +18,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjectIndexPhr
     {
         public Expression<Func<Domains.Domains.Project, bool>> ResourceFilter { get; set; } = p => true;
 
-        public class Hander : ExecutionHandler<GetProjectIndexPhrQuery, Dto>
+        public class Hander : IExecution<GetProjectIndexPhrQuery, Dto>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;
@@ -31,7 +31,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjectIndexPhr
                 _rules = rules;
             }
 
-            public override async Task HandleAsync(GetProjectIndexPhrQuery request)
+            public async Task HandleAsync(GetProjectIndexPhrQuery request)
             {
                 var dto = new Dto();
 
