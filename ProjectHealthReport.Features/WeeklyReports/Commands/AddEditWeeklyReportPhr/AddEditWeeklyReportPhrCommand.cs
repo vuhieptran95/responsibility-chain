@@ -13,7 +13,7 @@ using ProjectHealthReport.Features.WeeklyReports.Queries.GetWeeklyReportPhr;
 using ResponsibilityChain;
 using ResponsibilityChain.Business;
 using ResponsibilityChain.Business.Caching;
-using ResponsibilityChain.Business.EventsHandlers;
+using ResponsibilityChain.Business.Events;
 using ResponsibilityChain.Business.Executions;
 
 namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditWeeklyReportPhr

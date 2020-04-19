@@ -1,21 +1,24 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 
 namespace ResponsibilityChain.Business.Authorizations
 {
-    public class AuthorizationHandlerBase<TRequest, TResponse> : BranchHandler<TRequest, TResponse> where TRequest: IRequest<TResponse>
+    public class AuthorizationHandlerBase<TRequest, TResponse> : Handler<TRequest, TResponse>
+        where TRequest : IRequest<TResponse>
     {
-        public AuthorizationHandlerBase(AuthorizationHandler<TRequest, TResponse> [] authorizationHandlers,
+        public AuthorizationHandlerBase(
+            AuthorizationHandler<TRequest, TResponse> authorizationHandler,
             AuthorizationExceptionHandler<TRequest, TResponse> authorizationExceptionHandler)
         {
-            if (authorizationHandlers.Length > 1)
-            {
-                var handlers = authorizationHandlers.Skip(1);
-                foreach (var handler in handlers)
-                {
-                    AddBranchHandler(handler);
-                }
-                AddBranchHandler(authorizationExceptionHandler);
-            }
+            AddBranch(authorizationHandler);
+            AddBranch(authorizationExceptionHandler);
+        }
+
+        public override async Task HandleAsync(TRequest request)
+        {
+            await HandleBranchAsync(request);
+            
+            await base.HandleAsync(request);
         }
     }
 }

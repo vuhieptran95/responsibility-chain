@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace ResponsibilityChain.Business.EventsHandlers
+namespace ResponsibilityChain.Business.Events
 {
-    public class EventsHandler<TRequest, TResponse> : BranchHandler<TRequest, TResponse>
+    public class EventsHandler<TRequest, TResponse> : Handler<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
     {
         private readonly IPreEvent<TRequest, TResponse>[] _preEvents;

@@ -1,7 +1,7 @@
 ﻿using ResponsibilityChain.Business.AuthorizationConfigs;
 using ResponsibilityChain.Business.Authorizations;
 using ResponsibilityChain.Business.Caching;
-using ResponsibilityChain.Business.EventsHandlers;
+using ResponsibilityChain.Business.Events;
 using ResponsibilityChain.Business.Executions;
 using ResponsibilityChain.Business.Logging;
 using ResponsibilityChain.Business.PostProcessors;
@@ -21,14 +21,14 @@ namespace ResponsibilityChain.Business
             ProcessorHandlerBase<TRequest, TResponse> processorHandlerBase,
             ExecutionHandlerBase<TRequest, TResponse> executionHandlerBase)
         {
-            AddHandler(loggingHandler);
-            AddHandler(authorizationConfigBase);
-            AddHandler(authorizationHandlerBase);
-            AddHandler(validationHandlerBase);
-            AddHandler(eventsHandler);
-            AddHandler(cacheHandler);
-            AddHandler(processorHandlerBase);
-            AddHandler(executionHandlerBase);
+            Add(loggingHandler);
+            Add(authorizationConfigBase);
+            Add(authorizationHandlerBase);
+            Add(validationHandlerBase);
+            Add(eventsHandler);
+            Add(cacheHandler);
+            Add(processorHandlerBase);
+            Add(executionHandlerBase);
         }
     }
 }

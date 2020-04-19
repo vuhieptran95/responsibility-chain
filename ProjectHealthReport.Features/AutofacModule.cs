@@ -2,12 +2,13 @@
 using Autofac;
 using DinkToPdf;
 using DinkToPdf.Contracts;
+using ProjectHealthReport.Features.Common.Authorization;
 using ResponsibilityChain;
 using ResponsibilityChain.Business;
 using ResponsibilityChain.Business.AuthorizationConfigs;
 using ResponsibilityChain.Business.Authorizations;
 using ResponsibilityChain.Business.Caching;
-using ResponsibilityChain.Business.EventsHandlers;
+using ResponsibilityChain.Business.Events;
 using ResponsibilityChain.Business.Executions;
 using ResponsibilityChain.Business.Logging;
 using ResponsibilityChain.Business.PostProcessors;
@@ -37,11 +38,21 @@ namespace ProjectHealthReport.Features
                 .InstancePerLifetimeScope();
 
             builder.RegisterGeneric(typeof(RequestHandler<,>)).InstancePerLifetimeScope();
+            
+            
             builder.RegisterGeneric(typeof(AuthorizationConfigBase<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(AuthorizationHandlerBase<,>)).InstancePerLifetimeScope();
+            
             builder.RegisterGeneric(typeof(AuthorizationHandler<,>)).InstancePerLifetimeScope();
+            builder.RegisterGeneric(typeof(IsCoo<,>)).InstancePerLifetimeScope();
+            builder.RegisterGeneric(typeof(IsPmo<,>)).InstancePerLifetimeScope();
+            builder.RegisterGeneric(typeof(CommonAuthorization<,>))
+                .As(typeof(AuthorizationHandler<,>))
+                .InstancePerLifetimeScope();
+            
+            
             builder.RegisterGeneric(typeof(AuthorizationExceptionHandler<,>)).InstancePerLifetimeScope();
-            builder.RegisterGeneric(typeof(DefaultBranchHandler<,>)).InstancePerLifetimeScope();
+            builder.RegisterGeneric(typeof(DefaultHandler<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(ValidationHandlerBase<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(ExecutionHandlerBase<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(LoggingHandler<,>)).InstancePerLifetimeScope();
@@ -56,7 +67,7 @@ namespace ProjectHealthReport.Features
             builder.RegisterGeneric(typeof(DefaultAuthorizationConfig<>))
                 .As(typeof(IAuthorizationConfig<>))
                 .InstancePerLifetimeScope();
-
+            
             builder.RegisterAssemblyTypes(currentAssembly)
                 .AsClosedTypesOf(typeof(ICacheConfig<>))
                 .InstancePerLifetimeScope();
