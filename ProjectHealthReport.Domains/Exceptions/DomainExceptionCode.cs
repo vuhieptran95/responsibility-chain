@@ -53,17 +53,17 @@ namespace ProjectHealthReport.Domains.Exceptions
             var error = ErrorCode(domainError);
             if (relatedInstance != null)
             {
-                throw new DomainException(domainError.ToString(), error.Item1, error.Item2, domainInstance,
+                throw new DomainException(domainError.ToString(), error.Message, error.Type, domainInstance,
                     relatedInstance);
             }
 
             if (relatedInstances != null)
             {
-                throw new DomainException(domainError.ToString(), error.Item1, error.Item2, domainInstance,
+                throw new DomainException(domainError.ToString(), error.Message, error.Type, domainInstance,
                     relatedInstances);
             }
 
-            throw new DomainException(domainError.ToString(), error.Item1, error.Item2, domainInstance);
+            throw new DomainException(domainError.ToString(), error.Message, error.Type, domainInstance);
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace ProjectHealthReport.Domains.Exceptions
         /// <param name="domainError"></param>
         /// <returns>(message, domainType)</returns>
         /// <exception cref="Exception"></exception>
-        public static (string, Type) ErrorCode(DomainError domainError)
+        public static (string Message, Type Type) ErrorCode(DomainError domainError)
         {
             switch (domainError)
             {

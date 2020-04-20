@@ -8,34 +8,34 @@ namespace ProjectHealthReport.Domains.Domains
 {
     public partial class Project
     {
-        private int _id;
-        private string _name;
-        private string _code;
-        private string _division;
-        private string _keyAccountManager;
-        private bool _phrRequired;
-        private bool _dmrRequired;
-        private bool _dodRequired;
-        private int _projectStateTypeId;
-        private string _deliveryResponsibleName;
-        private string _platformVersion;
-        private string _jiraLink;
-        private string _sourceCodeLink;
-        private string _note;
-        private DateTime _createdDate;
-        private DateTime _projectStartDate;
-        private DateTime? _projectEndDate;
-        private DateTime? _phrRequiredFrom;
-        private DateTime? _dmrRequiredFrom;
-        private DateTime? _dmrRequiredTo;
-        private ProjectStateType _projectStateType;
-        private ICollection<Status> _statuses;
-        private ICollection<BacklogItem> _backlogItems;
-        private ICollection<QualityReport> _qualityReports;
-        private ICollection<DivisionProjectStatus> _divisionProjectStatuses;
-        private ICollection<WeeklyReportStatus> _weeklyReportStatuses;
-        private ICollection<ProjectAccess> _projectAccesses;
-        private ICollection<DoDReport> _doDReports;
+        protected int _id;
+        protected string _name;
+        protected string _code;
+        protected string _division;
+        protected string _keyAccountManager;
+        protected bool _phrRequired;
+        protected bool _dmrRequired;
+        protected bool _dodRequired;
+        protected int _projectStateTypeId;
+        protected string _deliveryResponsibleName;
+        protected string _platformVersion;
+        protected string _jiraLink;
+        protected string _sourceCodeLink;
+        protected string _note;
+        protected DateTime _createdDate;
+        protected DateTime _projectStartDate;
+        protected DateTime? _projectEndDate;
+        protected DateTime? _phrRequiredFrom;
+        protected DateTime? _dmrRequiredFrom;
+        protected DateTime? _dmrRequiredTo;
+        protected ProjectStateType _projectStateType;
+        protected ICollection<Status> _statuses;
+        protected ICollection<BacklogItem> _backlogItems;
+        protected ICollection<QualityReport> _qualityReports;
+        protected ICollection<DivisionProjectStatus> _divisionProjectStatuses;
+        protected ICollection<WeeklyReportStatus> _weeklyReportStatuses;
+        protected ICollection<ProjectAccess> _projectAccesses;
+        protected ICollection<DoDReport> _doDReports;
 
         public Project()
         {

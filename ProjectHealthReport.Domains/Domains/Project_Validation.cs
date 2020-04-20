@@ -82,7 +82,7 @@ namespace ProjectHealthReport.Domains.Domains
 
         public void ValidateProjectCode()
         {
-            if (Regex.IsMatch(Code, "^[a-zA-Z0-9]+$") && Code.Length < 4 && Code.ToUpper() == Code)
+            if (Regex.IsMatch(Code, "^[a-zA-Z0-9]+$") && Code.Length == 3 && Code.ToUpper() == Code)
             {
                 return;
             }
@@ -126,7 +126,7 @@ namespace ProjectHealthReport.Domains.Domains
 
         public void ValidateProjectEndDate()
         {
-            if (ProjectEndDate.HasValue && ProjectEndDate.Value > ProjectStartDate)
+            if (ProjectEndDate.HasValue && ProjectEndDate.Value < ProjectStartDate)
             {
                 DomainExceptionCode.Throw(DomainError.D007, this);
             }
@@ -139,7 +139,7 @@ namespace ProjectHealthReport.Domains.Domains
                 DomainExceptionCode.Throw(DomainError.D008, this);
             }
 
-            if (PhrRequired && DeliveryResponsibleName == null)
+            if (PhrRequired && string.IsNullOrEmpty(DeliveryResponsibleName))
             {
                 DomainExceptionCode.Throw(DomainError.D013, this);
             }
