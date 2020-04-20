@@ -90,21 +90,21 @@ namespace ProjectHealthReport.Domains.Domains
             DomainExceptionCode.Throw(DomainError.D001, this);
         }
 
-        public void OrganizationInfoMustBeValid(List<(string, string)> userRoleList)
+        public void OrganizationInfoMustBeValid(List<(string User, string Role)> userRoleList)
         {
             if (!AuthorizationHelper.DeliveryManagers.Select(i => i.Value).Contains(Division))
             {
                 DomainExceptionCode.Throw(DomainError.D002, this);
             }
 
-            if (!userRoleList.Where(i => i.Item2 == AuthorizationHelper.RoleKam).Select(i => i.Item1)
+            if (!userRoleList.Where(i => i.Role == AuthorizationHelper.RoleKam).Select(i => i.User)
                 .Contains(KeyAccountManager))
             {
                 DomainExceptionCode.Throw(DomainError.D003, this);
             }
 
-            if (DeliveryResponsibleName != null && !userRoleList.Where(i => i.Item2 == AuthorizationHelper.RolePic)
-                .Select(i => i.Item1)
+            if (DeliveryResponsibleName != null && !userRoleList.Where(i => i.Role == AuthorizationHelper.RolePic)
+                .Select(i => i.User)
                 .Contains(DeliveryResponsibleName))
             {
                 DomainExceptionCode.Throw(DomainError.D004, this);

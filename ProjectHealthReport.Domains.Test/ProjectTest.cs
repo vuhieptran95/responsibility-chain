@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using ProjectHealthReport.Domains.Domains;
 using FluentAssertions;
 using ProjectHealthReport.Domains.Exceptions;
@@ -133,6 +134,156 @@ namespace TestProject1
 
                 Action action = ValidatePhrRequired;
                 action.Should().NotThrow();
+            }
+        }
+        
+        public new class Links : ProjectTest
+        {
+            public class JiraLink: Links
+            {
+                [Fact]
+                public void IsNull_PassValidate()
+                {
+                    _jiraLink = null;
+                    _sourceCodeLink = null;
+
+                    Action action = ValidateLinkProperties;
+                    
+                    action.Should().NotThrow();
+                }
+
+                [Theory]
+                [InlineData("http://google.com")]
+                [InlineData("http://google.com/abcd/abcd?asfd=12")]
+                [InlineData("https://google.com")]
+                public void HasValue_ValueMustBeALink(string link)
+                {
+                    _jiraLink = link;
+                    _sourceCodeLink = null;
+
+                    Action action = ValidateLinkProperties;
+                    
+                    action.Should().NotThrow();
+                }
+
+                [Theory]
+                [InlineData("asf sda fsf ")]
+                [InlineData("google.com")]
+                [InlineData("google")]
+                public void HasValue_ButNotALink_ThrowDomainEx_D005(string link)
+                {
+                    _jiraLink = link;
+                    _sourceCodeLink = null;
+
+                    Action action = ValidateLinkProperties;
+                    
+                    action.Should().ThrowExactly<DomainException>().And.Code.Should().Be(DomainError.D005.ToString());
+                }
+            }
+            
+            public new class SourceCodeLink: Links
+            {
+                [Fact]
+                public void IsNull_PassValidate()
+                {
+                    _jiraLink = null;
+                    _sourceCodeLink = null;
+
+                    Action action = ValidateLinkProperties;
+                    
+                    action.Should().NotThrow();
+                }
+
+                [Theory]
+                [InlineData("http://google.com")]
+                [InlineData("http://google.com/abcd/abcd?asfd=12")]
+                [InlineData("https://google.com")]
+                public void HasValue_ValueMustBeALink(string link)
+                {
+                    _jiraLink = null;
+                    _sourceCodeLink = link;
+
+                    Action action = ValidateLinkProperties;
+                    
+                    action.Should().NotThrow();
+                }
+
+                [Theory]
+                [InlineData("asf sda fsf ")]
+                [InlineData("google.com")]
+                [InlineData("google")]
+                public void HasValue_ButNotALink_ThrowDomainEx_D006(string link)
+                {
+                    _jiraLink = null;
+                    _sourceCodeLink = link;
+
+                    Action action = ValidateLinkProperties;
+                    
+                    action.Should().ThrowExactly<DomainException>().And.Code.Should().Be(DomainError.D006.ToString());
+                }
+            }
+        }
+
+        public new class DmrRequired : ProjectTest
+        {
+            [Fact]
+            public void IsFalse_PassValidate()
+            {
+                _dmrRequired = false;
+
+                Action action = ValidateDmrRequired;
+                
+                action.Should().NotThrow();
+            }
+            [Fact]
+            public void IsTrue_DmrRequiredFromMustHaveValue()
+            {
+                _dmrRequired = true;
+                _dmrRequiredFrom = DateTime.Now;
+
+                Action action = ValidateDmrRequired;
+                
+                action.Should().NotThrow();
+            }
+            
+            [Fact]
+            public void IsTrue_DmrRequiredFromNotHaveValue_ThrowDomainEx_D009()
+            {
+                _dmrRequired = true;
+                _dmrRequiredFrom = null;
+
+                Action action = ValidateDmrRequired;
+                
+                action.Should().ThrowExactly<DomainException>().And.Code.Should().Be(DomainError.D009.ToString());
+            }
+            
+            [Fact]
+            public void IsTrue_DmrRequiredFromHasValue_DmrRequiredToHasValue_FromGreaterThanTo_ThrowDomainEx_D010()
+            {
+                _dmrRequired = true;
+                _dmrRequiredFrom = DateTime.Now.AddDays(1);
+                _dmrRequiredTo = DateTime.Now;
+
+                Action action = ValidateDmrRequired;
+                
+                action.Should().ThrowExactly<DomainException>().And.Code.Should().Be(DomainError.D010.ToString());
+            }
+        }
+        
+        public new class SetCollection : ProjectTest
+        {
+            [Fact]
+            public void SetValidCollections_RespectivePropertiesHaveValidCollection()
+            {
+                var statuses = new List<Status>();
+                var qualityReports = new List<QualityReport>();
+                var backlogItems = new List<BacklogItem>();
+
+                Action action = () => this.SetCollections(qualityReports, backlogItems, statuses);
+
+                _qualityReports.Should().BeEquivalentTo(qualityReports);
+                _backlogItems.Should().BeEquivalentTo(backlogItems);
+                _statuses.Should().BeEquivalentTo(statuses);
             }
         }
     }
