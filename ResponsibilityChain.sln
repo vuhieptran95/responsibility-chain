@@ -27,6 +27,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResponsibilityChain.TestConsole", "ResponsibilityChain.TestConsole\ResponsibilityChain.TestConsole.csproj", "{A23A9A8A-57D5-445B-9199-E427E28A37EA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Items", "Items", "{CFAF837D-361E-4BB3-AFB0-0CA0A8E650F9}"
+ProjectSection(SolutionItems) = preProject
+	Items\script.sql = Items\script.sql
+EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectHealthReport.Domains.Test", "ProjectHealthReport.Domains.Test\ProjectHealthReport.Domains.Test.csproj", "{B322EE1C-26AB-482B-B296-C69B6B226346}"
 EndProject
