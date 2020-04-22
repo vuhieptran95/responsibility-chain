@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ResponsibilityChain
@@ -8,8 +9,22 @@ namespace ResponsibilityChain
         Task HandleAsync(TRequest request);
     }
 
+    public interface IPreHandler<TRequest, TResponse> : IHandler<TRequest, TResponse>
+        where TRequest : IRequest<TResponse>
+    {
+        
+    }
+    
+    public interface IPostHandler<TRequest, TResponse> : IHandler<TRequest, TResponse>
+        where TRequest : IRequest<TResponse>
+    {
+        
+    }
+
     public class Handler<TRequest, TResponse> : IHandler<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
+        protected readonly List<IPreHandler<TRequest, TResponse>> ListPreHandlers = new List<IPreHandler<TRequest, TResponse>>();
+        protected readonly List<IPostHandler<TRequest, TResponse>> ListPostHandlers = new List<IPostHandler<TRequest, TResponse>>();
         public virtual async Task HandleAsync(TRequest request)
         {
             if (request == null)
@@ -23,7 +38,17 @@ namespace ResponsibilityChain
             }
 
             // Console.WriteLine($"Type of Next is {Next.GetType()}");
+            foreach (var preHandler in ListPreHandlers)
+            {
+                await preHandler.HandleAsync(request);
+            }
+            
             await Next.HandleAsync(request);
+            
+            foreach (var postHandler in ListPostHandlers)
+            {
+                await postHandler.HandleAsync(request);
+            }
         }
 
         public async Task HandleBranchAsync(TRequest request)
@@ -39,7 +64,15 @@ namespace ResponsibilityChain
             }
         }
 
-        public void Add(Handler<TRequest, TResponse> handler)
+        public void AddHandler(IPreHandler<TRequest, TResponse> handler)
+        {
+            ListPreHandlers.Add(handler);
+        }
+        public void AddHandler(IPostHandler<TRequest, TResponse> handler)
+        {
+            ListPostHandlers.Add(handler);
+        }
+        public void AddHandler(Handler<TRequest, TResponse> handler)
         {
             Next = AddHandler(Next, handler);
         }

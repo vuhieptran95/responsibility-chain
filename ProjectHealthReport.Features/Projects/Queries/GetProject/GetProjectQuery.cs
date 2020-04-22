@@ -13,11 +13,12 @@ using ResponsibilityChain;
 using ResponsibilityChain.Business;
 using ResponsibilityChain.Business.AuthorizationConfigs;
 using ResponsibilityChain.Business.Executions;
-using ResponsibilityChain.Business.PostProcessors;
+using ResponsibilityChain.Business.Processors;
+using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.Projects.Queries.GetProject
 {
-    public class GetProjectQuery : IRequest<GetProjectQuery.Dto>
+    public class GetProjectQuery : Request<GetProjectQuery.Dto>
     {
         public class AuthorizationConfig: IAuthorizationConfig<GetProjectQuery>
         {
@@ -120,7 +121,5 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProject
                     .ForMember(des => des.ProjectState, opt => opt.MapFrom(src => src.ProjectStateType.State));
             }
         }
-
-        public Dto Response { get; set; }
     }
 }

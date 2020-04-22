@@ -1,13 +1,13 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using ProjectHealthReport.Domains.Helpers;
+using ProjectHealthReport.Features.Projects.Queries.GetProject;
 using ResponsibilityChain;
 using ResponsibilityChain.Business.Authorizations;
 using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.Common.Authorization
 {
-    public class IsCoo<TRequest, TResponse> : IPreAuthorization<TRequest, TResponse>
+    public class IsPmo<TRequest, TResponse> : IPreAuthorization<TRequest, TResponse>
         where TRequest : Request<TResponse>
     {
         public async Task HandleAsync(TRequest request)
@@ -18,7 +18,7 @@ namespace ProjectHealthReport.Features.Common.Authorization
                 return;
             }
             
-            if (request.RequestContext.UserRole == AuthorizationHelper.RoleCOO)
+            if (request.RequestContext.UserRole == AuthorizationHelper.RolePMOAssistant)
             {
                 request.AuthorizationIsHandled = true;
             }

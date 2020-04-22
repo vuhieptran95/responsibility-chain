@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using ProjectHealthReport.Features.Projects.Commands;
 using ProjectHealthReport.Features.Projects.Queries.GetProject;
 using ProjectHealthReport.Features.Projects.Queries.GetProjectCaching;

@@ -5,38 +5,25 @@ namespace ResponsibilityChain.Business.Events
     public class EventsHandler<TRequest, TResponse> : Handler<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
     {
-        private readonly IPreEvent<TRequest, TResponse>[] _preEvents;
-        private readonly IPostEvent<TRequest, TResponse>[] _postEvents;
-
-
         public EventsHandler(IPreEvent<TRequest, TResponse>[] preEvents, IPostEvent<TRequest, TResponse>[] postEvents)
         {
-            _preEvents = preEvents;
-            _postEvents = postEvents;
-        }
-
-
-        public override async Task HandleAsync(TRequest request)
-        {
-            foreach (var preEvent in _preEvents)
+            foreach (var preEvent in preEvents)
             {
-                await preEvent.HandleAsync(request);
+                AddHandler(preEvent);
             }
 
-            await base.HandleAsync(request);
-
-            foreach (var postEvent in _postEvents)
+            foreach (var postEvent in postEvents)
             {
-                await postEvent.HandleAsync(request);
+                AddHandler(postEvent);
             }
         }
     }
 
-    public interface IPreEvent<TRequest, TResponse> : IHandler<TRequest, TResponse> where TRequest : IRequest<TResponse>
+    public interface IPreEvent<TRequest, TResponse> : IPreHandler<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
     }
     
-    public interface IPostEvent<TRequest, TResponse> : IHandler<TRequest, TResponse> where TRequest : IRequest<TResponse>
+    public interface IPostEvent<TRequest, TResponse> : IPostHandler<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
     }
 }

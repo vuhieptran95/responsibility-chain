@@ -2,15 +2,25 @@
 
 namespace ResponsibilityChain.Business.RequestContexts
 {
-    public class RequestContext
+    public interface IRequestContext
+    {
+        string UserId { get; set; }
+        string UserName { get; set; }
+        string UserRole { get; set; }
+        string UserEmail { get; set; }
+        Dictionary<string, object> TempData { get; }
+        List<string> AccessRights { get; set; }
+    }
+
+    public class RequestContext : IRequestContext
     {
         public RequestContext()
         {
             TempData = new Dictionary<string, object>();
         }
         public string UserId { get; set; } = "unidentified";
-        public string UserName { get; set; } = "PMO4";
-        public string UserRole { get; set; } = "PMO Assistant";
+        public string UserName { get; set; } = "PM2";
+        public string UserRole { get; set; } = "";
         public string UserEmail { get; set; } = "unidentified";
         public Dictionary<string, object> TempData { get; }
         public List<string> AccessRights { get; set; } = new List<string>();

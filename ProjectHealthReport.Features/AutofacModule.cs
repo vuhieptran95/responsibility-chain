@@ -11,7 +11,7 @@ using ResponsibilityChain.Business.Caching;
 using ResponsibilityChain.Business.Events;
 using ResponsibilityChain.Business.Executions;
 using ResponsibilityChain.Business.Logging;
-using ResponsibilityChain.Business.PostProcessors;
+using ResponsibilityChain.Business.Processors;
 using ResponsibilityChain.Business.RequestContexts;
 using ResponsibilityChain.Business.Validations;
 using Module = Autofac.Module;
@@ -37,21 +37,27 @@ namespace ProjectHealthReport.Features
                 .AsSelf()
                 .InstancePerLifetimeScope();
 
+            builder.RegisterGeneric(typeof(DefaultHandler<,>)).InstancePerLifetimeScope();
+            
             builder.RegisterGeneric(typeof(RequestHandler<,>)).InstancePerLifetimeScope();
             
             
             builder.RegisterGeneric(typeof(AuthorizationConfigBase<,>)).InstancePerLifetimeScope();
-            builder.RegisterGeneric(typeof(AuthorizationHandlerBase<,>)).InstancePerLifetimeScope();
-            
             builder.RegisterGeneric(typeof(AuthorizationHandler<,>)).InstancePerLifetimeScope();
+            builder.RegisterGeneric(typeof(Common.Authorization.PreAuthorizationThrowException<,>)).InstancePerLifetimeScope();
+            builder.RegisterGeneric(typeof(Common.Authorization.PostAuthorizationThrowException<,>)).InstancePerLifetimeScope();
+            
             builder.RegisterGeneric(typeof(IsCoo<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(IsPmo<,>)).InstancePerLifetimeScope();
-            builder.RegisterGeneric(typeof(CommonAuthorization<,>))
-                .As(typeof(AuthorizationHandler<,>))
+            
+            builder.RegisterAssemblyTypes(currentAssembly)
+                .AsClosedTypesOf(typeof(IPreAuthorization<,>))
                 .InstancePerLifetimeScope();
             
+            builder.RegisterAssemblyTypes(currentAssembly)
+                .AsClosedTypesOf(typeof(IPostAuthorization<,>))
+                .InstancePerLifetimeScope();
             
-            builder.RegisterGeneric(typeof(AuthorizationExceptionHandler<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(DefaultHandler<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(ValidationHandlerBase<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(ExecutionHandlerBase<,>)).InstancePerLifetimeScope();

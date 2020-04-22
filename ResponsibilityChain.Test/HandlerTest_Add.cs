@@ -16,7 +16,8 @@ namespace ResponsibilityChain.Test
                 [Fact]
                 public void ThenThrowNullHandlerEx()
                 {
-                    Action action = () => _handler.Add(null);
+                    Handler<Request, Response> handler = null;
+                    Action action = () => _handler.AddHandler(handler);
 
                     action.Should().ThrowExactly<NullHandlerException>();
                 }
@@ -27,7 +28,7 @@ namespace ResponsibilityChain.Test
                 [Fact]
                 public void ThenNextIsHandler()
                 {
-                    _handler.Add(_handler2);
+                    _handler.AddHandler(_handler2);
 
                     _handler.Next.Should().Be(_handler2);
                 }

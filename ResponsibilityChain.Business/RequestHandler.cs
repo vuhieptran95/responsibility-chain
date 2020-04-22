@@ -4,7 +4,7 @@ using ResponsibilityChain.Business.Caching;
 using ResponsibilityChain.Business.Events;
 using ResponsibilityChain.Business.Executions;
 using ResponsibilityChain.Business.Logging;
-using ResponsibilityChain.Business.PostProcessors;
+using ResponsibilityChain.Business.Processors;
 using ResponsibilityChain.Business.Validations;
 
 namespace ResponsibilityChain.Business
@@ -14,21 +14,21 @@ namespace ResponsibilityChain.Business
         public RequestHandler(
             LoggingHandler<TRequest, TResponse> loggingHandler,
             AuthorizationConfigBase<TRequest, TResponse> authorizationConfigBase,
-            AuthorizationHandlerBase<TRequest, TResponse> authorizationHandlerBase,
+            AuthorizationHandler<TRequest, TResponse> authorizationHandler,
             ValidationHandlerBase<TRequest, TResponse> validationHandlerBase,
             EventsHandler<TRequest, TResponse> eventsHandler,
             CacheHandler<TRequest, TResponse> cacheHandler,
             ProcessorHandlerBase<TRequest, TResponse> processorHandlerBase,
             ExecutionHandlerBase<TRequest, TResponse> executionHandlerBase)
         {
-            Add(loggingHandler);
-            Add(authorizationConfigBase);
-            Add(authorizationHandlerBase);
-            Add(validationHandlerBase);
-            Add(eventsHandler);
-            Add(cacheHandler);
-            Add(processorHandlerBase);
-            Add(executionHandlerBase);
+            AddHandler(loggingHandler);
+            AddHandler(authorizationConfigBase);
+            AddHandler(authorizationHandler);
+            AddHandler(validationHandlerBase);
+            AddHandler(eventsHandler);
+            AddHandler(cacheHandler);
+            AddHandler(processorHandlerBase);
+            AddHandler(executionHandlerBase);
         }
     }
 }
