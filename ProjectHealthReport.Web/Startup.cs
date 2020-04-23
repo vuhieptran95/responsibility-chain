@@ -37,19 +37,18 @@ namespace ProjectHealthReport.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
             services
                 .AddAuthentication(options =>
                 {
                     options.DefaultScheme = "Cookies";
                     options.DefaultChallengeScheme = "oidc";
                 })
-                .AddIdentityServerAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme, options =>
-                {
-                    options.Authority = "http://localhost:5000";
-                    options.RequireHttpsMetadata = false;
-                    options.ApiName = "phr";
-                })
+                // .AddIdentityServerAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme, options =>
+                // {
+                //     options.Authority = "http://localhost:5000";
+                //     options.RequireHttpsMetadata = false;
+                //     options.ApiName = "phr";
+                // })
                 .AddCookie("Cookies")
                 .AddOpenIdConnect("oidc", options =>
                 {

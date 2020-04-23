@@ -1,4 +1,5 @@
-﻿﻿<template>
+﻿﻿
+<template>
     <div id="weeklyReport">
         <v-content>
             <v-container>
@@ -142,6 +143,9 @@
 
             try {
                 let reportResponse = await axios.get(url);
+
+                console.log(reportResponse.request._redirectable._redirectCount);
+                
                 this.report = reportResponse.data;
 
                 if (!this.report.status) {
@@ -171,7 +175,7 @@
             }
         };
 
-        addEditReport() {
+        async addEditReport() {
 // @ts-ignore
             if (!this.$refs.form.validate()) return;
 
@@ -197,13 +201,19 @@
                 return;
             }
 
-            axios.post(WEEKLYREPORT_ENDPOINT + "phr", {report: this.report, issueRemovedIds: this.issueRemovedIds})
-                .then(async res => {
-                    let message = "Weekly Report is saved successfully";
-                    notify(message, "success");
-                    await this.init();
-                })
-                .catch(handleAxiosError)
+            try {
+
+                let res = await axios.post(WEEKLYREPORT_ENDPOINT + "phr", {
+                    report: this.report,
+                    issueRemovedIds: this.issueRemovedIds
+                });
+                
+                let message = "Weekly Report is saved successfully";
+                notify(message, "success");
+                await this.init();
+            } catch (e) {
+                handleAxiosError(e)
+            }
         }
 
         async handleViewSettingsChanged() {

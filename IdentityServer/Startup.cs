@@ -13,6 +13,8 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using IdentityServer.Quickstart;
+using IdentityServer4.Services;
+using Microsoft.Extensions.Logging;
 
 namespace IdentityServer
 {
@@ -27,6 +29,15 @@ namespace IdentityServer
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<ICorsPolicyService>(container =>
+            {
+                var logger = container.GetRequiredService<ILogger<DefaultCorsPolicyService>>();
+                return new DefaultCorsPolicyService(logger)
+                {
+                    AllowAll = true
+                };
+            });
+            
             // uncomment, if you want to add an MVC-based UI
             services.AddControllersWithViews();
             var builder = services.AddIdentityServer()
@@ -52,12 +63,12 @@ namespace IdentityServer
             app.UseStaticFiles();
             app.UseRouting();
 
+            app.UseCors();
             app.UseIdentityServer();
 
 
             // uncomment, if you want to add MVC
             app.UseAuthorization();
-            // app.UseCors();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
