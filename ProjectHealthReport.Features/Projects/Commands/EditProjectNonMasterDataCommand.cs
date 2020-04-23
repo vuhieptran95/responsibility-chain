@@ -8,13 +8,14 @@ using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Helpers;
 using ProjectHealthReport.Domains.Mappings;
 using ProjectHealthReport.Features.Helpers;
-using ResponsibilityChain;
 using ResponsibilityChain.Business;
+using ResponsibilityChain.Business.AuthorizationConfigs;
 using ResponsibilityChain.Business.Executions;
+using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.Projects.Commands
 {
-    public class EditProjectNonMasterDataCommand : IRequest<int>, IMapTo<ProjectProxy>
+    public class EditProjectNonMasterDataCommand : Request<int>, IMapTo<ProjectProxy>
     {
         public int Id { get; set; }
         public BacklogItemDto BacklogItem { get; set; }
@@ -43,6 +44,17 @@ namespace ProjectHealthReport.Features.Projects.Commands
             public int ProjectId { get; set; }
             public string Email { get; set; }
             public string Role { get; set; }
+        }
+        
+        public class AuthorizationConfig : IAuthorizationConfig<EditProjectMasterDataCommand>
+        {
+            public List<(string[] Resources, string[] Actions)> GetAccessRights()
+            {
+                return new List<(string[] Resources, string[] Actions)>()
+                {
+                    (new[] {Resources.Project, Resources.ProjectNonMaster}, new[] {Actions.Read, Actions.Create, Actions.Update}),
+                };
+            }
         }
 
         public class Handler : IExecution<EditProjectNonMasterDataCommand, int>
@@ -110,7 +122,5 @@ namespace ProjectHealthReport.Features.Projects.Commands
                 }
             }
         }
-
-        public int Response { get; set; }
     }
 }

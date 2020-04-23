@@ -4,10 +4,11 @@ using System.Threading.Tasks;
 using ProjectHealthReport.Domains.Helpers;
 using ResponsibilityChain;
 using ResponsibilityChain.Business.Executions;
+using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.Helpers
 {
-    public class GetAllowedYearWeeksQuery: IRequest<List<int>>
+    public class GetAllowedYearWeeksQuery: Request<List<int>>
     {
         public int FromYear { get; set; }
 
@@ -43,6 +44,5 @@ namespace ProjectHealthReport.Features.Helpers
             }
         }
 
-        public List<int> Response { get; set; }
     }
 }

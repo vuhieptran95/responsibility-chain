@@ -1,14 +1,29 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ProjectHealthReport.Domains.Domains;
+using ProjectHealthReport.Domains.Helpers;
 using ResponsibilityChain;
+using ResponsibilityChain.Business.AuthorizationConfigs;
 using ResponsibilityChain.Business.Executions;
+using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.DoDs.Metrics.RemoveMetrics
 {
-    public class RemoveMetricCommand : IRequest<int>
+    public class RemoveMetricCommand : Request<int>
     {
         public int MetricId { get; set; }
+        
+        public class AuthorizationConfig : IAuthorizationConfig<RemoveMetricCommand>
+        {
+            public List<(string[] Resources, string[] Actions)> GetAccessRights()
+            {
+                return new List<(string[] Resources, string[] Actions)>()
+                {
+                    (new[] {Resources.Metrics}, new[] {Actions.Delete}),
+                };
+            }
+        }
 
         public class Handler : IExecution<RemoveMetricCommand, int>
         {
@@ -30,6 +45,5 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.RemoveMetrics
             }
         }
 
-        public int Response { get; set; }
     }
 }

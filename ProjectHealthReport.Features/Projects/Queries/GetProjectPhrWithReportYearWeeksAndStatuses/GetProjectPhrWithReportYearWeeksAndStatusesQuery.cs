@@ -7,12 +7,14 @@ using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Helpers;
 using ProjectHealthReport.Features.Common;
 using ResponsibilityChain;
+using ResponsibilityChain.Business.AuthorizationConfigs;
 using ResponsibilityChain.Business.Executions;
+using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.Projects.Queries.GetProjectPhrWithReportYearWeeksAndStatuses
 {
-    public class
-        GetProjectPhrWithReportYearWeeksAndStatusesQuery : IRequest<GetProjectPhrWithReportYearWeeksAndStatusesQuery.Dto
+    public partial class
+        GetProjectPhrWithReportYearWeeksAndStatusesQuery : Request<GetProjectPhrWithReportYearWeeksAndStatusesQuery.Dto
         >
     {
         public int ProjectId { get; set; }
@@ -129,6 +131,20 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjectPhrWithReportY
             }
         }
 
-        public Dto Response { get; set; }
+    }
+
+    public partial class GetProjectPhrWithReportYearWeeksAndStatusesQuery
+    {
+        public class AuthorizationConfig : IAuthorizationConfig<GetProjectPhrWithReportYearWeeksAndStatusesQuery>
+        {
+            public List<(string[] Resources, string[] Actions)> GetAccessRights()
+            {
+                return new List<(string[] Resources, string[] Actions)>()
+                {
+                    (new[] {Resources.Project, Resources.ProjectAdmin},
+                        new[] {Actions.Read}),
+                };
+            }
+        }
     }
 }

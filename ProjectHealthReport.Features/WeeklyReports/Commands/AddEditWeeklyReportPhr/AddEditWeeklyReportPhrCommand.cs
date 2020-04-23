@@ -15,11 +15,14 @@ using ResponsibilityChain.Business;
 using ResponsibilityChain.Business.Caching;
 using ResponsibilityChain.Business.Events;
 using ResponsibilityChain.Business.Executions;
+using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditWeeklyReportPhr
 {
-    public class AddEditWeeklyReportPhrCommand : IRequest<int>, IMapFrom<object>
+    public class AddEditWeeklyReportPhrCommand : Request<int>, IMapFrom<object>
     {
+        
+        
         public GetWeeklyReportPhrQuery.Dto Report { get; set; }
 
         public class Handler : IExecution<AddEditWeeklyReportPhrCommand, int>
@@ -106,7 +109,5 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditWeeklyRepor
                 return Task.CompletedTask;
             }
         }
-
-        public int Response { get; set; }
     }
 }

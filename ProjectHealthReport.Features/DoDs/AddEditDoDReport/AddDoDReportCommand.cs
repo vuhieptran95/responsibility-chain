@@ -4,13 +4,16 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ProjectHealthReport.Domains.Domains;
+using ProjectHealthReport.Domains.Helpers;
 using ProjectHealthReport.Domains.Mappings;
 using ResponsibilityChain;
+using ResponsibilityChain.Business.AuthorizationConfigs;
 using ResponsibilityChain.Business.Executions;
+using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.DoDs.AddEditDoDReport
 {
-    public class AddDoDReportCommand : IRequest<int>
+    public partial class AddDoDReportCommand : Request<int>
     {
         public IEnumerable<DoDReportDto> DodReports { get; set; }
         
@@ -34,7 +37,22 @@ namespace ProjectHealthReport.Features.DoDs.AddEditDoDReport
             }
         }
         
-        public class Handler: IExecution<AddDoDReportCommand, int>
+        public class AuthorizationConfig: IAuthorizationConfig<AddDoDReportCommand>
+        {
+            public List<(string[] Resources, string[] Actions)> GetAccessRights()
+            {
+                return new List<(string[] Resources, string[] Actions)>()
+                {
+                    (new []{Resources.DoDReport}, new []{Actions.Read, Actions.Create, Actions.Update}),
+                    (new []{Resources.Project}, new []{Actions.Read})
+                };
+            }
+        }
+    }
+
+    public partial class AddDoDReportCommand
+    {
+        public class Handler : IExecution<AddDoDReportCommand, int>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;
@@ -48,30 +66,26 @@ namespace ProjectHealthReport.Features.DoDs.AddEditDoDReport
             public async Task HandleAsync(AddDoDReportCommand request)
             {
                 var listDtos = request.DodReports.ToList();
-                
+
                 var listProjectId = listDtos.Select(d => d.ProjectId).Distinct();
                 var listProject = await _dbContext.Projects.Where(p => listProjectId.Contains(p.Id)).ToListAsync();
-            
+
                 var listMetricId = listDtos.Select(d => d.MetricId).Distinct();
                 var listMetric = await _dbContext.Metrics.Where(m => listMetricId.Contains(m.Id)).ToListAsync();
-                
+
                 listDtos.ForEach(d =>
                 {
                     d.Project = listProject.First(p => p.Id == d.ProjectId);
                     d.Metric = listMetric.First(m => m.Id == d.MetricId);
                 });
-                
+
                 var dodReports = _mapper.Map<IEnumerable<DoDReport>>(listDtos);
-            
+
                 await _dbContext.DoDReports.AddRangeAsync(dodReports);
                 await _dbContext.SaveChangesAsync();
-            
+
                 request.Response = 1;
             }
         }
-
-        public int Response { get; set; }
     }
-    
-    
 }

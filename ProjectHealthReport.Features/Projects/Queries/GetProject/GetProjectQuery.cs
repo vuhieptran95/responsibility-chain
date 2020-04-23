@@ -6,6 +6,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using ProjectHealthReport.Domains.Domains;
+using ProjectHealthReport.Domains.Helpers;
 using ProjectHealthReport.Domains.Mappings;
 using ProjectHealthReport.Features.Helpers;
 using ProjectHealthReport.Features.Projects.Queries.GetProjectCaching;
@@ -24,7 +25,10 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProject
         {
             public List<(string[] Resources, string[] Actions)> GetAccessRights()
             {
-                return new List<(string[] Resources, string[] Actions)>();
+                return new List<(string[] Resources, string[] Actions)>()
+                {
+                    (new[] {Resources.Project, Resources.BacklogItem, Resources.ProjectAccess}, new[] {Actions.Read}),
+                };
             }
         }
         public int ProjectId { get; set; }

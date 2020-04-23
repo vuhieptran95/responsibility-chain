@@ -7,14 +7,12 @@ using ResponsibilityChain.Business.RequestContexts;
 namespace ResponsibilityChain.Business.AuthorizationConfigs
 {
     public class AuthorizationConfigBase<TRequest, TResponse> : Handler<TRequest, TResponse>
-        where TRequest : IRequest<TResponse>
+        where TRequest : Request<TResponse>
     {
-        private readonly RequestContext _requestContext;
         private readonly IAuthorizationConfig<TRequest> _config;
 
         public AuthorizationConfigBase(RequestContext requestContext, IAuthorizationConfig<TRequest> config)
         {
-            _requestContext = requestContext;
             _config = config;
             // AccessRights.Add(("item1 item2", "read create"));
             // AccessRights.Add(("item3 item2", "edit"));
@@ -25,13 +23,13 @@ namespace ResponsibilityChain.Business.AuthorizationConfigs
         {
             var accessRights = CalculateRights(_config.GetAccessRights());
 
-            var violatedRights = accessRights.Except(_requestContext.AccessRights).ToList();
+            var violatedRights = accessRights.Except(request.RequestContext.AccessRights).ToList();
 
             if (violatedRights.Count > 0)
             {
                 var violated = string.Join(' ', violatedRights);
                 throw new UnauthorizedAccessException(
-                    $"{violated} right(s) are not permitted for this user: {_requestContext.UserEmail}");
+                    $"{violated} right(s) are not permitted for this user: {request.RequestContext.UserEmail}");
             }
 
             return base.HandleAsync(request);

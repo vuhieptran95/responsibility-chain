@@ -4,10 +4,11 @@ using System.Threading.Tasks;
 using ProjectHealthReport.Domains.Helpers;
 using ResponsibilityChain;
 using ResponsibilityChain.Business.Executions;
+using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.Helpers
 {
-    public class GetDivisionNamesQuery : IRequest<List<string>>
+    public class GetDivisionNamesQuery : Request<List<string>>
     {
         public class Handler: IExecution<GetDivisionNamesQuery, List<string>>
         {
@@ -18,6 +19,5 @@ namespace ProjectHealthReport.Features.Helpers
             }
         }
 
-        public List<string> Response { get; set; }
     }
 }

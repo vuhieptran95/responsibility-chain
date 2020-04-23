@@ -5,13 +5,16 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ProjectHealthReport.Domains.Domains;
+using ProjectHealthReport.Domains.Helpers;
 using ProjectHealthReport.Features.Common;
 using ResponsibilityChain;
+using ResponsibilityChain.Business.AuthorizationConfigs;
 using ResponsibilityChain.Business.Executions;
+using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.Projects.Queries.GetProjectsPhrWithWeeklyStatuses
 {
-    public class GetProjectsPhrWithWeeklyStatusesQuery : IRequest<GetProjectsPhrWithWeeklyStatusesQuery.Dto>
+    public class GetProjectsPhrWithWeeklyStatusesQuery : Request<GetProjectsPhrWithWeeklyStatusesQuery.Dto>
     {
         public int YearWeek { get; set; }
         public Expression<Func<Project, bool>> ResourceFilter { get; set; } = p => true;
@@ -31,6 +34,18 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjectsPhrWithWeekly
                 public string DeliveryResponsibleName { get; set; }
                 public List<string> CurrentStatuses { get; set; }
                 public List<string> Statuses { get; set; }
+            }
+        }
+        
+        public class AuthorizationConfig : IAuthorizationConfig<GetProjectsPhrWithWeeklyStatusesQuery>
+        {
+            public List<(string[] Resources, string[] Actions)> GetAccessRights()
+            {
+                return new List<(string[] Resources, string[] Actions)>()
+                {
+                    (new[] {Resources.Project, Resources.ProjectAdmin},
+                        new[] {Actions.Read}),
+                };
             }
         }
 
@@ -107,6 +122,5 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjectsPhrWithWeekly
             }
         }
 
-        public Dto Response { get; set; }
     }
 }

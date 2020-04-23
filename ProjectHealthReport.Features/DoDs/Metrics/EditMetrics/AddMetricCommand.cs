@@ -3,13 +3,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using ProjectHealthReport.Domains.Domains;
+using ProjectHealthReport.Domains.Helpers;
 using ProjectHealthReport.Domains.Mappings;
 using ResponsibilityChain;
+using ResponsibilityChain.Business.AuthorizationConfigs;
 using ResponsibilityChain.Business.Executions;
+using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.DoDs.Metrics.EditMetrics
 {
-    public class AddMetricCommand : IRequest<int>
+    public class AddMetricCommand : Request<int>
     {
         public MetricDto Metric { get; set; }
 
@@ -54,8 +57,18 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.EditMetrics
                         null));
             }
         }
+        
+        public class AuthorizationConfig : IAuthorizationConfig<AddMetricCommand>
+        {
+            public List<(string[] Resources, string[] Actions)> GetAccessRights()
+            {
+                return new List<(string[] Resources, string[] Actions)>()
+                {
+                    (new[] {Resources.Metrics}, new[] {Actions.Read, Actions.Create}),
+                };
+            }
+        }
 
-        public int Response { get; set; }
     }
 
     public class AddMetricCommandHandler : IExecution<AddMetricCommand, int>

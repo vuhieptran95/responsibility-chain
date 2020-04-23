@@ -9,15 +9,51 @@ using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Helpers;
 using ProjectHealthReport.Domains.Mappings;
 using ResponsibilityChain;
+using ResponsibilityChain.Business.AuthorizationConfigs;
 using ResponsibilityChain.Business.Executions;
+using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.Divisions.Queries
 {
-    public class GetDivisionWeeklyReportQuery : IRequest<GetDivisionWeeklyReportQuery.Dto>
+    public partial class GetDivisionWeeklyReportQuery : Request<GetDivisionWeeklyReportQuery.Dto>
     {
         [Required] public string DivisionName { get; set; }
         public int SelectedYearWeek { get; set; }
 
+        public class Dto
+        {
+            public string DivisionName { get; set; }
+            public int YearWeek { get; set; }
+            public List<DivisionProjectStatusDto> DivisionProjectStatuses { get; set; }
+
+            public class DivisionProjectStatusDto : IMapFrom<DivisionProjectStatus>
+            {
+                public int StatusId { get; set; }
+                public int ProjectId { get; set; }
+                public string Code { get; set; }
+                public string ProjectName { get; set; }
+                public string StatusColor { get; set; }
+                public string ProjectStatus { get; set; }
+                public string Actions { get; set; }
+                public int YearWeek { get; set; }
+            }
+        }
+        
+        public class AuthorizationConfig: IAuthorizationConfig<GetDivisionWeeklyReportQuery>
+        {
+            public List<(string[] Resources, string[] Actions)> GetAccessRights()
+            {
+                return new List<(string[] Resources, string[] Actions)>()
+                {
+                    (new []{Resources.DivisionReport}, new []{Actions.Read}),
+                    (new []{Resources.Project}, new []{Actions.Read})
+                };
+            }
+        }
+    }
+
+    public partial class GetDivisionWeeklyReportQuery
+    {
         public class Handler : IExecution<GetDivisionWeeklyReportQuery, Dto>
         {
             private readonly ReportDbContext _dbContext;
@@ -35,7 +71,7 @@ namespace ProjectHealthReport.Features.Divisions.Queries
                 {
                     request.DivisionName = "AMS 24/7";
                 }
-                
+
                 var divisionProjectStatusDto = (await _dbContext.Projects
                         .Where(p => p.Division == request.DivisionName
                                     && p.DmrRequired)
@@ -95,26 +131,5 @@ namespace ProjectHealthReport.Features.Divisions.Queries
                 return false;
             }
         }
-
-        public class Dto
-        {
-            public string DivisionName { get; set; }
-            public int YearWeek { get; set; }
-            public List<DivisionProjectStatusDto> DivisionProjectStatuses { get; set; }
-
-            public class DivisionProjectStatusDto : IMapFrom<DivisionProjectStatus>
-            {
-                public int StatusId { get; set; }
-                public int ProjectId { get; set; }
-                public string Code { get; set; }
-                public string ProjectName { get; set; }
-                public string StatusColor { get; set; }
-                public string ProjectStatus { get; set; }
-                public string Actions { get; set; }
-                public int YearWeek { get; set; }
-            }
-        }
-
-        public Dto Response { get; set; }
     }
 }

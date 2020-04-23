@@ -3,10 +3,11 @@ using DinkToPdf;
 using DinkToPdf.Contracts;
 using ResponsibilityChain;
 using ResponsibilityChain.Business.Executions;
+using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.WeeklyReports.Queries
 {
-    public class ExportPdfWeeklyReportPhrQuery : IRequest<byte[]>
+    public class ExportPdfWeeklyReportPhrQuery : Request<byte[]>
     {
         public string HtmlContent { get; set; }
 
@@ -46,7 +47,5 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries
                 return Task.CompletedTask;
             }
         }
-
-        public byte[] Response { get; set; }
     }
 }

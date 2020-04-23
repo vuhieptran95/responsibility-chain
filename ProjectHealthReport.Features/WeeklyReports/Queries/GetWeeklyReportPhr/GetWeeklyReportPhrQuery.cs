@@ -15,10 +15,11 @@ using ProjectHealthReport.Features.Projects.Queries.GetProjectCaching;
 using ResponsibilityChain;
 using ResponsibilityChain.Business;
 using ResponsibilityChain.Business.Executions;
+using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetWeeklyReportPhr
 {
-    public partial class GetWeeklyReportPhrQuery : IRequest<GetWeeklyReportPhrQuery.Dto>
+    public partial class GetWeeklyReportPhrQuery : Request<GetWeeklyReportPhrQuery.Dto>
     {
         public int ProjectId { get; set; }
         public int Year { get; set; }
@@ -179,7 +180,5 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetWeeklyReportPhr
                 request.Response = dto;
             }
         }
-
-        public Dto Response { get; set; }
     }
 }

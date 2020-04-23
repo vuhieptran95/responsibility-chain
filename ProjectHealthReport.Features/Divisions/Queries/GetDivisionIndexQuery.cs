@@ -2,10 +2,11 @@
 using System.Threading.Tasks;
 using ResponsibilityChain;
 using ResponsibilityChain.Business.Executions;
+using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.Divisions.Queries
 {
-    public class GetDivisionIndexQuery : IRequest<GetDivisionIndexQuery.Dto>
+    public class GetDivisionIndexQuery : Request<GetDivisionIndexQuery.Dto>
     {
         public class Handler : IExecution<GetDivisionIndexQuery, Dto>
         {
@@ -44,7 +45,5 @@ namespace ProjectHealthReport.Features.Divisions.Queries
                 public string ManagerName { get; set; }
             }
         }
-
-        public Dto Response { get; set; }
     }
 }

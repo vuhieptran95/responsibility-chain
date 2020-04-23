@@ -1,7 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using ProjectHealthReport.Domains.Helpers;
 using ProjectHealthReport.Features.Common.Authorization;
 using ResponsibilityChain;
+using ResponsibilityChain.Business.AuthorizationConfigs;
 using ResponsibilityChain.Business.Authorizations;
 using ResponsibilityChain.Business.RequestContexts;
 
@@ -9,6 +11,18 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjects
 {
     public class GetProjectsQueryAuthorization : AuthorizationHandler<GetProjectsQuery, GetProjectsQuery.Dto>
     {
+        public class Config : IAuthorizationConfig<GetProjectsQuery>
+        {
+            public List<(string[] Resources, string[] Actions)> GetAccessRights()
+            {
+                return new List<(string[] Resources, string[] Actions)>()
+                {
+                    (new[] {Resources.Project, Resources.ProjectAdmin},
+                        new[] {Actions.Read}),
+                };
+            }
+        }
+        
         public GetProjectsQueryAuthorization(
             IsCoo<GetProjectsQuery, GetProjectsQuery.Dto> isCoo,
             IsPmo<GetProjectsQuery, GetProjectsQuery.Dto> isPmo,

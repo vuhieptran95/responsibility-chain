@@ -5,13 +5,16 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using ProjectHealthReport.Domains.Domains;
+using ProjectHealthReport.Domains.Helpers;
 using ProjectHealthReport.Domains.Mappings;
 using ResponsibilityChain;
+using ResponsibilityChain.Business.AuthorizationConfigs;
 using ResponsibilityChain.Business.Executions;
+using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.DoDs.Metrics.GetThresholds
 {
-    public class GetThresholdsQuery : IRequest<GetThresholdsQuery.Dto>
+    public class GetThresholdsQuery : Request<GetThresholdsQuery.Dto>
     {
         public class Dto
         {
@@ -36,6 +39,17 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.GetThresholds
                 }
             }
         }
+        
+        public class AuthorizationConfig : IAuthorizationConfig<GetThresholdsQuery>
+        {
+            public List<(string[] Resources, string[] Actions)> GetAccessRights()
+            {
+                return new List<(string[] Resources, string[] Actions)>()
+                {
+                    (new[] {Resources.Metrics}, new[] {Actions.Read}),
+                };
+            }
+        }
 
         public class Handler : IExecution<GetThresholdsQuery,Dto>
         {
@@ -57,7 +71,5 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.GetThresholds
                 request.Response = new Dto() {Thresholds = projectMetrics};
             }
         }
-
-        public Dto Response { get; set; }
     }
 }

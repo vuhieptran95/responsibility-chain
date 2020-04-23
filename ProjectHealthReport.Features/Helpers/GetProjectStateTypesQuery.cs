@@ -5,10 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using ProjectHealthReport.Domains.Domains;
 using ResponsibilityChain;
 using ResponsibilityChain.Business.Executions;
+using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.Helpers
 {
-    public class GetProjectStateTypesQuery : IRequest<GetProjectStateTypesQuery.Dto>
+    public class GetProjectStateTypesQuery : Request<GetProjectStateTypesQuery.Dto>
     {
         public class Handler : IExecution<GetProjectStateTypesQuery, Dto>
         {
@@ -43,6 +44,5 @@ namespace ProjectHealthReport.Features.Helpers
             }
         }
 
-        public Dto Response { get; set; }
     }
 }

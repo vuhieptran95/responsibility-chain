@@ -5,11 +5,12 @@ using ResponsibilityChain.Business.Events;
 using ResponsibilityChain.Business.Executions;
 using ResponsibilityChain.Business.Logging;
 using ResponsibilityChain.Business.Processors;
+using ResponsibilityChain.Business.RequestContexts;
 using ResponsibilityChain.Business.Validations;
 
 namespace ResponsibilityChain.Business
 {
-    public class RequestHandler<TRequest, TResponse> : Handler<TRequest, TResponse> where TRequest: IRequest<TResponse>
+    public class RequestHandler<TRequest, TResponse> : Handler<TRequest, TResponse> where TRequest: Request<TResponse>
     {
         public RequestHandler(
             LoggingHandler<TRequest, TResponse> loggingHandler,

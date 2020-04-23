@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -10,11 +11,13 @@ using ProjectHealthReport.Domains.Mappings;
 using ProjectHealthReport.Features.Helpers;
 using ResponsibilityChain;
 using ResponsibilityChain.Business;
+using ResponsibilityChain.Business.AuthorizationConfigs;
 using ResponsibilityChain.Business.Executions;
+using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.Projects.Commands
 {
-    public class EditProjectMasterDataCommand : IRequest<int>, IMapTo<ProjectProxy>
+    public class EditProjectMasterDataCommand : Request<int>, IMapTo<ProjectProxy>
     {
         public int Id { get; set; }
 
@@ -34,6 +37,17 @@ namespace ProjectHealthReport.Features.Projects.Commands
         public DateTime? ProjectEndDate { get; set; }
         public DateTime? DmrRequiredFrom { get; set; }
         public DateTime? DmrRequiredTo { get; set; }
+        
+        public class AuthorizationConfig : IAuthorizationConfig<EditProjectMasterDataCommand>
+        {
+            public List<(string[] Resources, string[] Actions)> GetAccessRights()
+            {
+                return new List<(string[] Resources, string[] Actions)>()
+                {
+                    (new[] {Resources.Project, Resources.ProjectMaster}, new[] {Actions.Read, Actions.Create, Actions.Update}),
+                };
+            }
+        }
 
 
         public class Handler : IExecution<EditProjectMasterDataCommand, int>
@@ -72,6 +86,5 @@ namespace ProjectHealthReport.Features.Projects.Commands
             }
         }
 
-        public int Response { get; set; }
     }
 }

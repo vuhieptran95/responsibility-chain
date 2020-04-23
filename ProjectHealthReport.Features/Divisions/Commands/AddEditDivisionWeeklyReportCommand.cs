@@ -1,17 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ProjectHealthReport.Domains.Domains;
+using ProjectHealthReport.Domains.Helpers;
 using ProjectHealthReport.Domains.Mappings;
 using ResponsibilityChain;
+using ResponsibilityChain.Business.AuthorizationConfigs;
 using ResponsibilityChain.Business.Executions;
+using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.Divisions.Commands
 {
-    public class AddEditDivisionWeeklyReportCommand : IRequest<int>
+    public partial class AddEditDivisionWeeklyReportCommand : Request<int>
     {
         public string DivisionName { get; set; }
         public IEnumerable<Dto> DivisionProjectStatuses { get; set; }
@@ -27,7 +31,22 @@ namespace ProjectHealthReport.Features.Divisions.Commands
             public int YearWeek { get; set; }
         }
         
-        public class Handler: IExecution<AddEditDivisionWeeklyReportCommand, int>
+        public class AuthorizationConfig: IAuthorizationConfig<AddEditDivisionWeeklyReportCommand>
+        {
+            public List<(string[] Resources, string[] Actions)> GetAccessRights()
+            {
+                return new List<(string[] Resources, string[] Actions)>()
+                {
+                    (new []{Resources.DivisionReport}, new []{Actions.Read, Actions.Create, Actions.Update}),
+                    (new []{Resources.Project}, new []{Actions.Read})
+                };
+            }
+        }
+    }
+
+    public partial class AddEditDivisionWeeklyReportCommand
+    {
+        public class Handler : IExecution<AddEditDivisionWeeklyReportCommand, int>
         {
             private readonly ReportDbContext _dbContext;
             private readonly IMapper _mapper;
@@ -37,6 +56,7 @@ namespace ProjectHealthReport.Features.Divisions.Commands
                 _dbContext = dbContext;
                 _mapper = mapper;
             }
+
             public async Task HandleAsync(AddEditDivisionWeeklyReportCommand request)
             {
                 var statuses = request.DivisionProjectStatuses.ToList();
@@ -44,8 +64,9 @@ namespace ProjectHealthReport.Features.Divisions.Commands
                 {
                     return;
                 }
+
                 var yearWeek = statuses.First().YearWeek;
-                
+
                 var listProjectId = statuses.Select(s => s.ProjectId);
 
                 var projects = (await _dbContext.Projects
@@ -55,21 +76,20 @@ namespace ProjectHealthReport.Features.Divisions.Commands
                         Project = p, Statuses = p.DivisionProjectStatuses.Where(d => d.YearWeek == yearWeek)
                     })
                     .ToListAsync()).Select(p => p.Project).ToList();
-                
+
                 projects.ForEach(p =>
                 {
                     var dto = statuses.First(s => s.ProjectId == p.Id);
-                    var status = new DivisionProjectStatus(dto.StatusId, yearWeek, dto.ProjectId, dto.StatusColor, dto.ProjectStatus, dto.Actions);
-                    
+                    var status = new DivisionProjectStatus(dto.StatusId, yearWeek, dto.ProjectId, dto.StatusColor,
+                        dto.ProjectStatus, dto.Actions);
+
                     p.AddEditDivisionStatus(status);
                 });
-                
+
                 await _dbContext.SaveChangesAsync();
 
                 request.Response = 1;
             }
         }
-
-        public int Response { get; set; }
     }
 }

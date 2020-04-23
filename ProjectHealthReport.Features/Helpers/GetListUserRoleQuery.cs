@@ -5,10 +5,11 @@ using ProjectHealthReport.Domains.Helpers;
 using ResponsibilityChain;
 using ResponsibilityChain.Business.Caching;
 using ResponsibilityChain.Business.Executions;
+using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.Helpers
 {
-    public class GetListUserRoleQuery : IRequest<List<(string Email, string Name)>>
+    public class GetListUserRoleQuery : Request<List<(string Email, string Name)>>
     {
         public class Handler: IExecution<GetListUserRoleQuery, List<(string Email, string Name)>>
         {
@@ -30,6 +31,5 @@ namespace ProjectHealthReport.Features.Helpers
             }
         }
 
-        public List<(string, string)> Response { get; set; }
     }
 }

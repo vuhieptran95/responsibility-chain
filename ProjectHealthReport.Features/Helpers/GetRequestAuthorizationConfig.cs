@@ -5,10 +5,11 @@ using ProjectHealthReport.Features.Projects.Queries.GetProject;
 using ResponsibilityChain;
 using ResponsibilityChain.Business.AuthorizationConfigs;
 using ResponsibilityChain.Business.Executions;
+using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.Helpers
 {
-    public class GetRequestAuthorizationConfigs : IRequest<GetRequestAuthorizationConfigs.Dto>
+    public class GetRequestAuthorizationConfigs : Request<GetRequestAuthorizationConfigs.Dto>
     {
         public class Handler : IExecution<GetRequestAuthorizationConfigs, Dto>
         {
@@ -38,6 +39,5 @@ namespace ProjectHealthReport.Features.Helpers
         {
         }
 
-        public Dto Response { get; set; }
     }
 }

@@ -10,13 +10,27 @@ using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Helpers;
 using ProjectHealthReport.Domains.Mappings;
 using ResponsibilityChain;
+using ResponsibilityChain.Business.AuthorizationConfigs;
 using ResponsibilityChain.Business.Executions;
+using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.Projects.Queries.GetProjectIndexPhr
 {
-    public class GetProjectIndexPhrQuery : IRequest<GetProjectIndexPhrQuery.Dto>
+    public class GetProjectIndexPhrQuery : Request<GetProjectIndexPhrQuery.Dto>
     {
         public Expression<Func<Domains.Domains.Project, bool>> ResourceFilter { get; set; } = p => true;
+        
+        public class AuthorizationConfig : IAuthorizationConfig<GetProjectIndexPhrQuery>
+        {
+            public List<(string[] Resources, string[] Actions)> GetAccessRights()
+            {
+                return new List<(string[] Resources, string[] Actions)>()
+                {
+                    (new[] {Resources.Project},
+                        new[] {Actions.Read}),
+                };
+            }
+        }
 
         public class Hander : IExecution<GetProjectIndexPhrQuery, Dto>
         {
@@ -116,6 +130,5 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjectIndexPhr
             }
         }
 
-        public Dto Response { get; set; }
     }
 }

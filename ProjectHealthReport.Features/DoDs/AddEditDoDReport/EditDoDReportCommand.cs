@@ -5,9 +5,12 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ProjectHealthReport.Domains.Domains;
+using ProjectHealthReport.Domains.Helpers;
 using ProjectHealthReport.Domains.Mappings;
 using ResponsibilityChain;
+using ResponsibilityChain.Business.AuthorizationConfigs;
 using ResponsibilityChain.Business.Executions;
+using ResponsibilityChain.Business.RequestContexts;
 using ResponsibilityChain.Business.Validations;
 
 namespace ProjectHealthReport.Features.DoDs.AddEditDoDReport
@@ -31,10 +34,9 @@ namespace ProjectHealthReport.Features.DoDs.AddEditDoDReport
             }
         }
 
-        public int Response { get; set; }
     }
 
-    public partial class EditDoDReportCommand : IRequest<int>
+    public partial class EditDoDReportCommand : Request<int>
     {
         public List<DoDReportDto> DodReports { get; set; }
 
@@ -55,6 +57,18 @@ namespace ProjectHealthReport.Features.DoDs.AddEditDoDReport
                 profile.CreateMap<DoDReportDto, DoDReport>()
                     .ConstructUsing(dto => new DoDReport(dto.ProjectId, dto.MetricId, dto.YearWeek, dto.Value,
                         dto.LinkToReport, dto.ReportFileName, dto.Project, dto.Metric));
+            }
+        }
+        
+        public class AuthorizationConfig: IAuthorizationConfig<EditDoDReportCommand>
+        {
+            public List<(string[] Resources, string[] Actions)> GetAccessRights()
+            {
+                return new List<(string[] Resources, string[] Actions)>()
+                {
+                    (new []{Resources.DoDReport}, new []{Actions.Read, Actions.Create, Actions.Update}),
+                    (new []{Resources.Project}, new []{Actions.Read})
+                };
             }
         }
 

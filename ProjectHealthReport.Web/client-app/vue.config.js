@@ -3,5 +3,8 @@ module.exports = {
   publicPath: '/client-app',
   "transpileDependencies": [
     "vuetify"
-  ]
+  ],
+  devServer:{
+    port: 8085
+  }
 }

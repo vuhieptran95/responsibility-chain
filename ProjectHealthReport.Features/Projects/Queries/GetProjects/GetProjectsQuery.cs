@@ -5,7 +5,6 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Mappings;

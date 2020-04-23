@@ -1,14 +1,29 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ProjectHealthReport.Domains.Domains;
+using ProjectHealthReport.Domains.Helpers;
 using ResponsibilityChain;
+using ResponsibilityChain.Business.AuthorizationConfigs;
 using ResponsibilityChain.Business.Executions;
+using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.DoDs.Metrics.RemoveMetrics
 {
-    public class RemoveMetricsCommand : IRequest<int>
+    public class RemoveMetricsCommand : Request<int>
     {
         public string Tool { get; set; }
+        
+        public class AuthorizationConfig : IAuthorizationConfig<RemoveMetricsCommand>
+        {
+            public List<(string[] Resources, string[] Actions)> GetAccessRights()
+            {
+                return new List<(string[] Resources, string[] Actions)>()
+                {
+                    (new[] {Resources.Metrics}, new[] {Actions.Delete}),
+                };
+            }
+        }
 
         public class RemoveMetricsCommandHandler : IExecution<RemoveMetricsCommand, int>
         {
@@ -29,6 +44,5 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.RemoveMetrics
             }
         }
 
-        public int Response { get; set; }
     }
 }

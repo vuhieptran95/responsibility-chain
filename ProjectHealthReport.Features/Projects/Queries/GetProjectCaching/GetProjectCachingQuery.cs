@@ -16,15 +16,16 @@ using ProjectHealthReport.Domains.Helpers;
 using ProjectHealthReport.Domains.Migrations;
 using ProjectHealthReport.Features.Common;
 using ResponsibilityChain;
+using ResponsibilityChain.Business.AuthorizationConfigs;
 using ResponsibilityChain.Business.Caching;
 using ResponsibilityChain.Business.Executions;
+using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.Projects.Queries.GetProjectCaching
 {
-    public class GetProjectCachingQuery : IRequest<CacheResponse<GetProjectCachingQuery.WeeklyData>>
+    public class GetProjectCachingQuery : Request<CacheResponse<GetProjectCachingQuery.WeeklyData>>
     {
         public int ProjectId { get; set; }
-        public CacheResponse<WeeklyData> Response { get; set; } = new CacheResponse<WeeklyData>();
 
         [MessagePackObject]
         public class WeeklyData
@@ -39,6 +40,18 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjectCaching
             [Key(0)] public IEnumerable<StatusProxy> Statuses { get; set; }
             [Key(1)] public IEnumerable<BacklogItemProxy> BacklogItems { get; set; }
             [Key(2)] public IEnumerable<QualityReportProxy> QualityReports { get; set; }
+        }
+
+        public class AuthorizationConfig : IAuthorizationConfig<GetProjectCachingQuery>
+        {
+            public List<(string[] Resources, string[] Actions)> GetAccessRights()
+            {
+                return new List<(string[] Resources, string[] Actions)>()
+                {
+                    (new[] {Resources.Project, Resources.BacklogItem, Resources.QualityReport, Resources.ProjectStatus, Resources.DoDReport},
+                        new[] {Actions.Read}),
+                };
+            }
         }
 
         public class Handler : IExecution<GetProjectCachingQuery, CacheResponse<WeeklyData>>
@@ -90,6 +103,7 @@ WHERE ProjectId = @ProjectId;";
                     await con.CloseAsync();
                 }
 
+                request.Response = new CacheResponse<WeeklyData>();
                 request.Response.SetResponse(data);
             }
         }

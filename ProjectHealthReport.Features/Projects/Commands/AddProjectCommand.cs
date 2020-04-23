@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -9,11 +10,13 @@ using ProjectHealthReport.Domains.Mappings;
 using ProjectHealthReport.Features.Helpers;
 using ResponsibilityChain;
 using ResponsibilityChain.Business;
+using ResponsibilityChain.Business.AuthorizationConfigs;
 using ResponsibilityChain.Business.Executions;
+using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.Projects.Commands
 {
-    public class AddProjectCommand : IRequest<int>, IMapTo<ProjectProxy>
+    public partial class AddProjectCommand : Request<int>, IMapTo<ProjectProxy>
     {
         [Required] public string Name { get; set; }
 
@@ -47,7 +50,10 @@ namespace ProjectHealthReport.Features.Projects.Commands
         public DateTime? DmrRequiredTo { get; set; }
         public DateTime ProjectStartDate { get; set; }
         public DateTime? ProjectEndDate { get; set; }
+    }
 
+    public partial class AddProjectCommand
+    {
         public class Handler : IExecution<AddProjectCommand, int>
         {
             private readonly ReportDbContext _dbContext;
@@ -73,10 +79,8 @@ namespace ProjectHealthReport.Features.Projects.Commands
                         project.CreatedDate = DateTime.Now;
 
                         await _dbContext.Projects
-                            .AddAsync(_mapper.Map<Project>(project, opts =>
-                            {
-                                opts.Items[MiscHelper.UserRoleListCtor] = userRoleList;
-                            }));
+                            .AddAsync(_mapper.Map<Project>(project,
+                                opts => { opts.Items[MiscHelper.UserRoleListCtor] = userRoleList; }));
                         await _dbContext.SaveChangesAsync();
 
                         await transaction.CommitAsync();
@@ -91,7 +95,5 @@ namespace ProjectHealthReport.Features.Projects.Commands
                 }
             }
         }
-
-        public int Response { get; set; }
     }
 }
