@@ -122,13 +122,15 @@ namespace ProjectHealthReport.Web
                 await next();
             });
 
+            app.UseCors();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
-
+            
             app.UseSpa(builder =>
             {
                 if (env.IsDevelopment())

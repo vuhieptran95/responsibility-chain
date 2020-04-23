@@ -7,19 +7,22 @@ using System.Security.Claims;
 using IdentityModel;
 using IdentityServer4.Test;
 
-namespace IdentityServer.Quickstart
+namespace IdentityServer
 {
     public class TestUsers
     {
         public static List<TestUser> Users = new List<TestUser>
         {
-            new TestUser{SubjectId = "pmo1", Username = "pmo1", Password = "pmo1", 
-                Claims = 
+            new TestUser
+            {
+                SubjectId = "pmo1", Username = "pmo1", Password = "pmo1",
+                Claims =
                 {
                     new Claim(JwtClaimTypes.Name, "pmo1"),
-                    new Claim(JwtClaimTypes.Role, "PMO"),
+                    new Claim(JwtClaimTypes.Role, "PMO Assistant"),
                     new Claim(JwtClaimTypes.Email, "pmo1@phr.com"),
-                    new Claim("rights","phr.item1:read phr.item2:read phr.item1:update phr.item2:update")
+                    new Claim("rights",
+                        $"phr.{ApiResources.Project}:{Actions.Read} phr.{ApiResources.BacklogItem}:{Actions.Read} phr.{ApiResources.QualityReport}:{Actions.Read} phr.{ApiResources.ProjectStatus}:{Actions.Read} phr.{ApiResources.DoDReport}:{Actions.Read}")
                 }
             }
         };

@@ -2,6 +2,7 @@
 import "./notify"
 
 export function handleAxiosError(error: any) {
+    console.log(error)
     // @ts-ignore
     $.notify(error.message, "error");
     if (error.response.data.error) {

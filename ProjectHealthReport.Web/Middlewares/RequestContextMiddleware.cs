@@ -37,7 +37,7 @@ namespace ProjectHealthReport.Web.Middlewares
                         break;
                     case "rights":
                         requestContext.AccessRights =
-                            value.Split(' ').Select(i => i.TrimStart("phr.".ToCharArray())).ToList();
+                            value.Split(' ').Select(i => i.Split('.')[1]).ToList();
                         break;
                     case "scope":
                         requestContext.AccessRights.Add(value.TrimStart("phr.".ToCharArray()));

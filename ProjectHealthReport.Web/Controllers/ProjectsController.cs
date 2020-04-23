@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using ProjectHealthReport.Features.Projects.Commands;
@@ -16,6 +17,7 @@ namespace ProjectHealthReport.Web.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [ApiExceptionFilter]
+    // [Authorize]
     public class ProjectsController : Controller
     {
         private readonly IMediator _mediator;

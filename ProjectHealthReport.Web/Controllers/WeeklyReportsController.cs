@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProjectHealthReport.Domains.Helpers;
 using ProjectHealthReport.Features.Divisions.Commands;
@@ -19,6 +20,7 @@ using ResponsibilityChain.Business;
 
 namespace ProjectHealthReport.Web.Controllers
 {
+    [Authorize]
     public class WeeklyReportsController : Controller
     {
         private readonly IMediator _mediator;

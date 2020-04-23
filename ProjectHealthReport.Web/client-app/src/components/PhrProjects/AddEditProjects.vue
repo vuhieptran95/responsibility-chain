@@ -167,6 +167,7 @@
             if (queryString){
                 let projectId = parseInt(queryString.split('=')[1]);
                 axios.get(PROJECTS_ENDPOINT + projectId).then(res => {
+                    console.log(res);
                     this.project = res.data;
                     this.project.projectStartDate = moment(this.project.projectStartDate).format("YYYY-MM-DD");
                     this.project.backlogItem = this.project.backlogItem ?? defaultProject.backlogItem;
