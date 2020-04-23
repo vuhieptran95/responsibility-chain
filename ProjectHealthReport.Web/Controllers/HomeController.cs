@@ -24,7 +24,7 @@ namespace ProjectHealthReport.Web.Controllers
             _mediator = mediator;
         }
 
-        [Authorize]
+        [Authorize(AuthenticationSchemes = "oidc")]
         public IActionResult Index()
         {
             return View();

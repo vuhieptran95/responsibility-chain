@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Helpers;
@@ -43,12 +44,11 @@ namespace ProjectHealthReport.Web
                     options.DefaultScheme = "Cookies";
                     options.DefaultChallengeScheme = "oidc";
                 })
-                // .AddIdentityServerAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme, options =>
-                // {
-                //     options.Authority = "http://localhost:5000";
-                //     options.RequireHttpsMetadata = false;
-                //     options.ApiName = "phr";
-                // })
+                .AddIdentityServerAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme, options =>
+                {
+                    options.Authority = "http://localhost:5000";
+                    options.RequireHttpsMetadata = false;
+                })
                 .AddCookie("Cookies")
                 .AddOpenIdConnect("oidc", options =>
                 {
@@ -64,7 +64,8 @@ namespace ProjectHealthReport.Web
                     options.Scope.Add("email");
                     options.Scope.Add("rights");
                     options.Scope.Add("role");
-                });
+                })
+                ;
             
             services.Configure<AuthorizationRules>(Configuration.GetSection("AuthorizationRules"));
             services.Configure<BusinessRules>(Configuration.GetSection("BusinessRules"));
@@ -120,8 +121,6 @@ namespace ProjectHealthReport.Web
 
                 await next();
             });
-
-            app.UseCors();
 
             app.UseEndpoints(endpoints =>
             {

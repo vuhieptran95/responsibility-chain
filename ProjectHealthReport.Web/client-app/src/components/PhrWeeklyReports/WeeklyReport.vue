@@ -143,8 +143,6 @@
 
             try {
                 let reportResponse = await axios.get(url);
-
-                console.log(reportResponse.request._redirectable._redirectCount);
                 
                 this.report = reportResponse.data;
 
