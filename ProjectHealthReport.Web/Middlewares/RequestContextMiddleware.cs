@@ -21,18 +21,19 @@ namespace ProjectHealthReport.Web.Middlewares
             foreach (var claim in claims)
             {
                 var value = claim.Value;
+                var type = claim.Type;
                 switch (claim.Type)
                 {
-                    case "client_id":
+                    case "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier":
                         requestContext.UserId = value;
                         break;
-                    case "sub":
-                        requestContext.UserId = value;
+                    case "name":
+                        requestContext.UserName = value;
                         break;
-                    case "role":
+                    case "http://schemas.microsoft.com/ws/2008/06/identity/claims/role":
                         requestContext.UserRole = value;
                         break;
-                    case "email":
+                    case "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress":
                         requestContext.UserEmail = value;
                         break;
                     case "rights":

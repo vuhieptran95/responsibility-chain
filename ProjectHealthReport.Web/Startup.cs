@@ -4,12 +4,17 @@ using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using Autofac;
 using AutoMapper;
 using IdentityServer4.AccessTokenValidation;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,6 +22,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Helpers;
 using ProjectHealthReport.Features;
@@ -59,6 +65,49 @@ namespace ProjectHealthReport.Web
                     options.ResponseType = "code";
                     options.UseTokenLifetime = true;
                     options.SaveTokens = true;
+                    
+                    options.Events.OnRedirectToIdentityProvider = context =>
+                    {
+                        if (context.Request.Path.StartsWithSegments("/api") && context.Options.AuthenticationMethod == OpenIdConnectRedirectBehavior.RedirectGet)
+                        {
+                            var properties = context.Properties;
+                            properties.Items[".redirect"] = "/client-app/phr/weekly-reports/add-edit?projectId=62&year=2020&week=15&numberOfWeek=4&numberOfWeekNotShowClosedItem=2";
+                            
+                            var message = context.ProtocolMessage;
+
+                            if (!string.IsNullOrEmpty(message.State))
+                            {
+                                properties.Items[OpenIdConnectDefaults.UserstatePropertiesKey] = message.State;
+                            }
+
+                            // When redeeming a 'code' for an AccessToken, this value is needed
+                            properties.Items.Add(OpenIdConnectDefaults.RedirectUriForCodePropertiesKey, message.RedirectUri);
+
+                            message.State = context.Options.StateDataFormat.Protect(properties);
+
+                            if (string.IsNullOrEmpty(message.IssuerAddress))
+                            {
+                                throw new InvalidOperationException(
+                                    "Cannot redirect to the authorization endpoint, the configuration may be missing or invalid.");
+                            }
+                            
+                            var redirectUri = message.CreateAuthenticationRequestUrl();
+                            if (!Uri.IsWellFormedUriString(redirectUri, UriKind.Absolute))
+                            {
+                                throw new Exception($"The redirect URI is not well-formed. The URI is: '{redirectUri}'.");
+                            }
+
+                            var redirect = JsonConvert.SerializeObject(new {redirectUri});
+
+                            context.Response.StatusCode = 401;
+                            context.Response.ContentType = "application/json";
+                            context.Response.WriteAsync(redirect, Encoding.UTF8);
+                            
+                            context.HandleResponse();
+                        }
+                        
+                        return Task.CompletedTask;
+                    };
 
                     options.Scope.Add("openid");
                     options.Scope.Add("email");
@@ -66,14 +115,14 @@ namespace ProjectHealthReport.Web
                     options.Scope.Add("role");
                 })
                 ;
-            
+
             services.Configure<AuthorizationRules>(Configuration.GetSection("AuthorizationRules"));
             services.Configure<BusinessRules>(Configuration.GetSection("BusinessRules"));
 
             services.AddDbContext<ReportDbContext>(
                 builder => builder.UseSqlServer(Configuration["ConnectionStrings:ProjectHealthReport"])
             );
-            
+
             services.AddAutoMapper(Assembly.GetAssembly(typeof(Project)), Assembly.GetAssembly(typeof(AutofacModule)));
 
             // services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -128,7 +177,7 @@ namespace ProjectHealthReport.Web
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
-            
+
             app.UseSpa(builder =>
             {
                 if (env.IsDevelopment())

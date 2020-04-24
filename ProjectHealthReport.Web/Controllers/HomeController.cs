@@ -30,8 +30,8 @@ namespace ProjectHealthReport.Web.Controllers
             return View();
         }
         
-        [Authorize(AuthenticationSchemes = "Bearer")]
-        public IActionResult Index2()
+        // [Authorize(AuthenticationSchemes = "Bearer")]
+        public IActionResult Test()
         {
             return View("Index");
         }

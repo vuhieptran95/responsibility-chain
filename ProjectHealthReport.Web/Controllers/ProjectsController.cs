@@ -17,7 +17,7 @@ namespace ProjectHealthReport.Web.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [ApiExceptionFilter]
-    // [Authorize]
+    [Authorize]
     public class ProjectsController : Controller
     {
         private readonly IMediator _mediator;

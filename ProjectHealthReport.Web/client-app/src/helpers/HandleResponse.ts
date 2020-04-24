@@ -2,7 +2,14 @@
 import "./notify"
 
 export function handleAxiosError(error: any) {
-    console.log(error)
+    if (error.response.status === 401) {
+        console.log(error.response);
+        // @ts-ignore
+        $.notify(error.message, "error");
+        setTimeout(function () {
+            window.location.href = error.response.data.redirectUri;
+        }, 1300)
+    }
     // @ts-ignore
     $.notify(error.message, "error");
     if (error.response.data.error) {
@@ -19,7 +26,7 @@ export function handleAxiosError(error: any) {
     }
 }
 
-export function notify(message: string, type: string){
+export function notify(message: string, type: string) {
     // @ts-ignore
     $.notify(message, type)
 }

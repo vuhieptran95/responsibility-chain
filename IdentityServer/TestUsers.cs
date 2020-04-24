@@ -22,7 +22,14 @@ namespace IdentityServer
                     new Claim(JwtClaimTypes.Role, "PMO Assistant"),
                     new Claim(JwtClaimTypes.Email, "pmo1@phr.com"),
                     new Claim("rights",
-                        $"phr.{ApiResources.Project}:{Actions.Read} phr.{ApiResources.BacklogItem}:{Actions.Read} phr.{ApiResources.QualityReport}:{Actions.Read} phr.{ApiResources.ProjectStatus}:{Actions.Read} phr.{ApiResources.DoDReport}:{Actions.Read}")
+                        @$"
+phr.{ApiResources.Project}:{Actions.Read} 
+phr.{ApiResources.BacklogItem}:{Actions.Read} 
+phr.{ApiResources.QualityReport}:{Actions.Read} 
+phr.{ApiResources.ProjectStatus}:{Actions.Read} 
+phr.{ApiResources.DoDReport}:{Actions.Read} 
+phr.{ApiResources.ProjectAdmin}:{Actions.Read} 
+phr.{ApiResources.ProjectAccess}:{Actions.Read}")
                 }
             }
         };

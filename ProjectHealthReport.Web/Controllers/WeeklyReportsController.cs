@@ -21,7 +21,7 @@ using ResponsibilityChain.Business;
 namespace ProjectHealthReport.Web.Controllers
 {
     
-    [Authorize(AuthenticationSchemes = "Bearer")]
+    [Authorize]
     public class WeeklyReportsController : Controller
     {
         private readonly IMediator _mediator;
