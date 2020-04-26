@@ -3,9 +3,12 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IdentityModel;
+using IdentityServer.Features;
+using IdentityServer.Features.Business.Users;
 using IdentityServer4.Events;
 using IdentityServer4.Extensions;
 using IdentityServer4.Models;
@@ -16,6 +19,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Nito.AsyncEx;
+using ResponsibilityChain.Business;
 
 namespace IdentityServer.Quickstart.Account
 {
@@ -39,11 +44,18 @@ namespace IdentityServer.Quickstart.Account
             IClientStore clientStore,
             IAuthenticationSchemeProvider schemeProvider,
             IEventService events,
+            IMediator mediator,
             TestUserStore users = null)
         {
             // if the TestUserStore is not in DI, then we'll just use the global users collection
             // this is where you would plug in your own custom identity management library (e.g. ASP.NET Identity)
-            _users = users ?? new TestUserStore(TestUsers.Users);
+            var usersInDb = new List<TestUser>();
+            AsyncContext.Run(async () =>
+            {
+                var dto = await mediator.SendAsync(new GetUsers());
+                usersInDb = dto.Users.ToList();
+            });
+            _users = new TestUserStore(usersInDb);
 
             _interaction = interaction;
             _clientStore = clientStore;

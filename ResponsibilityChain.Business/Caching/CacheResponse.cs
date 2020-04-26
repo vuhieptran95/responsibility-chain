@@ -1,8 +1,6 @@
-﻿using System;
-using MessagePack;
-using ProjectHealthReport.Features.Projects.Queries.GetProjectCaching;
+﻿using MessagePack;
 
-namespace ProjectHealthReport.Features.Common
+namespace ResponsibilityChain.Business.Caching
 {
     public class CacheResponse<TResponse>
     {
