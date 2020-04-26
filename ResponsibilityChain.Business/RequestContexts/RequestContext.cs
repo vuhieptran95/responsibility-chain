@@ -5,7 +5,7 @@ namespace ResponsibilityChain.Business.RequestContexts
     public interface IRequestContext
     {
         string UserId { get; set; }
-        string UserName { get; set; }
+        string Username { get; set; }
         string UserRole { get; set; }
         string UserEmail { get; set; }
         Dictionary<string, object> TempData { get; }
@@ -19,7 +19,7 @@ namespace ResponsibilityChain.Business.RequestContexts
             TempData = new Dictionary<string, object>();
         }
         public string UserId { get; set; } = "unidentified";
-        public string UserName { get; set; } = "PM2";
+        public string Username { get; set; } = "PM2";
         public string UserRole { get; set; } = "";
         public string UserEmail { get; set; } = "unidentified";
         public Dictionary<string, object> TempData { get; }

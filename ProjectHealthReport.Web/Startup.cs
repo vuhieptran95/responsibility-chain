@@ -54,6 +54,7 @@ namespace ProjectHealthReport.Web
                 {
                     options.Authority = "http://localhost:5000";
                     options.RequireHttpsMetadata = false;
+                    options.ApiName = "phr";
                 })
                 .AddCookie("Cookies")
                 .AddOpenIdConnect("oidc", options =>

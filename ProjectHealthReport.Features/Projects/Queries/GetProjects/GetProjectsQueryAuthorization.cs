@@ -46,7 +46,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjects
                 }
                 
                 var role = request.RequestContext.UserRole;
-                var name = request.RequestContext.UserName;
+                var name = request.RequestContext.Username;
 
                 switch (role, name)
                 {

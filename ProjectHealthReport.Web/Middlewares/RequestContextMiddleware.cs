@@ -28,7 +28,7 @@ namespace ProjectHealthReport.Web.Middlewares
                         requestContext.UserId = value;
                         break;
                     case "name":
-                        requestContext.UserName = value;
+                        requestContext.Username = value;
                         break;
                     case "http://schemas.microsoft.com/ws/2008/06/identity/claims/role":
                         requestContext.UserRole = value;

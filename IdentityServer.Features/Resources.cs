@@ -1,4 +1,6 @@
-﻿namespace IdentityServer
+﻿using System.Collections.Generic;
+
+namespace IdentityServer.Features
 {
     public static class ApiResources
     {
@@ -21,5 +23,23 @@
         public const string Read = "read";
         public const string Update = "update";
         public const string Delete = "delete";
+        public const string All = "*";
+    }
+
+    public static class Roles
+    {
+        public const string RoleProjectManager = "Project Manager";
+        public const string RoleSalesExecutives = "Sales Executive";
+        public const string RoleGlobalExecutiveVicePresident = "Global Executive Vice President";
+        public const string RoleDeliveryManager = "Delivery Manager";
+        public const string RolePMOAssistant = "PMO Assistant";
+        public const string RoleCOO = "COO";
+        public const string RoleKam = "Key Account Manager";
+        public const string RolePic = "Person In Charge";
+        
+        public static List<string> AssignableRoles = new List<string>()
+        {
+            RoleProjectManager, RoleDeliveryManager, RolePMOAssistant, RoleCOO, RoleKam, RolePic
+        };
     }
 }

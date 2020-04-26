@@ -42,6 +42,10 @@ To add a new migration, run this command from repository's root
 dotnet ef migrations add <migration_name> --startup-project ProjectHealthReport.Web/ --project ProjectHealthReport.Domains
 ```
 
+```
+dotnet ef migrations add <migration_name> --startup-project IdentityServer/ --project IdentityServer.Features
+```
+
 # Add a new feature checklist
 ## Request
 - A request, either command or query, should implement `IAsyncRequest<TResponse>` interface.
