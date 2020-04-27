@@ -20,10 +20,12 @@ namespace IdentityServer.Configs
 
         public Task<IEnumerable<IdentityResource>> FindIdentityResourcesByScopeAsync(IEnumerable<string> scopeNames)
         {
-            var identityResources = Config.Ids;
-            var id = identityResources.Where(i => scopeNames.Contains(i.Name));
+            var identity = from i in Config.Ids
+                where scopeNames.Contains(i.Name)
+                select i;
 
-            return Task.FromResult(id);
+            return Task.FromResult(identity);
+
         }
 
         public async Task<IEnumerable<ApiResource>> FindApiResourcesByScopeAsync(IEnumerable<string> scopeNames)

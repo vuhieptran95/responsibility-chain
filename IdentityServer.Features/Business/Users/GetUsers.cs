@@ -41,7 +41,11 @@ namespace IdentityServer.Features.Business.Users
             }
             public async Task HandleAsync(GetUsers request)
             {
-                var testUsers = (await _dbContext.Users.Include(u => u.UserScopes).ToListAsync()).Select(u => new TestUser()
+                var testUsers = (await _dbContext.Users
+                    .Include(u => u.UserPolicies)
+                    .ThenInclude(up => up.Policy)
+                    .ThenInclude(p => p.PolicyScopes)
+                    .ToListAsync()).Select(u => new TestUser()
                 {
                     Username = u.Username,
                     Password = u.Username,
@@ -50,7 +54,12 @@ namespace IdentityServer.Features.Business.Users
                     {
                         new Claim(JwtClaimTypes.Name, u.Username),
                         new Claim(JwtClaimTypes.Role, u.Role),
-                        new Claim("rights", string.Join(' ', u.UserScopes.Select(us => us.ScopeId)))
+                        new Claim("rights", string.Join(' ', u.UserPolicies
+                            .Select(up => up.Policy.PolicyScopes)
+                            .SelectMany(scopes => scopes)
+                            .Select(ps => ps.ScopeId)
+                            .Distinct()
+                        ))
                     }
                 });
                 

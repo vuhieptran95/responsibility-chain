@@ -1,14 +1,31 @@
 ﻿import $ from "jquery"
 import "./notify"
+import axios from "axios";
+import {AUTH_ENDPOINT} from "@/helpers/EndPoint";
 
 export function handleAxiosError(error: any) {
     if (error.response.status === 401) {
         console.log(error.response);
         // @ts-ignore
         $.notify(error.message, "error");
-        setTimeout(function () {
-            window.location.href = error.response.data.redirectUri;
-        }, 1300)
+
+        if (error.response.data.redirectUri) {
+            setTimeout(function () {
+                window.location.href = error.response.data.redirectUri;
+            }, 1300);
+        }else{
+            let base64 = btoa(window.location.href);
+            axios.get(`${AUTH_ENDPOINT}?redirectUrlIdP=${base64}`).catch(e => {
+                if (e.response.data.redirectUri) {
+                    setTimeout(function () {
+                        window.location.href = e.response.data.redirectUri;
+                    }, 1300);
+                }
+            })
+        }
+
+
+        return;
     }
     // @ts-ignore
     $.notify(error.message, "error");

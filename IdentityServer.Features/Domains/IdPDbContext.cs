@@ -14,17 +14,23 @@ namespace IdentityServer.Features.Domains
         public DbSet<Scope> Scopes { get; set; }
         public DbSet<ScopeProvider> ScopeProviders { get; set; }
         public DbSet<Users> Users { get; set; }
-        public DbSet<UserScope> UserScopes { get; set; }
+        public DbSet<UserPolicy> UserPolicies { get; set; }
+        public DbSet<Policy> Policies { get; set; }
+        public DbSet<PolicyScope> PolicyScopes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ClientScope>(e => { e.HasKey(c => new {c.ClientId, c.ScopeId}); });
-            modelBuilder.Entity<UserScope>(e =>
+
+            modelBuilder.Entity<UserPolicy>(e =>
             {
-                e.HasKey(c => new {c.Username, c.ScopeId});
-                e.HasOne(e => e.User).WithMany(u => u.UserScopes)
-                    .HasForeignKey(e => e.Username);
+                e.HasKey(u => new {u.Username, u.PolicyId});
+                e.HasOne(u => u.User).WithMany(us => us.UserPolicies)
+                    .HasForeignKey(u => u.Username);
             });
+
+            modelBuilder.Entity<PolicyScope>(e => { e.HasKey(p => new {p.PolicyId, p.ScopeId}); });
+
         }
     }
 }

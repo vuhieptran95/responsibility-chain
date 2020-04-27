@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.Unicode;
 using System.Threading.Tasks;
 using Autofac;
 using AutoMapper;
@@ -65,14 +66,22 @@ namespace ProjectHealthReport.Web
                     options.ClientSecret = "secret";
                     options.ResponseType = "code";
                     options.UseTokenLifetime = true;
-                    options.SaveTokens = true;
+                    // options.SaveTokens = true;
                     
                     options.Events.OnRedirectToIdentityProvider = context =>
                     {
                         if (context.Request.Path.StartsWithSegments("/api") && context.Options.AuthenticationMethod == OpenIdConnectRedirectBehavior.RedirectGet)
                         {
+                            if (!context.Request.Query.TryGetValue("redirectUrlIdP", out var redirectUrlIdP))
+                            {
+                                context.Response.StatusCode = 401;
+                                context.HandleResponse();
+                                
+                                return Task.CompletedTask;
+                            }
+                            
                             var properties = context.Properties;
-                            properties.Items[".redirect"] = "/client-app/phr/weekly-reports/add-edit?projectId=62&year=2020&week=15&numberOfWeek=4&numberOfWeekNotShowClosedItem=2";
+                            properties.Items[".redirect"] = Encoding.UTF8.GetString(Convert.FromBase64String(redirectUrlIdP));
                             
                             var message = context.ProtocolMessage;
 

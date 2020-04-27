@@ -7,13 +7,12 @@ namespace IdentityServer.Features.Domains
     {
         public Users()
         {
-            UserScopes = new HashSet<UserScope>();
+            UserPolicies = new HashSet<UserPolicy>();
         }
 
-        [Key]
-        public string Username { get; set; }
+        [Key] public string Username { get; set; }
         public string Role { get; set; }
-        public ICollection<UserScope> UserScopes { get; set; }
+        public ICollection<UserPolicy> UserPolicies { get; set; }
 
         public void ValidateRole()
         {

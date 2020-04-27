@@ -24,7 +24,7 @@ namespace IdentityServer.Features.Business.Clients
         
         public class CacheConfig: ICacheConfig<GetClients>
         {
-            public bool IsCacheEnabled { get; } = true;
+            public bool IsCacheEnabled { get; } = false;
             public DateTimeOffset CacheDateTimeOffset { get; } = DateTimeOffset.Now.AddDays(1);
             public string GetCacheKey(GetClients request)
             {
@@ -62,7 +62,7 @@ namespace IdentityServer.Features.Business.Clients
 
                                 AlwaysIncludeUserClaimsInIdToken = true,
 
-                                AllowOfflineAccess = true,
+                                // AllowOfflineAccess = true,
 
                                 AllowedScopes = c.ClientScopes.Select(c => c.ScopeId).ToList()
                             };

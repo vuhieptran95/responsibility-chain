@@ -14,7 +14,7 @@ namespace IdentityServer.Features
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
-                new IdentityResources.Email(),
+                // new IdentityResources.Email(),
                 new IdentityResource("rights", "rights", new string[] {"rights"}),
                 new IdentityResource("role", "role", new string[] {"role"}),
             };

@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
 using ResponsibilityChain.Business.RequestContexts;
 
@@ -29,12 +30,10 @@ namespace ProjectHealthReport.Web.Middlewares
                         break;
                     case "name":
                         requestContext.Username = value;
+                        requestContext.UserEmail = value;
                         break;
                     case "http://schemas.microsoft.com/ws/2008/06/identity/claims/role":
                         requestContext.UserRole = value;
-                        break;
-                    case "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress":
-                        requestContext.UserEmail = value;
                         break;
                     case "rights":
                         requestContext.AccessRights =

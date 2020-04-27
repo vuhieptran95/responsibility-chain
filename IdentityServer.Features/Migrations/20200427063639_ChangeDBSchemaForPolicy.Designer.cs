@@ -3,14 +3,16 @@ using IdentityServer.Features.Domains;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IdentityServer.Features.Migrations
 {
     [DbContext(typeof(IdPDbContext))]
-    partial class IdPDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200427063639_ChangeDBSchemaForPolicy")]
+    partial class ChangeDBSchemaForPolicy
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,9 +58,6 @@ namespace IdentityServer.Features.Migrations
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -122,9 +121,17 @@ namespace IdentityServer.Features.Migrations
                     b.Property<string>("PolicyId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("PolicyScopePolicyId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("PolicyScopeScopeId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Username", "PolicyId");
 
                     b.HasIndex("PolicyId");
+
+                    b.HasIndex("PolicyScopePolicyId", "PolicyScopeScopeId");
 
                     b.ToTable("UserPolicies");
                 });
@@ -181,7 +188,7 @@ namespace IdentityServer.Features.Migrations
 
             modelBuilder.Entity("IdentityServer.Features.Domains.UserPolicy", b =>
                 {
-                    b.HasOne("IdentityServer.Features.Domains.Policy", "Policy")
+                    b.HasOne("IdentityServer.Features.Domains.Policy", null)
                         .WithMany("UserPolicies")
                         .HasForeignKey("PolicyId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -192,6 +199,10 @@ namespace IdentityServer.Features.Migrations
                         .HasForeignKey("Username")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("IdentityServer.Features.Domains.PolicyScope", "PolicyScope")
+                        .WithMany()
+                        .HasForeignKey("PolicyScopePolicyId", "PolicyScopeScopeId");
                 });
 #pragma warning restore 612, 618
         }

@@ -5,7 +5,7 @@ namespace IdentityServer.Features
     public static class ApiResources
     {
         public const string Project = "project";
-        public const string ProjectAccess = "ProjectAccess";
+        public const string ProjectAccess = "project-access";
         public const string ProjectMaster = "project-master";
         public const string ProjectNonMaster = "project-non-master";
         public const string BacklogItem = "backlog-item";
