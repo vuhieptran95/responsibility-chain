@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using IdentityServer.Features;
 using IdentityServer.Features.Business.ScopeProviders;
+using IdentityServer.Features.Business.Users;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
@@ -12,14 +13,27 @@ namespace IdentityServer.Configs
 {
     public class ProfileService: IProfileService
     {
-        public Task GetProfileDataAsync(ProfileDataRequestContext context)
+        private readonly IMediator _mediator;
+
+        public ProfileService(IMediator mediator)
         {
-            throw new System.NotImplementedException();
+            _mediator = mediator;
+        }
+        public async Task GetProfileDataAsync(ProfileDataRequestContext context)
+        {
+            // context.AddRequestedClaims(context.Subject.Claims);
+
+            var users = await _mediator.SendAsync(new GetUsers());
+
+            var user = users.Users.FirstOrDefault(u => u.Username == context.Subject.Identity.Name);
+            
+            context.AddRequestedClaims(user?.Claims);
         }
 
         public Task IsActiveAsync(IsActiveContext context)
         {
-            throw new System.NotImplementedException();
+            context.IsActive = true;
+            return Task.CompletedTask;
         }
     }
 

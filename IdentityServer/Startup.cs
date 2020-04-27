@@ -22,6 +22,7 @@ using IdentityServer.Features.Business.ScopeProviders;
 using IdentityServer.Features.Business.Users;
 using IdentityServer.Features.Domains;
 using IdentityServer.Quickstart;
+using IdentityServer4.Models;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using IdentityServer4.Test;
@@ -50,6 +51,7 @@ namespace IdentityServer
             services.AddControllersWithViews();
             
             var builder = services.AddIdentityServer()
+                .AddProfileService<ProfileService>()
                 .AddResourceStore<ResourceStore>()
                 .AddClientStore<ClientStore>();
 
@@ -57,6 +59,7 @@ namespace IdentityServer
             
             services.AddScoped<IClientStore, ClientStore>();
             services.AddScoped<IResourceStore, ResourceStore>();
+            services.AddScoped<IProfileService, ProfileService>();
 
             var provider = RSAKeys.ImportPrivateKey(File.ReadAllText("private_unencrypted.pem"));
             builder.AddSigningCredential(new RsaSecurityKey(provider),
