@@ -4,18 +4,36 @@ using System.Threading.Tasks;
 using IdentityServer.Features;
 using IdentityServer.Features.Business.ScopeProviders;
 using IdentityServer4.Models;
+using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using ResponsibilityChain.Business;
 
 namespace IdentityServer.Configs
 {
+    public class ProfileService: IProfileService
+    {
+        public Task GetProfileDataAsync(ProfileDataRequestContext context)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task IsActiveAsync(IsActiveContext context)
+        {
+            throw new System.NotImplementedException();
+        }
+    }
+
     public class ResourceStore : IResourceStore
     {
         private readonly IMediator _mediator;
+        // private IEnumerable<IdentityResource> _identityResources;
+        // private IEnumerable<ApiResource> _apiResources;
 
         public ResourceStore(IMediator mediator)
         {
             _mediator = mediator;
+            // _apiResources = (_mediator.SendAsync(new GetScopes())).GetAwaiter().GetResult().ApiResources;
+            // _identityResources = Config.Ids;
         }
 
         public Task<IEnumerable<IdentityResource>> FindIdentityResourcesByScopeAsync(IEnumerable<string> scopeNames)

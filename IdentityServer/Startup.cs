@@ -50,8 +50,10 @@ namespace IdentityServer
             services.AddControllersWithViews();
             
             var builder = services.AddIdentityServer()
-                .AddResourceStore<IResourceStore>()
-                .AddClientStore<IClientStore>();
+                .AddResourceStore<ResourceStore>()
+                .AddClientStore<ClientStore>();
+
+            builder.Services.AddSingleton(Config.Ids);
             
             services.AddScoped<IClientStore, ClientStore>();
             services.AddScoped<IResourceStore, ResourceStore>();
