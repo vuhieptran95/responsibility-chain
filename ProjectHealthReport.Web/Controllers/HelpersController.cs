@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using ProjectHealthReport.Features.Helpers;
 using ResponsibilityChain.Business;
@@ -71,6 +72,13 @@ namespace ProjectHealthReport.Web.Controllers
             var dto = await _mediator.SendAsync(new GetRequestAuthorizationConfigs());
 
             return Ok(dto);
+        }
+
+        [HttpGet("sign-out")]
+        public async Task<ActionResult> SignOut()
+        {
+            await HttpContext.SignOutAsync();
+            return Ok();
         }
     }
 }

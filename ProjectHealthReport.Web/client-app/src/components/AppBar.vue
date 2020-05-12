@@ -21,13 +21,11 @@
                 app
         >
             <v-app-bar-nav-icon @click.stop="drawer = !drawer"/>
-            <v-toolbar-title>
-                <v-btn text href="/">Project Health Report</v-btn>
-            </v-toolbar-title>
             <v-btn text to="/Projects">Projects</v-btn>
             <v-btn text to="/Divisions">Divisions</v-btn>
             <v-spacer></v-spacer>
             <v-btn text>Hello, {{user.username}}</v-btn>
+            <v-btn text @click="handleSignOut">Sign out</v-btn>
         </v-app-bar>
     </div>
 </template>
@@ -58,6 +56,12 @@
 
         mounted() {
             axios.get(HELPER_ENDPOINT + "current-user").then(res => this.user = res.data).catch(handleAxiosError)
+        }
+
+        handleSignOut(){
+            axios.get(HELPER_ENDPOINT + "sign-out").finally(() => {
+                location.reload();
+            })
         }
     }
 
