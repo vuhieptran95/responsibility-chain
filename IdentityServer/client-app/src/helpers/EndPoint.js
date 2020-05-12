@@ -1,0 +1,14 @@
+export const AVAILABLERESOURCES_ENDPOINT = "/api/AvailableResources/";
+export const SOONAVAILABLERESOURCES_ENDPOINT = "/api/SoonToBeAvailableResources/";
+export const UPDATEDRESOURCES_ENDPOINT = "/api/UpdatedResources/";
+export const FUTURERESOURCES_ENDPOINT = "/api/FutureResources/";
+export const CONCERNS_ENDPOINT = "/api/Concerns/";
+export const PROJECTSTATUSES_ENDPOINT = "/api/ProjectStatuses/";
+export const DIVISION_ENDPOINT = "/api/Divisions/";
+export const WEEKLYREPORT_ENDPOINT = "/api/WeeklyReports/";
+export const HELPER_ENDPOINT = "/api/helpers/";
+export const PROJECTS_ENDPOINT = "/api/projects/";
+const HTTPPOST = "POST";
+const HTTPPUT = "PUT";
+const HTTPDELETE = "DELETE";
+//# sourceMappingURL=EndPoint.js.map

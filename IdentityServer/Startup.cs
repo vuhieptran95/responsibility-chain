@@ -68,6 +68,8 @@ namespace IdentityServer
             services.AddDbContext<IdPDbContext>(
                 builder => builder.UseSqlServer(Configuration["ConnectionStrings:IdP"])
             );
+            
+            services.AddSpaStaticFiles(opt => opt.RootPath = "wwwroot/client-app");
         }
 
         public void ConfigureContainer(ContainerBuilder builder)
@@ -75,7 +77,7 @@ namespace IdentityServer
             builder.RegisterModule(new AutofacModule());
         }
 
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (Environment.IsDevelopment())
             {
@@ -104,6 +106,14 @@ namespace IdentityServer
             
             
             app.UseEndpoints(endpoints => { endpoints.MapDefaultControllerRoute(); });
+            
+            app.UseSpa(builder =>
+            {
+                if (env.IsDevelopment())
+                {
+                    builder.UseProxyToSpaDevelopmentServer("http://localhost:8075");
+                }
+            });
         }
     }
 }
