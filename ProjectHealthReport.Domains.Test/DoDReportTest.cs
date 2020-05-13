@@ -6,6 +6,7 @@ using FluentAssertions;
 using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Exceptions;
 using ProjectHealthReport.Domains.Helpers;
+using TestProject1.Dummies;
 using Xunit;
 
 namespace TestProject1
@@ -65,9 +66,9 @@ namespace TestProject1
                 {
                     _value = value;
 
-                    _metric = new ProjectHealthReport.Domains.Domains.Metric();
-                    _metric.GetType().GetField("_valueType", BindingFlags.NonPublic | BindingFlags.Instance)
-                        .SetValue(_metric, DoDHelper.ValueTypeNumber);
+                    var metric = new MetricDummy();
+                    metric.SetValueType(DoDHelper.ValueTypeNumber);
+                    _metric = metric;
 
                     Action action = ValidateMetric;
 
@@ -82,9 +83,9 @@ namespace TestProject1
                 {
                     _value = value;
 
-                    _metric = new ProjectHealthReport.Domains.Domains.Metric();
-                    _metric.GetType().GetField("_valueType", BindingFlags.NonPublic | BindingFlags.Instance)
-                        .SetValue(_metric, DoDHelper.ValueTypeNumber);
+                    var metric = new MetricDummy();
+                    metric.SetValueType(DoDHelper.ValueTypeNumber);
+                    _metric = metric;
 
                     Action action = ValidateMetric;
 
@@ -99,11 +100,10 @@ namespace TestProject1
                 {
                     _value = value;
 
-                    _metric = new ProjectHealthReport.Domains.Domains.Metric();
-                    _metric.GetType().GetField("_valueType", BindingFlags.NonPublic | BindingFlags.Instance)
-                        .SetValue(_metric, DoDHelper.ValueTypeSelect);
-                    _metric.GetType().GetField("_selectValues", BindingFlags.NonPublic | BindingFlags.Instance)
-                        .SetValue(_metric, "yes;no;maybe");
+                    var metric = new MetricDummy();
+                    metric.SetValueType(DoDHelper.ValueTypeSelect);
+                    metric.SetSelectValues("yes;no;maybe");
+                    _metric = metric;
 
                     Action action = ValidateMetric;
 
@@ -118,11 +118,10 @@ namespace TestProject1
                 {
                     _value = value;
 
-                    _metric = new ProjectHealthReport.Domains.Domains.Metric();
-                    _metric.GetType().GetField("_valueType", BindingFlags.NonPublic | BindingFlags.Instance)
-                        .SetValue(_metric, DoDHelper.ValueTypeSelect);
-                    _metric.GetType().GetField("_selectValues", BindingFlags.NonPublic | BindingFlags.Instance)
-                        .SetValue(_metric, "yes;no;maybe");
+                    var metric = new MetricDummy();
+                    metric.SetValueType(DoDHelper.ValueTypeSelect);
+                    metric.SetSelectValues("yes;no;maybe");
+                    _metric = metric;
 
                     Action action = ValidateMetric;
 
@@ -144,9 +143,9 @@ namespace TestProject1
             [Fact]
             public void IsNotDoDRequired_CannotBeInserted_ThrowD020()
             {
-                _project = new ProjectHealthReport.Domains.Domains.Project();
-                _project.GetType().GetField("_dodRequired", BindingFlags.NonPublic | BindingFlags.Instance)
-                    .SetValue(_project, false);
+                var project = new ProjectDummy();
+                project.SetDoDRequired(false);
+                _project = project;
 
                 Action action = ValidateProject;
 

@@ -8,16 +8,16 @@ namespace ProjectHealthReport.Domains.Domains
 {
     public class Metric
     {
-        private int _id;
-        private string _name;
-        private string _valueType;
-        private string _unit;
-        private string _tool;
-        private string _selectValues;
-        private int _order;
-        private int _toolOrder;
-        private ICollection<Threshold> _thresholds;
-        private ICollection<DoDReport> _doDReports;
+        protected int _id;
+        protected string _name;
+        protected string _valueType;
+        protected string _unit;
+        protected string _tool;
+        protected string _selectValues;
+        protected int _order;
+        protected int _toolOrder;
+        protected ICollection<Threshold> _thresholds;
+        protected ICollection<DoDReport> _doDReports;
 
         public Metric()
         {

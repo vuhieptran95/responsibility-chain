@@ -8,9 +8,6 @@ namespace ProjectHealthReport.Domains.Domains
 {
     public partial class Project
     {
-    }
-    public partial class Project
-    {
         public void ValidateDomain(List<(string, string)> userRoleList)
         {
             OrganizationInfoMustBeValid(userRoleList);

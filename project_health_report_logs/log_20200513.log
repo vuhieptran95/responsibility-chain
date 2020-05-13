@@ -1,0 +1,31 @@
+2020-05-13 17:11:40.166 +07:00 [INF] Now listening on: http://localhost:5011 (at Microsoft.Hosting.Lifetime)
+2020-05-13 17:11:40.199 +07:00 [INF] Application started. Press Ctrl+C to shut down. (at Microsoft.Hosting.Lifetime)
+2020-05-13 17:11:40.205 +07:00 [INF] Hosting environment: Development (at Microsoft.Hosting.Lifetime)
+2020-05-13 17:11:40.205 +07:00 [INF] Content root path: C:\Users\hiep.tran2\Desktop\Src\responsibility-chain\ProjectHealthReport.Web (at Microsoft.Hosting.Lifetime)
+2020-05-13 17:12:00.282 +07:00 [WRN] Failed to determine the https port for redirect. (at Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware)
+2020-05-13 17:12:04.424 +07:00 [ERR] An unhandled exception has occurred while executing the request. (at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware)
+System.Net.Http.HttpRequestException: Failed to proxy the request to http://localhost:8085/client-app/phr/administration/projects, because the request to the proxy target failed. Check that the proxy target server is running and accepting requests to http://localhost:8085/.
+
+The underlying exception message was 'No connection could be made because the target machine actively refused it.'.Check the InnerException for more details.
+ ---> System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it.
+ ---> System.Net.Sockets.SocketException (10061): No connection could be made because the target machine actively refused it.
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.ConnectHelper.ConnectAsync(String host, Int32 port, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean allowHttp2, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.GetHttpConnectionAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithRetryAsync(HttpRequestMessage request, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.FinishSendAsyncUnbuffered(Task`1 sendTask, HttpRequestMessage request, CancellationTokenSource cts, Boolean disposeCts)
+   at Microsoft.AspNetCore.SpaServices.Extensions.Proxy.SpaProxy.PerformProxyRequest(HttpContext context, HttpClient httpClient, Task`1 baseUriTask, CancellationToken applicationStoppingToken, Boolean proxy404s)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.SpaServices.Extensions.Proxy.SpaProxy.PerformProxyRequest(HttpContext context, HttpClient httpClient, Task`1 baseUriTask, CancellationToken applicationStoppingToken, Boolean proxy404s)
+   at Microsoft.AspNetCore.Builder.SpaProxyingExtensions.<>c__DisplayClass2_0.<<UseProxyToSpaDevelopmentServer>b__0>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at ProjectHealthReport.Web.Startup.<>c.<<Configure>b__6_0>d.MoveNext() in C:\Users\hiep.tran2\Desktop\Src\responsibility-chain\ProjectHealthReport.Web\Startup.cs:line 181
+--- End of stack trace from previous location where exception was thrown ---
+   at ProjectHealthReport.Web.Middlewares.RequestContextMiddleware.InvokeAsync(HttpContext context, RequestContext requestContext) in C:\Users\hiep.tran2\Desktop\Src\responsibility-chain\ProjectHealthReport.Web\Middlewares\RequestContextMiddleware.cs:line 51
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
