@@ -7,11 +7,11 @@ namespace ProjectHealthReport.Domains.Domains
 {
     public class ProjectAccess
     {
-        private int _id;
-        private int _projectId;
-        private string _email;
-        private string _role;
-        private Project _project;
+        protected int _id;
+        protected int _projectId;
+        protected string _email;
+        protected string _role;
+        protected Project _project;
 
         public ProjectAccess()
         {
@@ -46,9 +46,9 @@ namespace ProjectHealthReport.Domains.Domains
 
         public Project Project => _project;
 
-        public void Validate(List<(string, string)> userRoleList)
+        public void Validate(List<(string Email, string Role)> userRoleList)
         {
-            if (!userRoleList.Select(i => i.Item1).Contains(Email))
+            if (!userRoleList.Select(i => i.Email).Contains(Email))
             {
                 DomainExceptionCode.Throw(DomainError.D014, this);
             }

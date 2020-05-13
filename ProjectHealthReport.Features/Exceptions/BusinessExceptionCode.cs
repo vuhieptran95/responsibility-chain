@@ -103,6 +103,8 @@ namespace ProjectHealthReport.Features.Exceptions
                     return ("If Project's DodRequired, PhrRequired must be true", typeof(Project));
                 case Exceptions.BusinessError.B012:
                     return ("If project's not PhrRequired, cannot set PhrRequiredFrom", typeof(Project));
+                case Exceptions.BusinessError.B013:
+                    return ("If project's PhrRequired, Delivery Responsible Name must not be null", typeof(Project));
                 case Exceptions.BusinessError.B014:
                     return ("Project Access Email is invalid: incorrect organization information",
                         typeof(ProjectAccess));

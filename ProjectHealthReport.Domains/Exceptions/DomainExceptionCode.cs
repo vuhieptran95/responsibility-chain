@@ -28,10 +28,24 @@ namespace ProjectHealthReport.Domains.Exceptions
         D020,
         D022,
         D023,
+        D024,
+        D025,
+        D026,
+        D027,
+        D028,
+        D029,
+        D030,
+        D031,
+        D032,
+        D033,
+        D034,
+        D035,
     }
 
     public class DomainExceptionCode
     {
+        #region Throw Exception
+
         public static void Throw(DomainError domainError, object domainInstance)
         {
             Throw(domainError, domainInstance, null, null);
@@ -65,6 +79,8 @@ namespace ProjectHealthReport.Domains.Exceptions
 
             throw new DomainException(domainError.ToString(), error.Message, error.Type, domainInstance);
         }
+
+        #endregion
 
         /// <summary>
         /// (message, domainType)
@@ -122,11 +138,39 @@ namespace ProjectHealthReport.Domains.Exceptions
                         typeof(DoDReport));
                 case Exceptions.DomainError.D020:
                     return ("If Project's not DodRequired, DodReport cannot be inserted", typeof(DoDReport));
-                
+
                 case Exceptions.DomainError.D022:
                     return ("Metrics can only add new thresholds or edit its own thresholds", typeof(Metric));
                 case Exceptions.DomainError.D023:
-                    return ("Individual thresholds of a metric must belong to different metric statuses", typeof(Metric));
+                    return ("Individual thresholds of a metric must belong to different metric statuses",
+                        typeof(Metric));
+                case Exceptions.DomainError.D024:
+                    return ("ValueType must be Text, Number or Select", typeof(Metric));
+                case Exceptions.DomainError.D025:
+                    return ("One metric can only have 3 thresholds", typeof(Metric));
+                case Exceptions.DomainError.D026:
+                    return ("If metric value type is Number, threshold must be in range", typeof(Metric));
+                case Exceptions.DomainError.D027:
+                    return ("If metric value type is Text, threshold cannot be in range", typeof(Metric));
+                case Exceptions.DomainError.D028:
+                    return ("If metric value type is Select, threshold cannot be in range", typeof(Metric));
+                case Exceptions.DomainError.D029:
+                    return ("If Metric Value Type is Select, Select Values must have values", typeof(Metric));
+
+                case Exceptions.DomainError.D030:
+                    return ("If threshold is in range, Value must not be specified", typeof(Threshold));
+                case Exceptions.DomainError.D031:
+                    return ("Threshold can only be in range when its metric's value type is Number", typeof(Threshold));
+                case Exceptions.DomainError.D032:
+                    return ("Threshold bounds and operators must be specified", typeof(Threshold));
+                case Exceptions.DomainError.D033:
+                    return ("Invalid operators", typeof(Threshold));
+                
+                case Exceptions.DomainError.D034:
+                    return ("DoDReport must have metric", typeof(DoDReport));
+                case Exceptions.DomainError.D035:
+                    return ("DoDReport must have project", typeof(DoDReport));
+
 
                 default: throw new Exception("Invalid error code!");
             }

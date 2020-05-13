@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using ProjectHealthReport.Domains.Domains;
 using FluentAssertions;
+using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Exceptions;
 using Xunit;
 

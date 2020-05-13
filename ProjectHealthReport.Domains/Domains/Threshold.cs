@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using ProjectHealthReport.Domains.Exceptions;
 using ProjectHealthReport.Domains.Helpers;
 
 namespace ProjectHealthReport.Domains.Domains
@@ -84,21 +85,18 @@ namespace ProjectHealthReport.Domains.Domains
             {
                 if (!string.IsNullOrEmpty(Value))
                 {
-                    throw new ValidationException(
-                        $"If threshold is in range, Value cannot be specified - metric Id: {MetricId} - metric status Id: {MetricStatusId}");
+                    DomainExceptionCode.Throw(DomainError.D030, this, Metric);
                 }
 
                 if (Metric != null && Metric.ValueType != DoDHelper.ValueTypeNumber)
                 {
-                    throw new ValidationException(
-                        $"Threshold can only be in range when its metric's value type is Number - metric Id: {MetricId} - metric status Id: {MetricStatusId}");
+                    DomainExceptionCode.Throw(DomainError.D031, this, Metric);
                 }
 
                 if (LowerBound == null || UpperBound == null ||
                     LowerBoundOperator == null || UpperBoundOperator == null)
                 {
-                    throw new ValidationException(
-                        $"Threshold bounds and operators must be specified - metric Id: {MetricId} - metric status Id: {MetricStatusId}");
+                    DomainExceptionCode.Throw(DomainError.D032, this, Metric);
                 }
             }
         }
@@ -123,8 +121,8 @@ namespace ProjectHealthReport.Domains.Domains
                 case (">", ">="):
                 case (">=", ">="): return;
                 default:
-                    throw new ValidationException(
-                        $"Invalid operators - metric Id: {MetricId} - metric status Id: {MetricStatusId}");
+                    DomainExceptionCode.Throw(DomainError.D033, this);
+                    break;
             }
         }
 

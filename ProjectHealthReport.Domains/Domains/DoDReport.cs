@@ -8,14 +8,14 @@ namespace ProjectHealthReport.Domains.Domains
 {
     public class DoDReport : IWeeklyReport
     {
-        private int _projectId;
-        private string _reportFileName;
-        private string _linkToReport;
-        private Metric _metric;
-        private Project _project;
-        private string _value;
-        private int _yearWeek;
-        private int _metricId;
+        protected int _projectId;
+        protected string _reportFileName;
+        protected string _linkToReport;
+        protected Metric _metric;
+        protected Project _project;
+        protected string _value;
+        protected int _yearWeek;
+        protected int _metricId;
 
         public DoDReport()
         {
@@ -78,7 +78,7 @@ namespace ProjectHealthReport.Domains.Domains
         public void Validate()
         {
             ValidateMetric();
-            ValidateProject();
+            // ValidateProject();
             ValidateLink();
             ReportFileMustHaveBothLinkAndFileName();
         }
@@ -103,13 +103,18 @@ namespace ProjectHealthReport.Domains.Domains
 
         public void ValidateMetric()
         {
+            if (Metric == null)
+            {
+                DomainExceptionCode.Throw(DomainError.D034, this, Metric);
+            }
+            
             var eval = (Metric.ValueType, double.TryParse(Value, out var n));
             switch (eval)
             {
                 case (DoDHelper.ValueTypeNumber, false): DomainExceptionCode.Throw(DomainError.D018, this, Metric);
                     break;
                 case (DoDHelper.ValueTypeSelect, _):
-                    if (!Metric.SelectValues.Contains(Value))
+                    if (string.IsNullOrEmpty(Value) || !Metric.SelectValues.Contains(Value))
                     {
                         DomainExceptionCode.Throw(DomainError.D019, this, Metric);
                     }
@@ -120,6 +125,11 @@ namespace ProjectHealthReport.Domains.Domains
 
         public void ValidateProject()
         {
+            if (Project == null)
+            {
+                DomainExceptionCode.Throw(DomainError.D035, this, Project);
+            }
+            
             if (!Project.DodRequired)
             {
                 DomainExceptionCode.Throw(DomainError.D020, this, Project);

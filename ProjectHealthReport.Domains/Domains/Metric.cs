@@ -126,8 +126,7 @@ namespace ProjectHealthReport.Domains.Domains
                 {DoDHelper.ValueTypeText, DoDHelper.ValueTypeNumber, DoDHelper.ValueTypeSelect};
             if (!validValueTypes.Contains(ValueType))
             {
-                throw new ValidationException(
-                    $"Metric value types must be: {DoDHelper.ValueTypeText}, {DoDHelper.ValueTypeNumber} or {DoDHelper.ValueTypeSelect} - metric name: {Name} - tool: {Tool}");
+                DomainExceptionCode.Throw(DomainError.D024, this);
             }
         }
 
@@ -135,8 +134,7 @@ namespace ProjectHealthReport.Domains.Domains
         {
             if (ValueType == DoDHelper.ValueTypeSelect && string.IsNullOrEmpty(SelectValues))
             {
-                throw new ValidationException(
-                    $"If Metric Value Type is Select, Select Values must have values - metric name: {Name} - tool: {Tool}");
+                DomainExceptionCode.Throw(DomainError.D029, this);
             }
         }
 
@@ -144,7 +142,7 @@ namespace ProjectHealthReport.Domains.Domains
         {
             if (Thresholds.Count() > 3)
             {
-                throw new ValidationException("Can be maximum 3 thresholds");
+                DomainExceptionCode.Throw(DomainError.D025, this, Thresholds);
             }
 
             foreach (var threshold in Thresholds)
@@ -152,47 +150,18 @@ namespace ProjectHealthReport.Domains.Domains
                 switch (ValueType, threshold.IsRange)
                 {
                     case (DoDHelper.ValueTypeNumber, false):
-                        throw new ValidationException("If metric value type is Number, threshold must be in range");
+                        DomainExceptionCode.Throw(DomainError.D026, this, Thresholds);
+                        break;
 
                     case (DoDHelper.ValueTypeText, true):
-                        throw new ValidationException("If metric value type is Text, threshold cannot be in range");
+                        DomainExceptionCode.Throw(DomainError.D027, this, Thresholds);
+                        break;
 
                     case (DoDHelper.ValueTypeSelect, true):
-                        throw new ValidationException("If metric value type is Select, threshold cannot be in range");
+                        DomainExceptionCode.Throw(DomainError.D028, this, Thresholds);
+                        break;
                 }
             }
         }
-    }
-
-    public class MetricStatus
-    {
-        private readonly int _id;
-        private readonly string _name;
-        private readonly ICollection<Threshold> _thresholds;
-
-        public MetricStatus()
-        {
-            _thresholds = new HashSet<Threshold>();
-        }
-
-        public MetricStatus(int id, string name) : this()
-        {
-            _id = id;
-            _name = name;
-        }
-
-        public MetricStatus(int id, string name, ICollection<Threshold> thresholds): this()
-        {
-            _id = id;
-            _name = name;
-            _thresholds = thresholds;
-        }
-
-        public int Id => _id;
-
-        [Required]
-        public string Name => _name;
-
-        public IEnumerable<Threshold> Thresholds => _thresholds;
     }
 }
