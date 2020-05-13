@@ -35,7 +35,6 @@ namespace ProjectHealthReport.Domains.Exceptions
         D028,
         D029,
         D030,
-        D031,
         D032,
         D033,
         D034,
@@ -159,10 +158,9 @@ namespace ProjectHealthReport.Domains.Exceptions
 
                 case Exceptions.DomainError.D030:
                     return ("If threshold is in range, Value must not be specified", typeof(Threshold));
-                case Exceptions.DomainError.D031:
-                    return ("Threshold can only be in range when its metric's value type is Number", typeof(Threshold));
+                
                 case Exceptions.DomainError.D032:
-                    return ("Threshold bounds and operators must be specified", typeof(Threshold));
+                    return ("If threshold is in range, threshold bounds and operators must be specified", typeof(Threshold));
                 case Exceptions.DomainError.D033:
                     return ("Invalid operators", typeof(Threshold));
                 

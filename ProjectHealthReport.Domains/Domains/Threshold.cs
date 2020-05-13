@@ -88,11 +88,6 @@ namespace ProjectHealthReport.Domains.Domains
                     DomainExceptionCode.Throw(DomainError.D030, this, Metric);
                 }
 
-                if (Metric != null && Metric.ValueType != DoDHelper.ValueTypeNumber)
-                {
-                    DomainExceptionCode.Throw(DomainError.D031, this, Metric);
-                }
-
                 if (LowerBound == null || UpperBound == null ||
                     LowerBoundOperator == null || UpperBoundOperator == null)
                 {

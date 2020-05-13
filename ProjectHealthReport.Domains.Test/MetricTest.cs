@@ -27,7 +27,7 @@ namespace TestProject1
 
                 action.Should().ThrowExactly<DomainException>().And.Code.Should().Be(DomainError.D024.ToString());
             }
-            
+
             [Theory]
             [InlineData(DoDHelper.ValueTypeNumber)]
             [InlineData(DoDHelper.ValueTypeSelect)]
@@ -47,24 +47,80 @@ namespace TestProject1
                 _valueType = DoDHelper.ValueTypeNumber;
                 var threshold = new ThresholdDummy();
                 threshold.SetIsRange(true);
-                
-                _thresholds = new List<Threshold>(){threshold};
+
+                _thresholds = new List<Threshold>() {threshold};
 
                 Action action = ValidateThresholds;
-                
+
+                action.Should().NotThrow();
+            }
+
+            [Fact]
+            public void IsNumber_ThresholdIsNotRange_ThrowD026()
+            {
+                _valueType = DoDHelper.ValueTypeNumber;
+                var threshold = new ThresholdDummy();
+                threshold.SetIsRange(false);
+
+                _thresholds = new List<Threshold>() {threshold};
+
+                Action action = ValidateThresholds;
+
                 action.Should().ThrowExactly<DomainException>().And.Code.Should().Be(DomainError.D026.ToString());
             }
+
+            [Fact]
+            public void IsText_ThresholdIsRange_ThrowD027()
+            {
+                _valueType = DoDHelper.ValueTypeText;
+                var threshold = new ThresholdDummy();
+                threshold.SetIsRange(true);
+
+                _thresholds = new List<Threshold>() {threshold};
+
+                Action action = ValidateThresholds;
+
+                action.Should().ThrowExactly<DomainException>().And.Code.Should().Be(DomainError.D027.ToString());
+            }
+
+            [Fact]
+            public void IsSelect_ThresholdIsRange_ThrowD028()
+            {
+                _valueType = DoDHelper.ValueTypeSelect;
+                var threshold = new ThresholdDummy();
+                threshold.SetIsRange(true);
+
+                _thresholds = new List<Threshold>() {threshold};
+
+                Action action = ValidateThresholds;
+
+                action.Should().ThrowExactly<DomainException>().And.Code.Should().Be(DomainError.D028.ToString());
+            }
+
+            [Theory]
+            [InlineData("")]
+            [InlineData(null)]
+            public void IsSelect_SelectValueIsNullOrEmpty_ThrowD029(string selectValues)
+            {
+                _valueType = DoDHelper.ValueTypeSelect;
+                _selectValues = selectValues;
+
+                Action action = ValueTypeIsSelect_SelectValueMustHaveValue;
+
+                action.Should().ThrowExactly<DomainException>().And.Code.Should().Be(DomainError.D029.ToString());
+            }
         }
-        
-        public new class Thresholds: MetricTest
+
+        public new class Thresholds : MetricTest
         {
             [Fact]
             public void HaveMoreThan3_ThrowD025()
             {
-                _thresholds = new List<Threshold>(){new Threshold(), new Threshold(), new Threshold(), new Threshold()};
-            
+                _thresholds = new List<Threshold>()
+                    {new Threshold(), new Threshold(), new Threshold(), new Threshold()};
+
                 Action action = ValidateThresholds;
-            
+
                 action.Should().ThrowExactly<DomainException>().And.Code.Should().Be(DomainError.D025.ToString());
             }
 
@@ -77,16 +133,13 @@ namespace TestProject1
                 threshold2.SetMetricStatusId(1);
                 var threshold3 = new ThresholdDummy();
                 threshold3.SetMetricStatusId(2);
-            
-                _thresholds = new List<Threshold>(){threshold1, threshold2, threshold3};
+
+                _thresholds = new List<Threshold>() {threshold1, threshold2, threshold3};
 
                 Action action = ThresholdMustHaveDifferentMetricStatus;
-            
+
                 action.Should().ThrowExactly<DomainException>().And.Code.Should().Be(DomainError.D023.ToString());
             }
         }
-        
-        
-
     }
 }
