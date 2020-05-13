@@ -15,6 +15,19 @@
         }
     }
 
+    public class ThresholdDummy : Threshold
+    {
+        public void SetMetricStatusId(int metricStatusId)
+        {
+            _metricStatusId = metricStatusId;
+        }
+
+        public void SetIsRange(bool isRange)
+        {
+            _isRange = isRange;
+        }
+    }
+
     public class ProjectDummy : Project
     {
         public void SetDoDRequired(bool dodRequired)

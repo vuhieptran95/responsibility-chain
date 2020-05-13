@@ -8,16 +8,16 @@ namespace ProjectHealthReport.Domains.Domains
 {
     public class Threshold
     {
-        private int _metricStatusId;
-        private MetricStatus _metricStatus;
-        private Metric _metric;
-        private string _value;
-        private bool _isRange;
-        private string _lowerBoundOperator;
-        private string _upperBoundOperator;
-        private decimal? _lowerBound;
-        private decimal? _upperBound;
-        private int _metricId;
+        protected int _metricStatusId;
+        protected MetricStatus _metricStatus;
+        protected Metric _metric;
+        protected string _value;
+        protected bool _isRange;
+        protected string _lowerBoundOperator;
+        protected string _upperBoundOperator;
+        protected decimal? _lowerBound;
+        protected decimal? _upperBound;
+        protected int _metricId;
 
         public Threshold()
         {

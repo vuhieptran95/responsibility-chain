@@ -163,5 +163,14 @@ namespace ProjectHealthReport.Domains.Domains
                 }
             }
         }
+
+        public void ThresholdMustHaveDifferentMetricStatus()
+        {
+            var metricStatusIds = Thresholds.Select(t => t.MetricStatusId).ToList();
+            if (metricStatusIds.Count != metricStatusIds.Distinct().Count())
+            {
+                DomainExceptionCode.Throw(DomainError.D023, this, Thresholds);
+            }
+        }
     }
 }
