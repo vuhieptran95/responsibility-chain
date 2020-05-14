@@ -15,7 +15,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetGeneratedWeeklyR
         public int Week { get; set; }
         public int NumberOfWeek { get; set; } = 4;
         public int NumberOfWeekNotShowClosedItem { get; set; } = 2;
-        
+
         public class Handler : IExecution<GetGeneratedWeeklyReportPhrQuery, Dto>
         {
             private readonly IMediator _mediator;
@@ -24,6 +24,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetGeneratedWeeklyR
             {
                 _mediator = mediator;
             }
+
             public async Task HandleAsync(GetGeneratedWeeklyReportPhrQuery request)
             {
                 var getProjectQuery = new GetProjectQuery {ProjectId = request.ProjectId};
@@ -38,6 +39,16 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetGeneratedWeeklyR
 
                 var weeklyReport = await _mediator.SendAsync(getWeeklyReportQuery);
 
+                if (weeklyReport.BacklogItem != null)
+                {
+                    weeklyReport.BacklogItemListReadOnly.Add(weeklyReport.BacklogItem);
+                }
+
+                if (weeklyReport.QualityReport != null)
+                {
+                    weeklyReport.QualityReportListReadOnly.Add(weeklyReport.QualityReport);
+                }
+
                 var dto = new Dto
                 {
                     Project = await _mediator.SendAsync(getProjectQuery),
@@ -47,7 +58,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetGeneratedWeeklyR
                 request.Response = dto;
             }
         }
-        
+
         public class Dto
         {
             public GetProjectQuery.Dto Project { get; set; }
