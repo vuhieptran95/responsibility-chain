@@ -4,7 +4,7 @@ using ResponsibilityChain.Business.AuthorizationConfigs;
 
 namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetWeeklyReportPhr
 {
-    public class GetWeeklyReportPhrQueryAuthorization
+    public partial class GetWeeklyReportPhr
     {
         public class Config : IAuthorizationConfig<GetWeeklyReportPhrQuery>
         {

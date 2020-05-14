@@ -192,7 +192,7 @@ namespace ProjectHealthReport.Web
             {
                 if (env.IsDevelopment())
                 {
-                    builder.UseProxyToSpaDevelopmentServer("http://localhost:8085");
+                    // builder.UseProxyToSpaDevelopmentServer("http://localhost:8085");
                 }
             });
         }

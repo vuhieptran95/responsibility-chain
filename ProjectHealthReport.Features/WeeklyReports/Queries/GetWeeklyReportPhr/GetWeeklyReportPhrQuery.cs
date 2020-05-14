@@ -115,8 +115,6 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetWeeklyReportPhr
                         dto.QualityReportListReadOnly.TakeLast(dto.NumberOfWeek).ToList();
                 }
 
-                GetWeeklyReportPhrHelper.PopulateAdditionalInfoItemsOfThisWeekBasedOnLastWeek(dto);
-
                 var yearWeeksToGetDod =
                     TimeHelper.GetYearWeeksOfXRecentWeeksStartFrom(request.Year, request.Week, request.NumberOfWeek);
                 yearWeeksToGetDod.Add(yearWeek);
@@ -124,7 +122,20 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetWeeklyReportPhr
                 var listMetricInDb = await _dbContext.DoDReports
                     .Include(r => r.Metric)
                     .Where(r => r.ProjectId == request.ProjectId && yearWeeksToGetDod.Contains(r.YearWeek))
-                    .Select(r => _mapper.Map<Dto.MetricDto>(r))
+                    .Select(r => new Dto.MetricDto()
+                    {
+                       ProjectId  = r.ProjectId,
+                       Id = r.MetricId,
+                       Name = r.Metric.Name,
+                       Tool = r.Metric.Tool,
+                       ToolOrder = r.Metric.ToolOrder,
+                       Order = r.Metric.Order,
+                       Unit = r.Metric.Unit,
+                       ValueType = r.Metric.ValueType,
+                       Value = r.Value,
+                       SelectValues = r.Metric.SelectValues,
+                       YearWeek = r.YearWeek,
+                    })
                     .ToListAsync();
 
                 var metrics = listMetricInDb

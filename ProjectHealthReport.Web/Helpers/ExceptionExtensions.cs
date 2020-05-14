@@ -3,7 +3,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using AutoMapper;
-using ProjectHealthReport.Web.Models;
+ using ProjectHealthReport.Domains.Exceptions;
+ using ProjectHealthReport.Web.Models;
 
 namespace ProjectHealthReport.Web.Helpers
 {
@@ -24,7 +25,14 @@ namespace ProjectHealthReport.Web.Helpers
                 error = error + " - " + validationError;
             }
 
-            return new ErrorResponse(error, HttpStatusCode.BadRequest);
+            return new ErrorResponse(error, HttpStatusCode.BadRequest, null);
+        }
+        
+        public static ErrorResponse CreateErrorResponse(this DomainException ex)
+        {
+            var error = $"{ex.Code} - {ex.Message}";
+
+            return new ErrorResponse(error, HttpStatusCode.BadRequest, null);
         }
 
         // public static ErrorResponse CreateErrorResponse(this CompositeValidationException ex)
@@ -42,6 +50,6 @@ namespace ProjectHealthReport.Web.Helpers
         //     new ErrorResponse(ex.Message, HttpStatusCode.Forbidden);
         
         public static ErrorResponse CreateErrorResponse(this Exception ex) =>
-            new ErrorResponse(ex.Message, HttpStatusCode.InternalServerError);
+            new ErrorResponse(ex.Message, HttpStatusCode.InternalServerError, null);
     }
 }

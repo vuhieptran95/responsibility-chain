@@ -14,11 +14,8 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetWeeklyReportPhr
             {
                 BacklogItem = new BacklogItemDto();
                 QualityReport = new QualityReportDto();
-                AdditionalInfos = new List<AdditionalInfoDto>();
                 BacklogItemListReadOnly = new List<BacklogItemDto>();
                 QualityReportListReadOnly = new List<QualityReportDto>();
-                AdditionalInfoListReadOnly = new List<AdditionalInfoDto>();
-                AdditionalInfoListWithEditableStatus = new List<AdditionalInfoDto>();
                 Metrics = new List<MetricDto>();
                 DodRecords = new List<DoDReportDto>();
             }
@@ -40,11 +37,8 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetWeeklyReportPhr
             public StatusDto Status { get; set; }
             public BacklogItemDto BacklogItem { get; set; }
             public QualityReportDto QualityReport { get; set; }
-            public List<AdditionalInfoDto> AdditionalInfos { get; set; }
             public List<BacklogItemDto> BacklogItemListReadOnly { get; set; }
             public List<QualityReportDto> QualityReportListReadOnly { get; set; }
-            public List<AdditionalInfoDto> AdditionalInfoListWithEditableStatus { get; set; }
-            public List<AdditionalInfoDto> AdditionalInfoListReadOnly { get; set; }
             public List<DoDReportDto> DodRecords { get; set; }
             public List<MetricDto> Metrics { get; set; }
             public int SelectedYear { get; set; }
@@ -88,20 +82,6 @@ namespace ProjectHealthReport.Features.WeeklyReports.Queries.GetWeeklyReportPhr
                 public int DoneBugs { get; set; }
                 public int ReOpenBugs { get; set; }
                 public int RemainingBugs { get; set; }
-                public int YearWeek { get; set; }
-                public int Year => TimeHelper.CalculateYear(YearWeek);
-                public int Week => TimeHelper.CalculateWeek(YearWeek);
-            }
-
-            public class AdditionalInfoDto
-            {
-                public int Id { get; set; }
-                public int IssueId { get; set; }
-                public string Item { get; set; }
-                public string Impact { get; set; }
-                public string Action { get; set; }
-                public int OpenedYearWeek { get; set; }
-                public string Status { get; set; }
                 public int YearWeek { get; set; }
                 public int Year => TimeHelper.CalculateYear(YearWeek);
                 public int Week => TimeHelper.CalculateWeek(YearWeek);

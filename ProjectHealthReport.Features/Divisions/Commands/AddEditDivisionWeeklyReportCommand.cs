@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Helpers;
@@ -49,12 +48,10 @@ namespace ProjectHealthReport.Features.Divisions.Commands
         public class Handler : IExecution<AddEditDivisionWeeklyReportCommand, int>
         {
             private readonly ReportDbContext _dbContext;
-            private readonly IMapper _mapper;
 
-            public Handler(ReportDbContext dbContext, IMapper mapper)
+            public Handler(ReportDbContext dbContext)
             {
                 _dbContext = dbContext;
-                _mapper = mapper;
             }
 
             public async Task HandleAsync(AddEditDivisionWeeklyReportCommand request)

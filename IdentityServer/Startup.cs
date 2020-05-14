@@ -111,7 +111,7 @@ namespace IdentityServer
             {
                 if (env.IsDevelopment())
                 {
-                    builder.UseProxyToSpaDevelopmentServer("http://localhost:8075");
+                    // builder.UseProxyToSpaDevelopmentServer("http://localhost:8075");
                 }
             });
         }

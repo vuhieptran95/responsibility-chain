@@ -15,32 +15,11 @@ using ResponsibilityChain.Business.Validations;
 
 namespace ProjectHealthReport.Features.DoDs.AddEditDoDReport
 {
-    public partial class EditDoDReportCommand
-    {
-        public class EditOneProjectAtATime : IPreValidation<EditDoDReportCommand, int>
-        {
-            public Task HandleAsync(EditDoDReportCommand request)
-            {
-                if (request.DodReports.Count > 0)
-                {
-                    var projectId = request.DodReports[0].ProjectId;
-                    if (request.DodReports.Any(d => d.ProjectId != projectId))
-                    {
-                        throw new Exception("Edit 1 project at a time");
-                    }
-                    
-                }
-                return Task.CompletedTask;
-            }
-        }
-
-    }
-
     public partial class EditDoDReportCommand : Request<int>
     {
         public List<DoDReportDto> DodReports { get; set; }
 
-        public class DoDReportDto : IMapFrom<DoDReport>
+        public class DoDReportDto
         {
             public int ProjectId { get; set; }
             public int MetricId { get; set; }
@@ -51,25 +30,6 @@ namespace ProjectHealthReport.Features.DoDs.AddEditDoDReport
 
             public Metric Metric { get; set; }
             public Project Project { get; set; }
-
-            public void MappingFrom(Profile profile)
-            {
-                profile.CreateMap<DoDReportDto, DoDReport>()
-                    .ConstructUsing(dto => new DoDReport(dto.ProjectId, dto.MetricId, dto.YearWeek, dto.Value,
-                        dto.LinkToReport, dto.ReportFileName, dto.Project, dto.Metric));
-            }
-        }
-        
-        public class AuthorizationConfig: IAuthorizationConfig<EditDoDReportCommand>
-        {
-            public List<(string[] Resources, string[] Actions)> GetAccessRights()
-            {
-                return new List<(string[] Resources, string[] Actions)>()
-                {
-                    (new []{Resources.DoDReport}, new []{Actions.Read, Actions.Create, Actions.Update}),
-                    (new []{Resources.Project}, new []{Actions.Read})
-                };
-            }
         }
 
         public class Handler : IExecution<EditDoDReportCommand, int>
@@ -91,8 +51,8 @@ namespace ProjectHealthReport.Features.DoDs.AddEditDoDReport
                 var yearWeek = request.DodReports[0].YearWeek;
                 var listMetricId = request.DodReports.Select(d => d.MetricId).Distinct();
 
-                var project = await _dbContext.Projects.AsNoTracking().FirstAsync(p => p.Id == projectId);
-                var listMetric = await _dbContext.Metrics.AsNoTracking().Where(m => listMetricId.Contains(m.Id))
+                var project = await _dbContext.Projects.FirstAsync(p => p.Id == projectId);
+                var listMetric = await _dbContext.Metrics.Where(m => listMetricId.Contains(m.Id))
                     .ToListAsync();
                 request.DodReports.ForEach(d =>
                 {
@@ -105,7 +65,8 @@ namespace ProjectHealthReport.Features.DoDs.AddEditDoDReport
                     .Where(r => r.ProjectId == projectId && r.YearWeek == yearWeek)
                     .ToListAsync();
 
-                var dodReports = _mapper.Map<List<DoDReport>>(request.DodReports);
+                var dodReports = request.DodReports.Select(d => new DoDReport(d.ProjectId, d.Value, d.YearWeek,
+                    d.MetricId, d.ReportFileName, d.LinkToReport, d.Metric, d.Project)).ToList();
 
                 var recordsToAdd = dodReports.Except(dodReportsInDb, DoDReport.DoDComparer);
                 var recordsToRemove = dodReportsInDb.Except(dodReports, DoDReport.DoDComparer);

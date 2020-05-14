@@ -18,10 +18,10 @@ namespace ResponsibilityChain.Business.RequestContexts
         {
             TempData = new Dictionary<string, object>();
         }
-        public string UserId { get; set; } = "unidentified";
-        public string Username { get; set; } = "PM2";
-        public string UserRole { get; set; } = "";
-        public string UserEmail { get; set; } = "unidentified";
+        public string UserId { get; set; } = "anonymous";
+        public string Username { get; set; } = "anonymous";
+        public string UserRole { get; set; } = "anonymous";
+        public string UserEmail { get; set; } = "anonymous";
         public Dictionary<string, object> TempData { get; }
         public List<string> AccessRights { get; set; } = new List<string>();
     }

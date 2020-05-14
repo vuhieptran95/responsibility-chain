@@ -82,14 +82,6 @@ namespace ProjectHealthReport.Web.Controllers
             return Ok();
         }
 
-        [HttpPost("dod-reports")]
-        public async Task<ActionResult> AddDodReport([FromBody] AddDoDReportCommand command)
-        {
-            await _mediator.SendAsync(command);
-            
-            return Created("", null);
-        }
-
         [HttpPut("dod-reports")]
         public async Task<ActionResult> EditDodReport([FromBody] EditDoDReportCommand command)
         {

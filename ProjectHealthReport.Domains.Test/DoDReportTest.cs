@@ -21,7 +21,7 @@ namespace TestProject1
             [InlineData("", "test")]
             [InlineData("test", null)]
             [InlineData(null, "test")]
-            public void IfExist_And_HasNoFileNameOrReportLink_ThrowD016(string fileName, string link)
+            public void HasNoFileNameAndOrReportLink_ThrowD016(string fileName, string link)
             {
                 this._reportFileName = fileName;
                 this._linkToReport = link;
@@ -30,10 +30,22 @@ namespace TestProject1
 
                 action.Should().ThrowExactly<DomainException>().And.Code.Should().Be(DomainError.D016.ToString());
             }
+            
+            [Theory]
+            [InlineData("test", "test")]
+            [InlineData(null, null)]
+            public void LinkAndNameBothNullOrBothExist_PassTest(string fileName, string link)
+            {
+                this._reportFileName = fileName;
+                this._linkToReport = link;
+
+                Action action = this.ReportFileMustHaveBothLinkAndFileName;
+
+                action.Should().NotThrow();
+            }
 
             [Theory]
             [InlineData("")]
-            [InlineData(null)]
             [InlineData("fake url")]
             [InlineData("google.com")]
             public void LinkExist_And_NotAnUrl_ThrowD017(string link)
@@ -43,6 +55,28 @@ namespace TestProject1
                 Action action = this.ValidateLink;
 
                 action.Should().ThrowExactly<DomainException>().And.Code.Should().Be(DomainError.D017.ToString());
+            }
+            
+            [Theory]
+            [InlineData("http://google.com")]
+            public void LinkExist_And_CorrectUrl_PassTest(string link)
+            {
+                this._linkToReport = link;
+
+                Action action = this.ValidateLink;
+
+                action.Should().NotThrow();
+            }
+            
+            [Theory]
+            [InlineData(null)]
+            public void LinkNotExist_PassTest(string link)
+            {
+                this._linkToReport = link;
+
+                Action action = this.ValidateLink;
+
+                action.Should().NotThrow();
             }
         }
 
@@ -59,6 +93,7 @@ namespace TestProject1
             public class ValueType : DoDReportTest
             {
                 [Theory]
+                [InlineData("")]
                 [InlineData("0")]
                 [InlineData("1")]
                 [InlineData("12")]
@@ -76,7 +111,6 @@ namespace TestProject1
                 }
 
                 [Theory]
-                [InlineData("")]
                 [InlineData("abc")]
                 [InlineData(null)]
                 public void IsNumber_And_ValueIsNotNumber_ThrowD018(string value)
@@ -93,6 +127,7 @@ namespace TestProject1
                 }
 
                 [Theory]
+                [InlineData("")]
                 [InlineData("yes")]
                 [InlineData("no")]
                 [InlineData("maybe")]
@@ -111,7 +146,6 @@ namespace TestProject1
                 }
 
                 [Theory]
-                [InlineData("")]
                 [InlineData(null)]
                 [InlineData("abc")]
                 public void IsSelect_And_ValueIsNotInSelectValues_ThrowD019(string value)

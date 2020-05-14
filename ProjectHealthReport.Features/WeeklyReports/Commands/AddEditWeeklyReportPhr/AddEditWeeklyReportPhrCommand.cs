@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using MessagePack;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Caching.Memory;
 using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Helpers;
 using ProjectHealthReport.Domains.Mappings;
+using ProjectHealthReport.Features.DoDs.AddEditDoDReport;
 using ProjectHealthReport.Features.Projects.Queries.GetProjectCaching;
 using ProjectHealthReport.Features.WeeklyReports.Queries.GetWeeklyReportPhr;
 using ResponsibilityChain;
@@ -19,10 +21,8 @@ using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditWeeklyReportPhr
 {
-    public class AddEditWeeklyReportPhrCommand : Request<int>, IMapFrom<object>
+    public partial class AddEditWeeklyReportPhrCommand : Request<int>, IMapFrom<object>
     {
-        
-        
         public GetWeeklyReportPhrQuery.Dto Report { get; set; }
 
         public class Handler : IExecution<AddEditWeeklyReportPhrCommand, int>
@@ -47,7 +47,7 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditWeeklyRepor
                 {
                     try
                     {
-                        var project = await _dbContext.Projects.AsNoTracking()
+                        var project = await _dbContext.Projects
                             .FirstAsync(p => p.Id == request.Report.ProjectId);
                         var cache = (await _mediator.SendAsync(new GetProjectCachingQuery()
                         {
@@ -75,6 +75,24 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditWeeklyRepor
                             q.MinorBugs, q.DoneBugs, q.ReOpenBugs, currentYearWeek);
                         project.AddEditQualityReport(report);
 
+                        if (project.DodRequired)
+                        {
+                            var command = new EditDoDReportCommand()
+                            {
+                                DodReports = request.Report.DodRecords.Select(r => new EditDoDReportCommand.DoDReportDto
+                                {
+                                    MetricId = r.MetricId,
+                                    ProjectId = project.Id,
+                                    Value = r.Value,
+                                    YearWeek = currentYearWeek,
+                                    LinkToReport = r.LinkToReport,
+                                    ReportFileName = r.ReportFileName
+                                }).ToList()
+                            };
+
+                            await _mediator.SendAsync(command);
+                        }
+
                         await _dbContext.SaveChangesAsync();
 
                         await transaction.CommitAsync();
@@ -92,10 +110,10 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditWeeklyRepor
         
         public class PostEventRemoveCache: IPostEvent<AddEditWeeklyReportPhrCommand, int>
         {
-            private readonly CacheConfig<GetProjectCachingQuery> _cacheConfig;
+            private readonly ICacheConfig<GetProjectCachingQuery> _cacheConfig;
             private readonly IMemoryCache _cache;
 
-            public PostEventRemoveCache(CacheConfig<GetProjectCachingQuery> cacheConfig, IMemoryCache cache)
+            public PostEventRemoveCache(ICacheConfig<GetProjectCachingQuery> cacheConfig, IMemoryCache cache)
             {
                 _cacheConfig = cacheConfig;
                 _cache = cache;

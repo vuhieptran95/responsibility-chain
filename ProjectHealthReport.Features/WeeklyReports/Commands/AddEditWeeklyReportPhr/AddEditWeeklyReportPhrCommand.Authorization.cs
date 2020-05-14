@@ -4,7 +4,7 @@ using ResponsibilityChain.Business.AuthorizationConfigs;
 
 namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditWeeklyReportPhr
 {
-    public class AddEditWeeklyReportPhrCommandAuthorization
+    public partial class AddEditWeeklyReportPhrCommand
     {
         public class Config : IAuthorizationConfig<AddEditWeeklyReportPhrCommand>
         {
