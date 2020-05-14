@@ -44,6 +44,9 @@ namespace ProjectHealthReport.Domains.Domains
             _lowerBoundOperator = lowerBoundOperator;
             _isRange = isRange;
             _value = value;
+            
+            ValidateIsRange();
+            ValidateOperators();
         }
 
         public int MetricStatusId => _metricStatusId;

@@ -70,6 +70,7 @@ namespace ProjectHealthReport.Domains.Domains
             _linkToReport = link;
             _reportFileName = name;
 
+            ValidateLink();
             ReportFileMustHaveBothLinkAndFileName();
         }
 

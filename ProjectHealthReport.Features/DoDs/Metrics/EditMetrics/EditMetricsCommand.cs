@@ -92,8 +92,9 @@ namespace ProjectHealthReport.Features.DoDs.Metrics.EditMetrics
                 {
                     var metric = metricsInDb.First(m => m.Id == dto.Id);
                     metric.UpdateValue(dto.Id, dto.Name, dto.ValueType, dto.Unit, dto.Tool, dto.SelectValues, dto.Order, dto.ToolOrder);
-                    
-                    var thresholdsToUpdate = _mapper.Map<List<Threshold>>(_mapper.Map<IEnumerable<ThresholdProxy>>(dto.Thresholds));
+
+                    var thresholdsToUpdate = dto.Thresholds.Select(t => new Threshold(t.MetricStatusId, t.MetricId,
+                        t.UpperBound, t.LowerBound, t.UpperBoundOperator, t.LowerBoundOperator, t.IsRange, t.Value)).ToList();
                     
                     metric.ReplaceThresholds(thresholdsToUpdate);
                 });

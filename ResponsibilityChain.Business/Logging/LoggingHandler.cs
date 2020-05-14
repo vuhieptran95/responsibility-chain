@@ -25,10 +25,13 @@ namespace ResponsibilityChain.Business.Logging
                     req.RequestContext = _requestContext;
                 }
 
-                _logger.LogInformation($"Logging request {request.GetType()} " + "{@request}", request);
+                _logger.LogInformation(
+                    $"Logging request {request.GetType()} " + "{@request}." + "User: " + "{@username}.", request,
+                    _requestContext.Username);
                 await base.HandleAsync(request);
-                _logger.LogInformation($"Logging response: {request.Response?.GetType()} " + "{@response}",
-                    request.Response);
+                _logger.LogInformation(
+                    $"Logging response: {request.Response?.GetType()} " + "{@response}." + "User: " + "{@username}.",
+                    request.Response, _requestContext.Username);
             }
             catch (Exception e)
             {

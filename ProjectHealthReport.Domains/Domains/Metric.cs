@@ -118,6 +118,7 @@ namespace ProjectHealthReport.Domains.Domains
             });
 
             ValidateThresholds();
+            ThresholdMustHaveDifferentMetricStatus();
         }
 
         public void ValueTypeMustBeValid()

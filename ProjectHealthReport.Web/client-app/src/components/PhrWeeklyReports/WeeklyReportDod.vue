@@ -151,6 +151,7 @@
         metricGroups: GroupMetrics[] = [];
         thresholds: Threshold[] = [];
         metrics: DodMetric[] = [];
+        metricsClone: DodMetric[] = [];
         yearWeeks: any[] = [];
         dodLinks: DodLink[] = [];
         currentDodLink: DodLink = {yearWeek: 0, reportFileName: null, linkToReport: null};
@@ -161,6 +162,7 @@
                 return;
 
             this.metrics = _.cloneDeep(val);
+            this.metricsClone = _.cloneDeep(this.metrics);
         }
 
         @Watch('report.numberOfWeek')
@@ -216,9 +218,10 @@
 
             this.yearWeeks = _.orderBy(yearWeeks, 'yearWeek', 'desc');
 
-            if (_.isEqual(clone, val)) return;
+            if (_.isEqual(clone, this.metricsClone)) return;
 
             this.metrics = clone;
+            this.metricsClone = _.cloneDeep(this.metrics);
 
             let dodRecords: DodRecord[] = [];
             let yearWeek = this.vueHelper.calculateYearWeek(this.report.selectedYear, this.report.selectedWeek);

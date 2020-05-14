@@ -5,8 +5,9 @@ using System.Net;
 using AutoMapper;
  using ProjectHealthReport.Domains.Exceptions;
  using ProjectHealthReport.Web.Models;
+ using ResponsibilityChain.Business.AuthorizationConfigs;
 
-namespace ProjectHealthReport.Web.Helpers
+ namespace ProjectHealthReport.Web.Helpers
 {
     public static class ExceptionExtensions
     {
@@ -33,6 +34,20 @@ namespace ProjectHealthReport.Web.Helpers
             var error = $"{ex.Code} - {ex.Message}";
 
             return new ErrorResponse(error, HttpStatusCode.BadRequest, null);
+        }
+        
+        public static ErrorResponse CreateErrorResponse(this AuthorizationConfigException ex)
+        {
+            var error = $"{ex.Message}";
+
+            return new ErrorResponse(error, HttpStatusCode.Unauthorized, null);
+        }
+        
+        public static ErrorResponse CreateErrorResponse(this UnauthorizedAccessException ex)
+        {
+            var error = $"{ex.Message}";
+
+            return new ErrorResponse(error, HttpStatusCode.Unauthorized, null);
         }
 
         // public static ErrorResponse CreateErrorResponse(this CompositeValidationException ex)

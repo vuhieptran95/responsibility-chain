@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using ProjectHealthReport.Domains.Exceptions;
 using ProjectHealthReport.Features.Exceptions;
 using ProjectHealthReport.Web.Models;
+using ResponsibilityChain.Business.AuthorizationConfigs;
 
 namespace ProjectHealthReport.Web.Helpers
 {
@@ -25,6 +27,8 @@ namespace ProjectHealthReport.Web.Helpers
                 AutoMapperMappingException mappingException => mappingException.CreateErrorResponse(),
                 DomainException domainException => domainException.CreateErrorResponse(),
                 BusinessException businessException => businessException.CreateErrorResponse(),
+                AuthorizationConfigException authorizationConfigException => authorizationConfigException.CreateErrorResponse(),
+                UnauthorizedAccessException unauthorizedAccessException => unauthorizedAccessException.CreateErrorResponse(),
                 _ => context.Exception.CreateErrorResponse()
             };
         }

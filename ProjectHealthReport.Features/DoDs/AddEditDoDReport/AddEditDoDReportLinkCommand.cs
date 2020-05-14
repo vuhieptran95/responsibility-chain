@@ -44,7 +44,7 @@ namespace ProjectHealthReport.Features.DoDs.AddEditDoDReport
                 var dodRecords = await _dbContext.DoDReports.Where(d =>
                     d.ProjectId == request.ProjectId & d.YearWeek == request.YearWeek).ToListAsync();
                 
-                dodRecords.ForEach(r => r.SetReportFile(r.ReportFileName, r.LinkToReport));
+                dodRecords.ForEach(r => r.SetReportFile(request.ReportFileName, request.LinkToReport));
 
                 await _dbContext.SaveChangesAsync();
 
