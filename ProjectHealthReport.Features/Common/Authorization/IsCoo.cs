@@ -7,7 +7,7 @@ using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.Common.Authorization
 {
-    public class IsCoo<TRequest, TResponse> : IPreAuthorization<TRequest, TResponse>
+    public class IsCoo<TRequest, TResponse> : IPreAuthorizationRule<TRequest, TResponse>
         where TRequest : Request<TResponse>
     {
         public async Task HandleAsync(TRequest request)

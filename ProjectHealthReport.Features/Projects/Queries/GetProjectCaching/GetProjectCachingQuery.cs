@@ -15,15 +15,17 @@ using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Helpers;
 using ProjectHealthReport.Domains.Migrations;
 using ProjectHealthReport.Features.Common;
+using ProjectHealthReport.Features.Projects.Commands;
 using ResponsibilityChain;
 using ResponsibilityChain.Business.AuthorizationConfigs;
 using ResponsibilityChain.Business.Caching;
+using ResponsibilityChain.Business.Events;
 using ResponsibilityChain.Business.Executions;
 using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.Projects.Queries.GetProjectCaching
 {
-    public class GetProjectCachingQuery : Request<CacheResponse<GetProjectCachingQuery.WeeklyData>>
+    public partial class GetProjectCachingQuery : Request<CacheResponse<GetProjectCachingQuery.WeeklyData>>
     {
         public int ProjectId { get; set; }
 

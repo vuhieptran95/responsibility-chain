@@ -107,25 +107,5 @@ namespace ProjectHealthReport.Features.WeeklyReports.Commands.AddEditWeeklyRepor
                 }
             }
         }
-        
-        public class PostEventRemoveCache: IPostEvent<AddEditWeeklyReportPhrCommand, int>
-        {
-            private readonly ICacheConfig<GetProjectCachingQuery> _cacheConfig;
-            private readonly IMemoryCache _cache;
-
-            public PostEventRemoveCache(ICacheConfig<GetProjectCachingQuery> cacheConfig, IMemoryCache cache)
-            {
-                _cacheConfig = cacheConfig;
-                _cache = cache;
-            }
-            
-            public Task HandleAsync(AddEditWeeklyReportPhrCommand request)
-            {
-                var key =_cacheConfig.GetCacheKey(new GetProjectCachingQuery() {ProjectId = request.Report.ProjectId});
-                _cache.Remove(key);
-
-                return Task.CompletedTask;
-            }
-        }
     }
 }

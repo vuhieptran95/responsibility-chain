@@ -15,22 +15,26 @@ namespace ProjectHealthReport.Domains.Domains
 
         public ProjectAccess()
         {
-            
         }
-        public ProjectAccess(int id, int projectId, string email, string role, List<(string, string)> userRoleList, Project project)
+
+        public ProjectAccess(int id, int projectId, string email, string role, List<(string, string)> userRoleList,
+            Project project) : this(id, projectId, email, role, userRoleList)
+        {
+            _project = project;
+        }
+
+        public ProjectAccess(int id, int projectId, string email, string role, List<(string, string)> userRoleList)
         {
             _id = id;
             _projectId = projectId;
             _email = email;
             _role = role;
-            _project = project;
-            
+
             Validate(userRoleList);
         }
 
-        public ProjectAccess(int id, int projectId, string email, string role)
+        public void UpdateValue(int projectId, string email, string role)
         {
-            _id = id;
             _projectId = projectId;
             _email = email;
             _role = role;

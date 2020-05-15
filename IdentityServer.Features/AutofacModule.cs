@@ -43,11 +43,11 @@ namespace IdentityServer.Features
             builder.RegisterGeneric(typeof(AuthorizationHandler<,>)).InstancePerLifetimeScope();
             
             builder.RegisterAssemblyTypes(currentAssembly)
-                .AsClosedTypesOf(typeof(IPreAuthorization<,>))
+                .AsClosedTypesOf(typeof(IPreAuthorizationRule<,>))
                 .InstancePerLifetimeScope();
             
             builder.RegisterAssemblyTypes(currentAssembly)
-                .AsClosedTypesOf(typeof(IPostAuthorization<,>))
+                .AsClosedTypesOf(typeof(IPostAuthorizationRule<,>))
                 .InstancePerLifetimeScope();
             
             builder.RegisterGeneric(typeof(DefaultHandler<,>)).InstancePerLifetimeScope();

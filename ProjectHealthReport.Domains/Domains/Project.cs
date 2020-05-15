@@ -105,6 +105,8 @@ namespace ProjectHealthReport.Domains.Domains
             _dmrRequiredFrom = dmrRequiredFrom;
             _dmrRequiredTo = dmrRequiredTo;
             _projectStateTypeId = projectStateTypeId;
+            
+            ValidateDomain(userRoleList);
         }
 
         public void SetCollections(IEnumerable<QualityReport> qualityReports, IEnumerable<BacklogItem> backlogItems,

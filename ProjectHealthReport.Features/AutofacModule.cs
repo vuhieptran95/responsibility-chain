@@ -51,11 +51,11 @@ namespace ProjectHealthReport.Features
             builder.RegisterGeneric(typeof(IsPmo<,>)).InstancePerLifetimeScope();
             
             builder.RegisterAssemblyTypes(currentAssembly)
-                .AsClosedTypesOf(typeof(IPreAuthorization<,>))
+                .AsClosedTypesOf(typeof(IPreAuthorizationRule<,>))
                 .InstancePerLifetimeScope();
             
             builder.RegisterAssemblyTypes(currentAssembly)
-                .AsClosedTypesOf(typeof(IPostAuthorization<,>))
+                .AsClosedTypesOf(typeof(IPostAuthorizationRule<,>))
                 .InstancePerLifetimeScope();
             
             builder.RegisterGeneric(typeof(DefaultHandler<,>)).InstancePerLifetimeScope();

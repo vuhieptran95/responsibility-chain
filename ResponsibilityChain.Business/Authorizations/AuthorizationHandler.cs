@@ -8,12 +8,12 @@ namespace ResponsibilityChain.Business.Authorizations
     {
     }
 
-    public interface IPreAuthorization<TRequest, TResponse> : IPreHandler<TRequest, TResponse>
+    public interface IPreAuthorizationRule<TRequest, TResponse> : IPreHandler<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
     {
     }
 
-    public interface IPostAuthorization<TRequest, TResponse> : IPreHandler<TRequest, TResponse>
+    public interface IPostAuthorizationRule<TRequest, TResponse> : IPreHandler<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
     {
     }

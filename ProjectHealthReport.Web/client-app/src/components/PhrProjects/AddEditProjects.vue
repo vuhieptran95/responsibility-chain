@@ -43,7 +43,8 @@
                             </v-row>
                             <v-row>
                                 <v-col md="12">
-                                    <v-autocomplete :items="nitecans" v-model="usersAsPIC" multiple clearable at
+                                    <v-autocomplete :items="emails" v-model="usersAsPIC" multiple clearable
+                                                    item-text=""
                                                     label="Add users with PIC privilege">
                                         <template v-slot:selection="{ item }">
                                             <v-chip close @click:close="handleRemovePic(item)">
@@ -156,6 +157,7 @@
         project: Project = defaultProject;
         divisions = [];
         nitecans: User[] = [];
+        emails: string[] = [];
         vueHelper = VueHelper;
 
         mounted() {
@@ -176,6 +178,7 @@
                     this.usersAsPIC = this.project.projectAccesses.map(i => i.email);
                     if (this.project.userEmails){
                         this.nitecans = this.project.userEmails.map(i => ({username : i, email: i, role: "", division: ""}));
+                        this.emails = this.nitecans.map(n => n.email);
                     }
                 }).catch(handleAxiosError)
             }
@@ -191,7 +194,7 @@
 
             let payload = _.cloneDeep(this.project);
             payload.projectEndDate = payload.projectEndDate ? moment(payload.projectEndDate, "YYYY-MM-DD").format("YYYY-MM-DD") : null;
-            payload.projectAccesses = payload.projectAccesses.filter(i => i.role !== RolePic);
+            payload.projectAccesses = [];
             
             let projectAccessPics = this.usersAsPIC.map(i => {
                 let pa: ProjectAccess = {role: RolePic, email: i, id: 0, projectId: this.project.id};

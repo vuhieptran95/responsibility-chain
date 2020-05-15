@@ -16,21 +16,9 @@ using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.Projects.Queries.GetProjectIndexPhr
 {
-    public class GetProjectIndexPhrQuery : Request<GetProjectIndexPhrQuery.Dto>
+    public partial class GetProjectIndexPhrQuery : Request<GetProjectIndexPhrQuery.Dto>
     {
         public Expression<Func<Domains.Domains.Project, bool>> ResourceFilter { get; set; } = p => true;
-        
-        public class AuthorizationConfig : IAuthorizationConfig<GetProjectIndexPhrQuery>
-        {
-            public List<(string[] Resources, string[] Actions)> GetAccessRights()
-            {
-                return new List<(string[] Resources, string[] Actions)>()
-                {
-                    (new[] {Resources.Project},
-                        new[] {Actions.Read}),
-                };
-            }
-        }
 
         public class Hander : IExecution<GetProjectIndexPhrQuery, Dto>
         {
