@@ -28,7 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResponsibilityChain.TestCon
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Items", "Items", "{CFAF837D-361E-4BB3-AFB0-0CA0A8E650F9}"
 ProjectSection(SolutionItems) = preProject
-	Items\script.sql = Items\script.sql
+	Items\identity.sql = Items\identity.sql
+	Items\lastchance.sql = Items\lastchance.sql
 EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectHealthReport.Domains.Test", "ProjectHealthReport.Domains.Test\ProjectHealthReport.Domains.Test.csproj", "{B322EE1C-26AB-482B-B296-C69B6B226346}"
