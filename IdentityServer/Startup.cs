@@ -50,7 +50,12 @@ namespace IdentityServer
         {
             services.AddControllersWithViews();
             
-            var builder = services.AddIdentityServer()
+            var builder = services.AddIdentityServer(options =>
+                {
+                    options.Caching.ClientStoreExpiration = TimeSpan.Zero;
+                    options.Caching.ResourceStoreExpiration = TimeSpan.Zero;
+                    
+                })
                 .AddProfileService<ProfileService>()
                 .AddResourceStore<ResourceStore>()
                 .AddClientStore<ClientStore>();

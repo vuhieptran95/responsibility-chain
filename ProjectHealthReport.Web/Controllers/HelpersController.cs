@@ -78,6 +78,10 @@ namespace ProjectHealthReport.Web.Controllers
         public async Task<ActionResult> SignOut()
         {
             await HttpContext.SignOutAsync();
+            foreach (var cookie in HttpContext.Request.Cookies)
+            {
+                HttpContext.Response.Cookies.Delete(cookie.Key);
+            }
             return Ok();
         }
     }

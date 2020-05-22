@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using AutoMapper;
  using ProjectHealthReport.Domains.Exceptions;
+ using ProjectHealthReport.Features.Exceptions;
  using ProjectHealthReport.Web.Models;
  using ResponsibilityChain.Business.AuthorizationConfigs;
 
@@ -30,6 +31,13 @@ using AutoMapper;
         }
         
         public static ErrorResponse CreateErrorResponse(this DomainException ex)
+        {
+            var error = $"{ex.Code} - {ex.Message}";
+
+            return new ErrorResponse(error, HttpStatusCode.BadRequest, null);
+        }
+        
+        public static ErrorResponse CreateErrorResponse(this BusinessException ex)
         {
             var error = $"{ex.Code} - {ex.Message}";
 

@@ -14,6 +14,9 @@ namespace ProjectHealthReport.Domains.Helpers
         public const string RoleCOO = "COO";
         public const string RoleKam = "Key Account Manager";
         public const string RolePic = "Person In Charge";
+
+        public const string ScopeUpdatePast = "weekly-report-past:update";
+        public const string ScopeCreatePast = "weekly-report-past:create";
         
         public static List<(string, string)> UserRoleList
         {

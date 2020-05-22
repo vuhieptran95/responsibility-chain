@@ -99,6 +99,14 @@ namespace ProjectHealthReport.Features
                 .InstancePerLifetimeScope();
             
             builder.RegisterAssemblyTypes(currentAssembly)
+                .AsClosedTypesOf(typeof(IPreValidation<,>))
+                .InstancePerLifetimeScope();
+            
+            builder.RegisterAssemblyTypes(currentAssembly)
+                .AsClosedTypesOf(typeof(IPostValidation<,>))
+                .InstancePerLifetimeScope();
+            
+            builder.RegisterAssemblyTypes(currentAssembly)
                 .AsClosedTypesOf(typeof(IExecution<,>))
                 .InstancePerLifetimeScope();
 

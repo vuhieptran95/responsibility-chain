@@ -21,7 +21,7 @@ using ResponsibilityChain.Business.RequestContexts;
 
 namespace ProjectHealthReport.Features.Projects.Commands
 {
-    public class EditProjectNonMasterDataCommand : Request<int>, IMapTo<ProjectProxy>
+    public partial class EditProjectNonMasterDataCommand : Request<int>, IMapTo<ProjectProxy>
     {
         public int Id { get; set; }
         public BacklogItemDto BacklogItem { get; set; }
@@ -50,18 +50,6 @@ namespace ProjectHealthReport.Features.Projects.Commands
             public int ProjectId { get; set; }
             public string Email { get; set; }
             public string Role { get; set; }
-        }
-
-        public class AuthorizationConfig : IAuthorizationConfig<EditProjectMasterDataCommand>
-        {
-            public List<(string[] Resources, string[] Actions)> GetAccessRights()
-            {
-                return new List<(string[] Resources, string[] Actions)>()
-                {
-                    (new[] {Resources.Project, Resources.ProjectNonMaster},
-                        new[] {Actions.Read, Actions.Create, Actions.Update}),
-                };
-            }
         }
 
         public class Handler : IExecution<EditProjectNonMasterDataCommand, int>
