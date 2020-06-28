@@ -9,7 +9,9 @@ using Microsoft.Extensions.Options;
 using ProjectHealthReport.Domains.Domains;
 using ProjectHealthReport.Domains.Helpers;
 using ProjectHealthReport.Domains.Mappings;
+using ProjectHealthReport.Features.Projects.Queries.GetProjectsCaching;
 using ResponsibilityChain;
+using ResponsibilityChain.Business;
 using ResponsibilityChain.Business.AuthorizationConfigs;
 using ResponsibilityChain.Business.Executions;
 using ResponsibilityChain.Business.RequestContexts;
@@ -18,71 +20,26 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjectIndexPhr
 {
     public partial class GetProjectIndexPhrQuery : Request<GetProjectIndexPhrQuery.Dto>
     {
-        public Expression<Func<Domains.Domains.Project, bool>> ResourceFilter { get; set; } = p => true;
+        public Expression<Func<GetProjectsCachingQuery.Project, bool>> ResourceFilter { get; set; } = p => true;
 
         public class Hander : IExecution<GetProjectIndexPhrQuery, Dto>
         {
             private readonly ReportDbContext _dbContext;
-            private readonly IMapper _mapper;
-            private readonly IOptions<BusinessRules> _rules;
+            private readonly IMediator _mediator;
 
-            public Hander(ReportDbContext dbContext, IMapper mapper, IOptions<BusinessRules> rules)
+            public Hander(ReportDbContext dbContext, IMediator mediator)
             {
                 _dbContext = dbContext;
-                _mapper = mapper;
-                _rules = rules;
+                _mediator = mediator;
             }
 
             public async Task HandleAsync(GetProjectIndexPhrQuery request)
             {
                 var dto = new Dto();
 
-                var currentYearWeek = TimeHelper.GetYearWeek(DateTime.Now);
-                var lastYearWeek = TimeHelper.GetLastYearWeek(currentYearWeek);
-
-                var fromDay = TimeHelper.GetIsoDayOfWeek(_rules.Value.ShowWarningIfProjectNotYetSubmitReport.FromDay);
-                var fromHour = _rules.Value.ShowWarningIfProjectNotYetSubmitReport.FromHour;
-                var toDay = TimeHelper.GetIsoDayOfWeek(_rules.Value.ShowWarningIfProjectNotYetSubmitReport.ToDay);
-                var toHour = _rules.Value.ShowWarningIfProjectNotYetSubmitReport.ToHour;
-                var noOfWeekBetween = _rules.Value.ShowWarningIfProjectNotYetSubmitReport.NumberOfWeekBetween;
-
-                var nextYearWeek = TimeHelper.GetNextXYearWeek(currentYearWeek, noOfWeekBetween);
-
-                var condition = TimeHelper.IsDateTimeBetweenDays(DateTime.Now, fromDay, fromHour, currentYearWeek,
-                    toDay,
-                    toHour, nextYearWeek);
-
-                var firstWorkingDayOfLastWeek = TimeHelper.GetFirstWorkingDateOfWeek(
-                    TimeHelper.CalculateYear(lastYearWeek),
-                    TimeHelper.CalculateWeek(lastYearWeek));
-
-                if (condition)
-                {
-                    dto.Projects = await _dbContext.Projects
+                    dto.Projects = (await _mediator.SendAsync(new GetProjectsCachingQuery())).Projects
                         .Where(p => p.PhrRequired)
-                        .Where(request.ResourceFilter)
-                        .Select(
-                            r => new Dto.Project
-                            {
-                                Id = r.Id,
-                                Name = r.Name,
-                                Division = r.Division,
-                                KeyAccountManager = r.KeyAccountManager,
-                                DeliveryResponsibleName = r.DeliveryResponsibleName,
-                                ProjectStartDate = r.ProjectStartDate,
-                                IsNotSubmitted =
-                                    (r.Statuses.SingleOrDefault(s => s.YearWeek == lastYearWeek) == null) &&
-                                    r.PhrRequiredFrom < firstWorkingDayOfLastWeek
-                            }
-                        )
-                        .OrderBy(p => p.Division)
-                        .ToListAsync();
-                }
-                else
-                {
-                    dto.Projects = await _dbContext.Projects
-                        .Where(p => p.PhrRequired)
-                        .Where(request.ResourceFilter)
+                        .Where(request.ResourceFilter.Compile())
                         .Select(
                             r => new Dto.Project
                             {
@@ -95,8 +52,7 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjectIndexPhr
                             }
                         )
                         .OrderBy(p => p.Division)
-                        .ToListAsync();
-                }
+                        .ToList();
 
                 request.Response = dto;
             }

@@ -17,9 +17,9 @@ using ResponsibilityChain.Business.Executions;
 using ResponsibilityChain.Business.Processors;
 using ResponsibilityChain.Business.RequestContexts;
 
-namespace ProjectHealthReport.Features.Projects.Queries.GetProject
+namespace ProjectHealthReport.Features.Projects.Queries.GetProjects
 {
-    public class GetProjectQuery : Request<GetProjectQuery.Dto>
+    public partial class GetProjectQuery : Request<GetProjectQuery.Dto>
     {
         public class AuthorizationConfig: IAuthorizationConfig<GetProjectQuery>
         {

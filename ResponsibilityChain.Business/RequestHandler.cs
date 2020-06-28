@@ -1,4 +1,5 @@
-﻿using ResponsibilityChain.Business.AuthorizationConfigs;
+﻿using ResponsibilityChain.Business.Auditing;
+using ResponsibilityChain.Business.AuthorizationConfigs;
 using ResponsibilityChain.Business.Authorizations;
 using ResponsibilityChain.Business.Caching;
 using ResponsibilityChain.Business.Events;
@@ -18,6 +19,7 @@ namespace ResponsibilityChain.Business
             AuthorizationHandler<TRequest, TResponse> authorizationHandler,
             ValidationHandlerBase<TRequest, TResponse> validationHandlerBase,
             EventsHandler<TRequest, TResponse> eventsHandler,
+            AuditingHandler<TRequest, TResponse> auditingHandler,
             CacheHandler<TRequest, TResponse> cacheHandler,
             ProcessorHandlerBase<TRequest, TResponse> processorHandlerBase,
             ExecutionHandlerBase<TRequest, TResponse> executionHandlerBase)
@@ -27,6 +29,7 @@ namespace ResponsibilityChain.Business
             AddHandler(authorizationHandler);
             AddHandler(validationHandlerBase);
             AddHandler(eventsHandler);
+            AddHandler(auditingHandler);
             AddHandler(cacheHandler);
             AddHandler(processorHandlerBase);
             AddHandler(executionHandlerBase);

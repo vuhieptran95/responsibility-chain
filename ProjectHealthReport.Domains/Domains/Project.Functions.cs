@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ProjectHealthReport.Domains.Exceptions;
 
 namespace ProjectHealthReport.Domains.Domains
 {
@@ -8,8 +9,6 @@ namespace ProjectHealthReport.Domains.Domains
     {
         public void AddEditStatus(Status status)
         {
-            // TODO Validate status data related to projects....
-
             if (status.Id == 0)
             {
                 _statuses.Add(status);
@@ -23,8 +22,6 @@ namespace ProjectHealthReport.Domains.Domains
 
         public void AddEditBacklogItem(BacklogItem item)
         {
-            // TODO Validate BacklogItem data
-
             if (item.Id == 0)
             {
                 _backlogItems.Add(item);
@@ -34,11 +31,17 @@ namespace ProjectHealthReport.Domains.Domains
                 var itemInDb = _backlogItems.First(b => b.Id == item.Id);
                 itemInDb.UpdateValue(item);
             }
+            
+            this.ValidateBacklogItems();
         }
 
         public void AddEditQualityReport(QualityReport item)
         {
             // TODO Validate Quality Report data
+            if (item.ReOpenBugs > item.CriticalBugs + item.MajorBugs + item.MinorBugs)
+            {
+                DomainExceptionCode.Throw(DomainError.D039, this);
+            }
 
             if (item.Id == 0)
             {
@@ -49,6 +52,8 @@ namespace ProjectHealthReport.Domains.Domains
                 var itemInDb = _qualityReports.First(b => b.Id == item.Id);
                 itemInDb.UpdateValue(item);
             }
+            
+            this.ValidateQualityReport();
         }
 
         public void ReplaceProjectAccess(List<ProjectAccess> accesses)

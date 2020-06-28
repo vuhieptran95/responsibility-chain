@@ -27,7 +27,7 @@ namespace ProjectHealthReport.Web.Controllers
         [Authorize(AuthenticationSchemes = "oidc")]
         public IActionResult Index()
         {
-            return View();
+            return Redirect("/client-app/Projects");
         }
         
         // [Authorize(AuthenticationSchemes = "Bearer")]

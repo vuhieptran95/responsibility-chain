@@ -51,6 +51,10 @@ namespace ProjectHealthReport.Features.Exceptions
                 case Exceptions.BusinessError.B001:
                     return ("Cannot Add/Edit weekly report after locked time",
                         typeof(AddEditWeeklyReportPhrCommand));
+                
+                case Exceptions.BusinessError.B002:
+                    return ("Cannot Add/Edit weekly report after locked time",
+                        typeof(AddEditWeeklyReportPhrCommand));
 
                 default: throw new Exception("Invalid error code!");
             }

@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using ProjectHealthReport.Features.Projects.Queries.GetProject;
+using ProjectHealthReport.Features.Projects.Queries.GetProjects;
 using ProjectHealthReport.Features.WeeklyReports.Queries.GetWeeklyReportPhr;
 using ResponsibilityChain;
 using ResponsibilityChain.Business;

@@ -55,13 +55,11 @@ namespace ProjectHealthReport.Features.Projects.Commands
         public class Handler : IExecution<EditProjectNonMasterDataCommand, int>
         {
             private readonly ReportDbContext _dbContext;
-            private readonly IMapper _mapper;
             private readonly IMediator _mediator;
 
             public Handler(ReportDbContext dbContext, IMapper mapper, IMediator mediator)
             {
                 _dbContext = dbContext;
-                _mapper = mapper;
                 _mediator = mediator;
             }
 

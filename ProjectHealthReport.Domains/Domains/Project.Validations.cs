@@ -101,5 +101,30 @@ namespace ProjectHealthReport.Domains.Domains
                 DomainExceptionCode.Throw(DomainError.D010, this);
             }
         }
+
+        public void ValidateBacklogItems()
+        {
+            var itemsRemaining = BacklogItems.Sum(b => b.ItemsAdded - b.ItemsDone);
+            if (itemsRemaining < 0)
+            {
+                DomainExceptionCode.Throw(DomainError.D036, this);
+            }
+
+            var storyPointsRemaining = BacklogItems.Sum(b => b.StoryPointsAdded - b.StoryPointsDone);
+            if (storyPointsRemaining < 0)
+            {
+                DomainExceptionCode.Throw(DomainError.D037, this);
+            }
+        }
+
+        public void ValidateQualityReport()
+        {
+            var remainingBugs = QualityReports.Sum(q => q.CriticalBugs + q.MajorBugs + q.MinorBugs - q.DoneBugs);
+            if (remainingBugs < 0)
+            {
+                DomainExceptionCode.Throw(DomainError.D038, this);
+            }
+        }
+
     }
 }

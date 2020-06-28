@@ -2,6 +2,7 @@
 using Autofac;
 using ResponsibilityChain;
 using ResponsibilityChain.Business;
+using ResponsibilityChain.Business.Auditing;
 using ResponsibilityChain.Business.AuthorizationConfigs;
 using ResponsibilityChain.Business.Authorizations;
 using ResponsibilityChain.Business.Caching;
@@ -54,6 +55,7 @@ namespace IdentityServer.Features
             builder.RegisterGeneric(typeof(ValidationHandlerBase<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(ExecutionHandlerBase<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(LoggingHandler<,>)).InstancePerLifetimeScope();
+            builder.RegisterGeneric(typeof(AuditingHandler<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(EventsHandler<,>)).InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(ProcessorHandlerBase<,>)).InstancePerLifetimeScope();
             
@@ -88,6 +90,14 @@ namespace IdentityServer.Features
             
             builder.RegisterAssemblyTypes(currentAssembly)
                 .AsClosedTypesOf(typeof(IPostEvent<,>))
+                .InstancePerLifetimeScope();
+            
+            builder.RegisterAssemblyTypes(currentAssembly)
+                .AsClosedTypesOf(typeof(IPreAudit<,>))
+                .InstancePerLifetimeScope();
+            
+            builder.RegisterAssemblyTypes(currentAssembly)
+                .AsClosedTypesOf(typeof(IPostAudit<,>))
                 .InstancePerLifetimeScope();
             
             builder.RegisterAssemblyTypes(currentAssembly)

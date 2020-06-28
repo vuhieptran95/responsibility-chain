@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
-using ProjectHealthReport.Features.Projects.Queries.GetProject;
+using ProjectHealthReport.Features.Projects.Queries.GetProjects;
 using ResponsibilityChain;
 using ResponsibilityChain.Business.AuthorizationConfigs;
 using ResponsibilityChain.Business.Executions;

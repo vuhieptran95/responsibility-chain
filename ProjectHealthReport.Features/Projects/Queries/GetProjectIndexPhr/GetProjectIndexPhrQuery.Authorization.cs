@@ -50,12 +50,12 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjectIndexPhr
                 switch (role, name)
                 {
                     case (AuthorizationHelper.RolePic, _):
-                        request.ResourceFilter = project => project.DeliveryResponsibleName == name;
+                        request.ResourceFilter = project => project.DeliveryResponsibleName == name.ToUpper();
                         request.AuthorizationIsHandled = true;
                         return;
                     
                     case (AuthorizationHelper.RoleProjectManager, _):
-                        request.ResourceFilter = project => project.DeliveryResponsibleName == name;
+                        request.ResourceFilter = project => project.DeliveryResponsibleName == name.ToUpper();
                         request.AuthorizationIsHandled = true;
                         return;
 

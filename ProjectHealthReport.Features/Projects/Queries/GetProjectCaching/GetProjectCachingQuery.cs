@@ -71,8 +71,6 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjectCaching
 
             public async Task HandleAsync(GetProjectCachingQuery request)
             {
-                await Task.Delay(2000);
-
                 var data = new WeeklyData();
                 using (var con = new SqlConnection(_configuration.GetConnectionString("ProjectHealthReport")))
                 {

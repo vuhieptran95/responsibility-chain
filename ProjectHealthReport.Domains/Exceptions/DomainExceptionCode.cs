@@ -39,6 +39,10 @@ namespace ProjectHealthReport.Domains.Exceptions
         D033,
         D034,
         D035,
+        D036,
+        D037,
+        D038,
+        D039,
     }
 
     public class DomainExceptionCode
@@ -168,6 +172,18 @@ namespace ProjectHealthReport.Domains.Exceptions
                     return ("DoDReport must have metric", typeof(DoDReport));
                 case Exceptions.DomainError.D035:
                     return ("DoDReport must have project", typeof(DoDReport));
+                
+                case Exceptions.DomainError.D036:
+                    return ("Items remaining must be greater than or equal 0", typeof(Project));
+                
+                case Exceptions.DomainError.D037:
+                    return ("Story points remaining must be greater than or equal 0", typeof(Project));
+                
+                case Exceptions.DomainError.D038:
+                    return ("Bugs remaining must be greater than or equal 0", typeof(Project));
+                
+                case Exceptions.DomainError.D039:
+                    return ("Re open bugs must be smaller than or equal total bugs", typeof(Project));
 
 
                 default: throw new Exception("Invalid error code!");

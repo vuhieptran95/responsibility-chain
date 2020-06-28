@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using ProjectHealthReport.Domains.Helpers;
-using ProjectHealthReport.Features.Projects.Queries.GetProject;
+using ProjectHealthReport.Features.Projects.Queries.GetProjects;
 using ResponsibilityChain;
 using ResponsibilityChain.Business.Authorizations;
 using ResponsibilityChain.Business.RequestContexts;
