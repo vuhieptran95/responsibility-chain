@@ -9,7 +9,7 @@ namespace ProjectHealthReport.Domains.Helpers
         public const string RoleProjectManager = "Project Manager";
         public const string RoleSalesExecutives = "Sales Executive";
         public const string RoleGlobalExecutiveVicePresident = "Global Executive Vice President";
-        public const string RoleDeliveryManager = "Delivery Manager";
+        public const string RoleDeliveryManager = "Division Manager";
         public const string RolePMOAssistant = "PMO Assistant";
         public const string RoleCOO = "COO";
         public const string RoleKam = "Key Account Manager";

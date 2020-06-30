@@ -30,6 +30,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Items", "Items", "{CFAF837D
 ProjectSection(SolutionItems) = preProject
 	Items\identity.sql = Items\identity.sql
 	Items\lastchance.sql = Items\lastchance.sql
+	Items\hangfire.bacpac = Items\hangfire.bacpac
+	Items\lastchance.bacpac = Items\lastchance.bacpac
+	Items\identity.bacpac = Items\identity.bacpac
 EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectHealthReport.Domains.Test", "ProjectHealthReport.Domains.Test\ProjectHealthReport.Domains.Test.csproj", "{B322EE1C-26AB-482B-B296-C69B6B226346}"
