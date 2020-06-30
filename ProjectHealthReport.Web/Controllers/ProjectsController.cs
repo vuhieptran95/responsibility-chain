@@ -33,6 +33,15 @@ namespace ProjectHealthReport.Web.Controllers
 
             return Ok(dto);
         }
+        
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpGet("phr/not-submit-report/year-week/{yearWeek}")]
+        public async Task<ActionResult> GetProjectsNotSubmitReport(int yearWeek)
+        {
+            var dto = await _mediator.SendAsync(new GetProjectsNotSubmitReportQuery(){SelectedYearWeek = yearWeek});
+
+            return Ok(dto);
+        }
 
         [HttpGet("phr/project-index")]
         public async Task<ActionResult> GetProjectsIndexPhr()

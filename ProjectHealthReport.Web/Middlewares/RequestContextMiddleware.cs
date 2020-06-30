@@ -32,6 +32,10 @@ namespace ProjectHealthReport.Web.Middlewares
                         requestContext.Username = value;
                         requestContext.UserEmail = value;
                         break;
+                    case "client_id":
+                        requestContext.Username = value;
+                        requestContext.UserEmail = value;
+                        break;
                     case "http://schemas.microsoft.com/ws/2008/06/identity/claims/role":
                         requestContext.UserRole = value;
                         break;
@@ -40,7 +44,7 @@ namespace ProjectHealthReport.Web.Middlewares
                             value.Split(' ').Select(i => i.Split('.')[1]).ToList();
                         break;
                     case "scope":
-                        requestContext.AccessRights.Add(value.TrimStart("phr.".ToCharArray()));
+                        requestContext.AccessRights.Add(value.Split('.').Last());
                         break;
                 }
             }

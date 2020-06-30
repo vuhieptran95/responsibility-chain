@@ -3,6 +3,8 @@
     public static class Resources
     {
         public const string Project = "project";
+        public const string ProjectsNotYetSubmit = "projects-not-yet-submit";
+        public const string ProjectsMissedDeadline = "projects-missed-deadline";
         public const string ProjectAccess = "project-access";
         public const string ProjectMaster = "project-master";
         public const string ProjectNonMaster = "project-non-master";

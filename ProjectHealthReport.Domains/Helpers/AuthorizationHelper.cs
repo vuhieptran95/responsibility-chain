@@ -88,14 +88,14 @@ namespace ProjectHealthReport.Domains.Helpers
         // TODO refactor & remove
         public static Dictionary<string, string> DeliveryManagers = new Dictionary<string, string>
         {
-            {"DM1", "AMS 24/7"},
-            {"DM2", "Marketing"},
-            {"DM3", "Frey"},
-            {"DM4", "Baldur"},
-            {"DM5", "HCMC"},
-            {"DM6", "Thor"},
-            {"DM7", "Odin"},
-            {"DM8", "Tyr"},
+            {"DM1", "Division 1"},
+            {"DM2", "Division 2"},
+            {"DM3", "Division 3"},
+            {"DM4", "Division 4"},
+            {"DM5", "Division 5"},
+            {"DM6", "Division 6"},
+            {"DM7", "Division 7"},
+            {"DM8", "Division 8"},
         };
 
         public static List<string> AdministrationAcessRoles = new List<string>()

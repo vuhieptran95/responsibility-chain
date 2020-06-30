@@ -1,14 +1,40 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Flurl;
 using Flurl.Http;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Notification.Web.Services;
 using ProjectHealthReport.Domains.Helpers;
 
 namespace Notification.Web.ScheduledJobs
 {
+    public class TokenResponse
+    {
+        [JsonProperty("access_token")]
+        public string AccessToken { get; set; }
+        [JsonProperty("expires_in")]
+        public string ExpireIn { get; set; }
+        [JsonProperty("token_type")]
+        public string TokenType { get; set; }
+        [JsonProperty("scope")]
+        public string Scope { get; set; }
+    }
+    public class ErrorResponse
+    {
+        public ErrorResponse(string error, HttpStatusCode httpStatusCode, object info)
+        {
+            Error = error;
+            HttpStatusCode = httpStatusCode;
+            Info = info;
+        }
+
+        public string Error { get; }
+        public HttpStatusCode HttpStatusCode { get; }
+        public object Info { get; set; }
+    }
     public class NotifyProjectsNotYetSubmittedWeeklyReport : IScheduledJob
     {
         private readonly ILogger<NotifyProjectsNotYetSubmittedWeeklyReport> _logger;
@@ -17,30 +43,18 @@ namespace Notification.Web.ScheduledJobs
         {
             _logger = logger;
         }
+
         // TODO add `Async` suffix
         public async Task Execute()
         {
             var subject = "[Project Health Report] Reminder to create weekly reports before deadline";
             var response = await CallApi();
-
+            
+            _logger.LogDebug("NotifyProjectsNotYetSubmittedWeeklyReport: @response", response);
+            
             foreach (var project in response.Projects)
             {
-               MailService.Send(project.PicEmail, project.DmEmail + "," + AppSettings.MailSettings.MailList.Pmo, subject, project.HtmlContent);
-            }
-        }
-
-        public async Task Test()
-        {
-            var subject = "[Project Health Report] Reminder to create weekly reports before deadline";
-            var response = await CallApi();
-
-            response.Projects = response.Projects.Take(2).ToArray();
-
-            foreach (var project in response.Projects)
-            {
-                project.PicEmail = "hiep.tran2@niteco.se";
-                project.DmEmail = "hiep.tran2@niteco.se";
-                MailService.Send(project.PicEmail, project.DmEmail + "," + "hiep.tran2@niteco.se", subject, project.HtmlContent);
+               MailService.Send(project.PicEmail, AppSettings.MailSettings.MailList.Pmo, subject, project.HtmlContent);
             }
         }
 
@@ -48,16 +62,37 @@ namespace Notification.Web.ScheduledJobs
         {
             var currentYearWeek = TimeHelper.GetYearWeek(DateTime.Now);
             var lastYearWeek = TimeHelper.GetLastYearWeek(currentYearWeek);
-            var phrEndpoint =
-                AppSettings.ExternalServices.PHR.Endpoint
-                    .AppendPathSegment("api/projects/not-submit-report-projects/year-week")
-                    .AppendPathSegment(lastYearWeek)
-                    .WithHeader("Content-Type", "application/json");
+            var phrEndpoint = (await
+                AppSettings.ExternalServices.PHR.GetFlurlRequest())
+                    .AppendPathSegment("/api/projects/phr/not-submit-report/year-week/")
+                    .AppendPathSegment(lastYearWeek);
 
             try
             {
-                var response = await phrEndpoint
-                    .GetJsonAsync<ProjectsNotYetSubmittedWeeklyReport>();
+                var res = await phrEndpoint.AllowHttpStatus(HttpStatusCode.Unauthorized)
+                    .GetAsync();
+                var content = await res.Content.ReadAsStringAsync();
+
+                if (res.StatusCode == HttpStatusCode.Unauthorized)
+                {
+
+                    if (string.IsNullOrEmpty(content))
+                    {
+                        AppSettings.ResetToken();
+                        
+                        res = await phrEndpoint.GetAsync();
+                        content = await res.Content.ReadAsStringAsync();
+                    }
+                    else
+                    {
+                        var error = JsonConvert.DeserializeObject<ErrorResponse>(content);
+                        
+                        throw new UnauthorizedAccessException(error.Error);
+                    }
+                }
+
+                var response = JsonConvert.DeserializeObject<ProjectsNotYetSubmittedWeeklyReport>(content);
+
                 foreach (var project in response.Projects)
                 {
                     var htmlContent = MailService.CreateTemplate(MailService.ProjectNotSubmitWeeklyReportKey,
@@ -73,8 +108,9 @@ namespace Notification.Web.ScheduledJobs
 
                     project.HtmlContent = htmlContent;
                 }
-            
-                _logger.LogInformation(nameof(NotifyProjectsNotYetSubmittedWeeklyReport) + " PHR response: {@response}", response);
+
+                _logger.LogInformation(nameof(NotifyProjectsNotYetSubmittedWeeklyReport) + " PHR response: {@response}",
+                    response);
 
                 return response;
             }

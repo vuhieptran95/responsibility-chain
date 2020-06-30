@@ -73,7 +73,9 @@ namespace IdentityServer.Features.Business.Clients
                             {
                                 ClientId = c.Id,
                                 ClientSecrets = {new Secret(c.Secret.Sha256())},
-
+                                
+                                AccessTokenLifetime = 10,
+                                
                                 AllowedGrantTypes = GrantTypes.ClientCredentials,
                     
                                 AllowedScopes = c.ClientScopes.Select(c => c.ScopeId).ToList()

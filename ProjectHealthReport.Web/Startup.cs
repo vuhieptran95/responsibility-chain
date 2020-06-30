@@ -12,6 +12,7 @@ using AutoMapper;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -55,7 +56,10 @@ namespace ProjectHealthReport.Web
                 {
                     options.Authority = "http://localhost:5000";
                     options.RequireHttpsMetadata = false;
+                    options.CacheDuration = TimeSpan.FromSeconds(1);
+                    options.SaveToken = false;
                     options.ApiName = "phr";
+                    options.EnableCaching = true;
                 })
                 .AddCookie("Cookies")
                 .AddOpenIdConnect("oidc", options =>

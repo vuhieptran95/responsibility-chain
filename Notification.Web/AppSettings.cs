@@ -1,16 +1,52 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
+using Flurl;
+using Flurl.Http;
+using Newtonsoft.Json;
+using Notification.Web.Helpers;
+using Notification.Web.ScheduledJobs;
 
 namespace Notification.Web
 {
     [SuppressMessage("ReSharper", "RCS1102")]
     public class AppSettings
     {
+        private static TokenResponse _tokenResponse;
         public static Logging Logging { get; set; }
         public static ConnectionStrings ConnectionStrings { get; set; }
         public static string AllowedHosts { get; set; }
         public static JobSchedules JobSchedules { get; set; }
         public static MailSettings MailSettings { get; set; }
         public static ExternalServices ExternalServices { get; set; }
+
+        public static async Task<TokenResponse> GetTokenResponse()
+        {
+            if (_tokenResponse == null)
+            {
+                
+                    var idpTokenEndpoint = AppSettings.ExternalServices.IdP.Endpoint.AppendPathSegment("connect/token");
+
+                    var data = new
+                    {
+                        scope = "phr.projects-not-yet-submit:read phr.projects-missed-deadline:read",
+                        grant_type = "client_credentials"
+                    };
+                    var res = await idpTokenEndpoint.WithBasicAuth("hangfire", "secret")
+                        .PostUrlEncodedAsync(data);
+
+                    var tokenString = await res.Content.ReadAsStringAsync();
+
+                    _tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(tokenString);
+            }
+
+            return _tokenResponse;
+        }
+
+        public static void ResetToken()
+        {
+            _tokenResponse = null;
+        }
     }
 
     public class ConnectionStrings
@@ -69,5 +105,12 @@ namespace Notification.Web
     {
         public string Endpoint { get; set; }
         public string AuthorizationHeader { get; set; }
+
+        public async Task<IFlurlRequest> GetFlurlRequest()
+        {
+            var tokenResponse = await AppSettings.GetTokenResponse();
+            
+            return Endpoint.WithHeader("Content-Type", "application/json").WithOAuthBearerToken(tokenResponse.AccessToken);
+        }
     }
 }

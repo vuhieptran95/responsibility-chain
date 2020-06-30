@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Flurl;
+using Flurl.Http;
 using Hangfire;
 using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Builder;
@@ -11,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Notification.Web.ScheduledJobs;
+using RazorEngine.Compilation.ImpromptuInterface.InvokeExt;
 
 namespace Notification.Web
 {
@@ -26,11 +29,12 @@ namespace Notification.Web
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            Configuration.Get<AppSettings>();
+            
             services.AddSingleton<NotifyProjectsNotYetSubmittedWeeklyReport>();
             services.AddSingleton<MarkProjectsAsMissedDeadline>();
-            services.AddSingleton<NotifyProjectsToDoDoDThisWeek>();
             services.AddSingleton<Jobs>();
-
+            
             // Add Hangfire services.
             services.AddHangfire(configuration => configuration
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
@@ -64,6 +68,8 @@ namespace Notification.Web
             {
                 StatsPollingInterval = 30000
             });
+            
+            app.ApplicationServices.GetService<Jobs>().ScheduledJobs();
 
             app.UseRouting();
 
