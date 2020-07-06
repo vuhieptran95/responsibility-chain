@@ -62,12 +62,6 @@ namespace ProjectHealthReport.Features.Projects.Queries.GetProjects
                     })
                     .ToListAsync();
 
-                // listProjectDto.ForEach(p =>
-                // {
-                //     p.DmEmail = AuthorizationHelper.DeliveryManagers.First(m => m.Value == p.DivisionName).Key +
-                //                 "@niteco.se";
-                // });
-
                 var nextYearWeek = TimeHelper.GetNextYearWeek(request.SelectedYearWeek);
                 var isoDate = TimeHelper.GetIsoDayOfWeek(_rule.Value.PMsCanOnlyEditTheirReportsTill.Day);
                 var date = TimeHelper.GetDate(isoDate, nextYearWeek)

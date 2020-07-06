@@ -23,7 +23,7 @@ namespace IdentityServer.Features.Business.Users
         
         public class CacheConfig: ICacheConfig<GetUsers>
         {
-            public bool IsCacheEnabled { get; } = true;
+            public bool IsCacheEnabled { get; } = false;
             public DateTimeOffset CacheDateTimeOffset { get; } = DateTimeOffset.Now.AddDays(1);
             public string GetCacheKey(GetUsers request)
             {

@@ -75,7 +75,6 @@ namespace Notification.Web.ScheduledJobs
 
                 if (res.StatusCode == HttpStatusCode.Unauthorized)
                 {
-
                     if (string.IsNullOrEmpty(content))
                     {
                         AppSettings.ResetToken();
@@ -119,6 +118,12 @@ namespace Notification.Web.ScheduledJobs
                 _logger.LogError(
                     $"{nameof(ProjectsNotYetSubmittedWeeklyReport)} - {nameof(FlurlHttpException)}: " + "{error}",
                     await e.GetResponseStringAsync());
+                throw;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(
+                    $"{nameof(ProjectsNotYetSubmittedWeeklyReport)} - {nameof(Exception)}: " + "{error}", e.Message);
                 throw;
             }
         }

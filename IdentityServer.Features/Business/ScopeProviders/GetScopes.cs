@@ -22,7 +22,7 @@ namespace IdentityServer.Features.Business.ScopeProviders
         
         public class CacheConfig: ICacheConfig<GetScopes>
         {
-            public bool IsCacheEnabled { get; } = true;
+            public bool IsCacheEnabled { get; } = false;
             public DateTimeOffset CacheDateTimeOffset { get; } = DateTimeOffset.Now.AddDays(1);
             public string GetCacheKey(GetScopes request)
             {

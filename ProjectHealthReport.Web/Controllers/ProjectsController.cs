@@ -42,6 +42,15 @@ namespace ProjectHealthReport.Web.Controllers
 
             return Ok(dto);
         }
+        
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpGet("phr/missed-deadline/year-week/{yearWeek}")]
+        public async Task<ActionResult> MarkProjectsMissedDeadline(int yearWeek)
+        {
+            var dto = await _mediator.SendAsync(new MarkProjectsMissedDeadlineCommand(){MissedDeadlineYearWeek = yearWeek});
+
+            return Ok(dto);
+        }
 
         [HttpGet("phr/project-index")]
         public async Task<ActionResult> GetProjectsIndexPhr()

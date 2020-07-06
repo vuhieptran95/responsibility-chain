@@ -115,15 +115,26 @@ namespace ProjectHealthReport.Domains.Helpers
 
         public static int CalculateYear(int yearWeek)
         {
+            if (yearWeek == 0)
+            {
+                return 0;
+            }
+
             return Convert.ToInt32(string.Concat(yearWeek.ToString().Take(4)));
         }
 
         public static int CalculateWeek(int yearWeek)
         {
+            if (yearWeek == 0)
+            {
+                return 0;
+            }
+
             return Convert.ToInt32(string.Concat(yearWeek.ToString().Skip(4)));
         }
 
-        public static DateTime GetDateTimeOfXHourYDayNextZWeekFollowingYear(int xHour, IsoDayOfWeek yDay, int nextZWeek, int selectedYear, int selectedWeek)
+        public static DateTime GetDateTimeOfXHourYDayNextZWeekFollowingYear(int xHour, IsoDayOfWeek yDay, int nextZWeek,
+            int selectedYear, int selectedWeek)
         {
             var expectedWeek = selectedWeek;
             var expectedYear = selectedYear;
@@ -134,7 +145,8 @@ namespace ProjectHealthReport.Domains.Helpers
 
             if (nextZWeek >= maxNumberOfWeek || xHour >= 24)
             {
-                throw new ArgumentOutOfRangeException("nextZWeek must be smaller than the max number of week in " + selectedYear);
+                throw new ArgumentOutOfRangeException("nextZWeek must be smaller than the max number of week in " +
+                                                      selectedYear);
             }
 
             if (selectedWeek <= maxNumberOfWeek - nextZWeek)
@@ -154,7 +166,8 @@ namespace ProjectHealthReport.Domains.Helpers
             return firstWorkingDayOfExpectedWeek;
         }
 
-        public static List<int> GetYearWeeksOfXRecentWeeksStartFrom(int selectedYear, int selectedWeek, int numberOfRecentWeeks)
+        public static List<int> GetYearWeeksOfXRecentWeeksStartFrom(int selectedYear, int selectedWeek,
+            int numberOfRecentWeeks)
         {
             var listYearWeek = new List<int>();
             var selectedYearWeek = CalculateYearWeek(selectedYear, selectedWeek);
@@ -173,7 +186,8 @@ namespace ProjectHealthReport.Domains.Helpers
 
                 if (listLastYearWeek.Count + selectedWeek <= numberOfRecentWeeks)
                 {
-                    const string errorMessage = "numberOfRecentWeeks must be smaller than sum of selectedWeek and last year max week";
+                    const string errorMessage =
+                        "numberOfRecentWeeks must be smaller than sum of selectedWeek and last year max week";
 
                     throw new ArgumentOutOfRangeException(nameof(numberOfRecentWeeks), errorMessage);
                 }
@@ -211,7 +225,8 @@ namespace ProjectHealthReport.Domains.Helpers
 
         public static int GetNextYearWeek(int yearWeek)
         {
-            var futureDateTime = GetDateTimeOfXHourYDayNextZWeekFollowingYear(0, IsoDayOfWeek.Thursday, 1, CalculateYear(yearWeek),
+            var futureDateTime = GetDateTimeOfXHourYDayNextZWeekFollowingYear(0, IsoDayOfWeek.Thursday, 1,
+                CalculateYear(yearWeek),
                 CalculateWeek(yearWeek));
 
             return GetYearWeek(futureDateTime);
@@ -219,7 +234,8 @@ namespace ProjectHealthReport.Domains.Helpers
 
         public static int GetNextXYearWeek(int yearWeek, int nextNumberOfWeek)
         {
-            var futureDateTime = GetDateTimeOfXHourYDayNextZWeekFollowingYear(0, IsoDayOfWeek.Thursday, nextNumberOfWeek, CalculateYear(yearWeek),
+            var futureDateTime = GetDateTimeOfXHourYDayNextZWeekFollowingYear(0, IsoDayOfWeek.Thursday,
+                nextNumberOfWeek, CalculateYear(yearWeek),
                 CalculateWeek(yearWeek));
 
             return GetYearWeek(futureDateTime);
@@ -231,6 +247,7 @@ namespace ProjectHealthReport.Domains.Helpers
             {
                 throw new InvalidOperationException("FromYearWeek must be smaller than ToYearWeek");
             }
+
             var fromYear = CalculateYear(fromYearWeek);
             var toYear = CalculateYear(toYearWeek);
             var listInt = new List<int>();
@@ -246,6 +263,7 @@ namespace ProjectHealthReport.Domains.Helpers
                 {
                     listInt.Add(i);
                 }
+
                 return listInt;
             }
 
@@ -271,7 +289,8 @@ namespace ProjectHealthReport.Domains.Helpers
             return listInt;
         }
 
-        public static bool IsDateTimeBetweenDays(DateTime dateTime, IsoDayOfWeek fromDay, int fromHour, int fromYearWeek,
+        public static bool IsDateTimeBetweenDays(DateTime dateTime, IsoDayOfWeek fromDay, int fromHour,
+            int fromYearWeek,
             IsoDayOfWeek toDay, int toHour, int toYearWeek)
         {
             var rule = WeekYearRules.Iso;
